@@ -10,7 +10,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Sistema de Gestion del Gimnasio - Parent</name>
+    <name>SistemaGym</name>
     <description>Proyecto Maven Multi-Modulo por Capas para el Sistema de Gimnasio</description>
 
     <modules>

@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Entidad que representa un producto del gimnasio (suplementos, bebidas, accesorios).
- */
 public class Producto implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -15,6 +12,7 @@ public class Producto implements Serializable {
     private String nombre;
     private String categoria;
     private double precio;
+    private int stock;
     private String imagen;
 
     public Producto() {
@@ -25,12 +23,25 @@ public class Producto implements Serializable {
         this.nombre = nombre;
         this.categoria = categoria;
         this.precio = precio;
+        this.stock = 0;
         this.imagen = imagen;
     }
 
-    // Métodos del diagrama
+    public Producto(int idProducto, String nombre, String categoria, double precio, int stock, String imagen) {
+        this.idProducto = idProducto;
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.precio = precio;
+        this.stock = stock;
+        this.imagen = imagen;
+    }
+
     public boolean consultarDisponibilidad() {
-        return this.precio > 0;
+        return this.stock > 0;
+    }
+
+    public boolean consultarDisponibilidad(int cantidad) {
+        return this.stock >= cantidad;
     }
 
     public void actualizarPrecio(double precio) {
@@ -38,22 +49,18 @@ public class Producto implements Serializable {
     }
 
     public void agregar() {
-        // Ciclo de vida
     }
 
     public void editar() {
-        // Ciclo de vida
     }
 
     public void eliminar() {
-        // Ciclo de vida
     }
 
     public List<Producto> consultarProductos() {
         return Collections.singletonList(this);
     }
 
-    // Getters y Setters
     public int getIdProducto() {
         return idProducto;
     }
@@ -86,6 +93,14 @@ public class Producto implements Serializable {
         this.precio = precio;
     }
 
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
     public String getImagen() {
         return imagen;
     }
@@ -114,6 +129,7 @@ public class Producto implements Serializable {
                 ", nombre='" + nombre + '\'' +
                 ", categoria='" + categoria + '\'' +
                 ", precio=" + precio +
+                ", stock=" + stock +
                 ", imagen='" + imagen + '\'' +
                 '}';
     }

@@ -9,12 +9,13 @@
         <groupId>gym</groupId>
         <artifactId>diseno-gym-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>gym-negocio</artifactId>
     <packaging>jar</packaging>
 
-    <name>Capa de Negocio</name>
+    <name>CapaNegocio</name>
     <description>Servicios, Business Objects (BO), DTOs y Mappers</description>
 
     <dependencies>

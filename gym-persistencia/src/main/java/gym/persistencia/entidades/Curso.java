@@ -6,14 +6,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Entidad que representa una clase o curso ofertado en el gimnasio.
- */
 public class Curso implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int idCurso;
     private String nombre;
+    private String disciplina;
     private double precio;
     private int cupo;
     private String imagen;
@@ -25,32 +23,40 @@ public class Curso implements Serializable {
     public Curso(int idCurso, String nombre, double precio, int cupo, String imagen) {
         this.idCurso = idCurso;
         this.nombre = nombre;
+        this.disciplina = "";
         this.precio = precio;
         this.cupo = cupo;
         this.imagen = imagen;
         this.horarios = new ArrayList<>();
     }
 
-    public Curso(int idCurso, String nombre, double precio, int cupo, String imagen, List<Horario> horarios) {
+    public Curso(int idCurso, String nombre, String disciplina, double precio, int cupo, String imagen) {
         this.idCurso = idCurso;
         this.nombre = nombre;
+        this.disciplina = disciplina;
+        this.precio = precio;
+        this.cupo = cupo;
+        this.imagen = imagen;
+        this.horarios = new ArrayList<>();
+    }
+
+    public Curso(int idCurso, String nombre, String disciplina, double precio, int cupo, String imagen, List<Horario> horarios) {
+        this.idCurso = idCurso;
+        this.nombre = nombre;
+        this.disciplina = disciplina;
         this.precio = precio;
         this.cupo = cupo;
         this.imagen = imagen;
         this.horarios = horarios != null ? new ArrayList<>(horarios) : new ArrayList<>();
     }
 
-    // Métodos del diagrama
     public void agregar() {
-        // Ciclo de vida
     }
 
     public void editar() {
-        // Ciclo de vida
     }
 
     public void eliminar() {
-        // Ciclo de vida
     }
 
     public List<Curso> consultarCursos() {
@@ -71,7 +77,6 @@ public class Curso implements Serializable {
         }
     }
 
-    // Getters y Setters
     public int getIdCurso() {
         return idCurso;
     }
@@ -86,6 +91,14 @@ public class Curso implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getDisciplina() {
+        return disciplina;
+    }
+
+    public void setDisciplina(String disciplina) {
+        this.disciplina = disciplina;
     }
 
     public double getPrecio() {
@@ -138,6 +151,7 @@ public class Curso implements Serializable {
         return "Curso{" +
                 "idCurso=" + idCurso +
                 ", nombre='" + nombre + '\'' +
+                ", disciplina='" + disciplina + '\'' +
                 ", precio=" + precio +
                 ", cupo=" + cupo +
                 ", horariosCount=" + (horarios != null ? horarios.size() : 0) +

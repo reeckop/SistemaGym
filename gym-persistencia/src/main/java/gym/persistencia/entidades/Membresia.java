@@ -1,57 +1,71 @@
 package gym.persistencia.entidades;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Entidad que modela un plan de membresía del gimnasio.
- */
 public class Membresia implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int idMembresia;
     private String nombre;
     private double precio;
+    private String imagen;
+    private String estado;
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
     private List<Beneficio> beneficios = new ArrayList<>();
 
     public Membresia() {
+        this.estado = "ACTIVA";
     }
 
     public Membresia(int idMembresia, String nombre, double precio) {
         this.idMembresia = idMembresia;
         this.nombre = nombre;
         this.precio = precio;
+        this.estado = "ACTIVA";
         this.beneficios = new ArrayList<>();
     }
 
-    public Membresia(int idMembresia, String nombre, double precio, List<Beneficio> beneficios) {
+    public Membresia(int idMembresia, String nombre, double precio, String imagen, String estado, LocalDate fechaInicio, LocalDate fechaFin) {
         this.idMembresia = idMembresia;
         this.nombre = nombre;
         this.precio = precio;
+        this.imagen = imagen;
+        this.estado = estado;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.beneficios = new ArrayList<>();
+    }
+
+    public Membresia(int idMembresia, String nombre, double precio, String imagen, String estado, LocalDate fechaInicio, LocalDate fechaFin, List<Beneficio> beneficios) {
+        this.idMembresia = idMembresia;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.imagen = imagen;
+        this.estado = estado;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
         this.beneficios = beneficios != null ? new ArrayList<>(beneficios) : new ArrayList<>();
     }
 
-    // Métodos del diagrama
     public void agregar() {
-        // Método de ciclo de vida del diagrama
     }
 
     public void editar() {
-        // Método de ciclo de vida del diagrama
     }
 
     public void eliminar() {
-        // Método de ciclo de vida del diagrama
     }
 
     public List<Membresia> consultarMembresias() {
         return Collections.singletonList(this);
     }
 
-    // Métodos de ayuda para la relación con Beneficio
     public void agregarBeneficio(Beneficio beneficio) {
         if (beneficio != null) {
             this.beneficios.add(beneficio);
@@ -62,7 +76,6 @@ public class Membresia implements Serializable {
         this.beneficios.remove(beneficio);
     }
 
-    // Getters y Setters
     public int getIdMembresia() {
         return idMembresia;
     }
@@ -85,6 +98,38 @@ public class Membresia implements Serializable {
 
     public void setPrecio(double precio) {
         this.precio = precio;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(LocalDate fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
     public List<Beneficio> getBeneficios() {
@@ -114,6 +159,7 @@ public class Membresia implements Serializable {
                 "idMembresia=" + idMembresia +
                 ", nombre='" + nombre + '\'' +
                 ", precio=" + precio +
+                ", estado='" + estado + '\'' +
                 ", beneficiosCount=" + (beneficios != null ? beneficios.size() : 0) +
                 '}';
     }

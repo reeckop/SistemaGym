@@ -1,0 +1,128 @@
+package gym.persistencia.entidades;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Entidad que representa un cliente/socio registrado en el gimnasio.
+ */
+public class Cliente implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private int idCliente;
+    private String nombre;
+    private String apellido;
+    private String telefono;
+    private LocalDate fechaIngreso;
+    private Membresia membresia;
+
+    public Cliente() {
+    }
+
+    public Cliente(int idCliente, String nombre, String apellido, String telefono, LocalDate fechaIngreso) {
+        this.idCliente = idCliente;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.fechaIngreso = fechaIngreso;
+    }
+
+    public Cliente(int idCliente, String nombre, String apellido, String telefono, LocalDate fechaIngreso, Membresia membresia) {
+        this.idCliente = idCliente;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.fechaIngreso = fechaIngreso;
+        this.membresia = membresia;
+    }
+
+    // Métodos del diagrama
+    public void registrar() {
+        // Método de ciclo de vida del diagrama
+    }
+
+    public void actualizar() {
+        // Método de ciclo de vida del diagrama
+    }
+
+    public List<Cliente> consultarClientes() {
+        return Collections.singletonList(this);
+    }
+
+    // Getters y Setters
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public LocalDate getFechaIngreso() {
+        return fechaIngreso;
+    }
+
+    public void setFechaIngreso(LocalDate fechaIngreso) {
+        this.fechaIngreso = fechaIngreso;
+    }
+
+    public Membresia getMembresia() {
+        return membresia;
+    }
+
+    public void setMembresia(Membresia membresia) {
+        this.membresia = membresia;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cliente cliente = (Cliente) o;
+        return idCliente == cliente.idCliente;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idCliente);
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "idCliente=" + idCliente +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", fechaIngreso=" + fechaIngreso +
+                ", membresia=" + (membresia != null ? membresia.getNombre() : "Ninguna") +
+                '}';
+    }
+}

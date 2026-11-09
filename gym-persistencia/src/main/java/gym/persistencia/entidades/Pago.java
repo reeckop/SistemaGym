@@ -15,7 +15,7 @@ public class Pago implements Serializable {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idPago;
+    private String idPago;
     private double monto;
     private LocalDateTime fechaHora;
     private String estado;
@@ -24,14 +24,14 @@ public class Pago implements Serializable {
     public Pago() {
     }
 
-    public Pago(int idPago, double monto, LocalDateTime fechaHora, String estado) {
+    public Pago(String idPago, double monto, LocalDateTime fechaHora, String estado) {
         this.idPago = idPago;
         this.monto = monto;
         this.fechaHora = fechaHora;
         this.estado = estado;
     }
 
-    public Pago(int idPago, double monto, LocalDateTime fechaHora, String estado, MetodoPago metodoPago) {
+    public Pago(String idPago, double monto, LocalDateTime fechaHora, String estado, MetodoPago metodoPago) {
         this.idPago = idPago;
         this.monto = monto;
         this.fechaHora = fechaHora;
@@ -52,11 +52,11 @@ public class Pago implements Serializable {
     }
 
     // Getters y Setters
-    public int getIdPago() {
+    public String getIdPago() {
         return idPago;
     }
 
-    public void setIdPago(int idPago) {
+    public void setIdPago(String idPago) {
         this.idPago = idPago;
     }
 

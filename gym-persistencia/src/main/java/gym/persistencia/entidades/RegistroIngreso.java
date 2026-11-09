@@ -15,7 +15,7 @@ public class RegistroIngreso implements Serializable {
 
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idAcceso;
+    private String idAcceso;
     private LocalDateTime fechaHoraEntrada;
     private LocalDateTime fechaHoraSalida;
     private String estado;
@@ -24,14 +24,14 @@ public class RegistroIngreso implements Serializable {
     public RegistroIngreso() {
     }
 
-    public RegistroIngreso(int idAcceso, LocalDateTime fechaHoraEntrada, LocalDateTime fechaHoraSalida, String estado) {
+    public RegistroIngreso(String idAcceso, LocalDateTime fechaHoraEntrada, LocalDateTime fechaHoraSalida, String estado) {
         this.idAcceso = idAcceso;
         this.fechaHoraEntrada = fechaHoraEntrada;
         this.fechaHoraSalida = fechaHoraSalida;
         this.estado = estado;
     }
 
-    public RegistroIngreso(int idAcceso, LocalDateTime fechaHoraEntrada, LocalDateTime fechaHoraSalida, String estado, Cliente cliente) {
+    public RegistroIngreso(String idAcceso, LocalDateTime fechaHoraEntrada, LocalDateTime fechaHoraSalida, String estado, Cliente cliente) {
         this.idAcceso = idAcceso;
         this.fechaHoraEntrada = fechaHoraEntrada;
         this.fechaHoraSalida = fechaHoraSalida;
@@ -55,11 +55,11 @@ public class RegistroIngreso implements Serializable {
     }
 
     // Getters y Setters
-    public int getIdAcceso() {
+    public String getIdAcceso() {
         return idAcceso;
     }
 
-    public void setIdAcceso(int idAcceso) {
+    public void setIdAcceso(String idAcceso) {
         this.idAcceso = idAcceso;
     }
 

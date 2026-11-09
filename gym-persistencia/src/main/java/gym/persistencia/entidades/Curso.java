@@ -14,7 +14,7 @@ public class Curso implements Serializable {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idCurso;
+    private String idCurso;
     private String nombre;
     private String disciplina;
     private double precio;
@@ -25,7 +25,7 @@ public class Curso implements Serializable {
     public Curso() {
     }
 
-    public Curso(int idCurso, String nombre, double precio, int cupo, String imagen) {
+    public Curso(String idCurso, String nombre, double precio, int cupo, String imagen) {
         this.idCurso = idCurso;
         this.nombre = nombre;
         this.disciplina = "";
@@ -35,7 +35,7 @@ public class Curso implements Serializable {
         this.horarios = new ArrayList<>();
     }
 
-    public Curso(int idCurso, String nombre, String disciplina, double precio, int cupo, String imagen) {
+    public Curso(String idCurso, String nombre, String disciplina, double precio, int cupo, String imagen) {
         this.idCurso = idCurso;
         this.nombre = nombre;
         this.disciplina = disciplina;
@@ -45,7 +45,7 @@ public class Curso implements Serializable {
         this.horarios = new ArrayList<>();
     }
 
-    public Curso(int idCurso, String nombre, String disciplina, double precio, int cupo, String imagen, List<Horario> horarios) {
+    public Curso(String idCurso, String nombre, String disciplina, double precio, int cupo, String imagen, List<Horario> horarios) {
         this.idCurso = idCurso;
         this.nombre = nombre;
         this.disciplina = disciplina;
@@ -53,15 +53,6 @@ public class Curso implements Serializable {
         this.cupo = cupo;
         this.imagen = imagen;
         this.horarios = horarios != null ? new ArrayList<>(horarios) : new ArrayList<>();
-    }
-
-    public void agregar() {
-    }
-
-    public void editar() {
-    }
-
-    public void eliminar() {
     }
 
     public List<Curso> consultarCursos() {
@@ -82,11 +73,11 @@ public class Curso implements Serializable {
         }
     }
 
-    public int getIdCurso() {
+    public String getIdCurso() {
         return idCurso;
     }
 
-    public void setIdCurso(int idCurso) {
+    public void setIdCurso(String idCurso) {
         this.idCurso = idCurso;
     }
 

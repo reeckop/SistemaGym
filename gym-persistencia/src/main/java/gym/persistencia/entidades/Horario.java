@@ -18,7 +18,7 @@ public class Horario implements Serializable {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idHorario;
+    private String idHorario;
     private LocalDate fecha;
     private LocalTime horaInicio;
     private LocalTime horaFin;
@@ -26,7 +26,7 @@ public class Horario implements Serializable {
     public Horario() {
     }
 
-    public Horario(int idHorario, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
+    public Horario(String idHorario, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
         this.idHorario = idHorario;
         this.fecha = fecha;
         this.horaInicio = horaInicio;
@@ -43,11 +43,11 @@ public class Horario implements Serializable {
     }
 
     // Getters y Setters
-    public int getIdHorario() {
+    public String getIdHorario() {
         return idHorario;
     }
 
-    public void setIdHorario(int idHorario) {
+    public void setIdHorario(String idHorario) {
         this.idHorario = idHorario;
     }
 

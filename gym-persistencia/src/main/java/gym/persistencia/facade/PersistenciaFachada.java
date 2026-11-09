@@ -12,6 +12,14 @@ import gym.persistencia.dao.IMembresiaDAO;
 import gym.persistencia.dao.INotificacionDAO;
 import gym.persistencia.dao.IProductoDAO;
 import gym.persistencia.dao.IVentaDAO;
+import gym.persistencia.dao.impl.AccesoDAO;
+import gym.persistencia.dao.impl.ClienteDAO;
+import gym.persistencia.dao.impl.CursoDAO;
+import gym.persistencia.dao.impl.InscripcionDAO;
+import gym.persistencia.dao.impl.MembresiaDAO;
+import gym.persistencia.dao.impl.NotificacionDAO;
+import gym.persistencia.dao.impl.ProductosDAO;
+import gym.persistencia.dao.impl.VentasDAO;
 
 
 /**
@@ -34,11 +42,11 @@ public class PersistenciaFachada implements IPersistenciaFachada {
         this.clienteDAO = new ClienteDAO();
         this.membresiaDAO = new MembresiaDAO();
         this.cursoDAO = new CursoDAO();
-        this.productoDAO = ProductosDAO();
-        this.ventaDAO = VentasDAO();
-        this.accesoDAO = AccesoDAO();
-        this.inscripcionDAO = InscripcionDAO();
-        this.notificacionDAO = NotificacionDAO();
+        this.productoDAO = new ProductosDAO();
+        this.ventaDAO = new VentasDAO();
+        this.accesoDAO = new AccesoDAO();
+        this.inscripcionDAO = new InscripcionDAO();
+        this.notificacionDAO = new NotificacionDAO();
     }
 
     @Override

@@ -14,28 +14,23 @@ public class MetodoPago implements Serializable {
 
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idMetodoPago;
+    private String idMetodoPago;
     private String nombre;
 
     public MetodoPago() {
     }
 
-    public MetodoPago(int idMetodoPago, String nombre) {
+    public MetodoPago(String idMetodoPago, String nombre) {
         this.idMetodoPago = idMetodoPago;
         this.nombre = nombre;
     }
 
-    // Método del diagrama
-    public boolean validarMetodo() {
-        return nombre != null && !nombre.trim().isEmpty();
-    }
-
     // Getters y Setters
-    public int getIdMetodoPago() {
+    public String getIdMetodoPago() {
         return idMetodoPago;
     }
 
-    public void setIdMetodoPago(int idMetodoPago) {
+    public void setIdMetodoPago(String idMetodoPago) {
         this.idMetodoPago = idMetodoPago;
     }
 

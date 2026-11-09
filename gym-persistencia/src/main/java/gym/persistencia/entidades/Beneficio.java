@@ -14,7 +14,7 @@ public class Beneficio implements Serializable {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idBeneficio;
+    private String idBeneficio;
     
     private String nombre;
     private double valor;
@@ -23,7 +23,7 @@ public class Beneficio implements Serializable {
     public Beneficio() {
     }
 
-    public Beneficio(int idBeneficio, String nombre, double valor, String unidad) {
+    public Beneficio(String idBeneficio, String nombre, double valor, String unidad) {
         this.idBeneficio = idBeneficio;
         this.nombre = nombre;
         this.valor = valor;
@@ -47,11 +47,11 @@ public class Beneficio implements Serializable {
     }
 
     // Getters y Setters
-    public int getIdBeneficio() {
+    public String getIdBeneficio() {
         return idBeneficio;
     }
 
-    public void setIdBeneficio(int idBeneficio) {
+    public void setIdBeneficio(String idBeneficio) {
         this.idBeneficio = idBeneficio;
     }
 

@@ -13,7 +13,7 @@ public class Producto implements Serializable {
 
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idProducto;
+    private String idProducto;
     private String nombre;
     private String categoria;
     private double precio;
@@ -23,7 +23,7 @@ public class Producto implements Serializable {
     public Producto() {
     }
 
-    public Producto(int idProducto, String nombre, String categoria, double precio, String imagen) {
+    public Producto(String idProducto, String nombre, String categoria, double precio, String imagen) {
         this.idProducto = idProducto;
         this.nombre = nombre;
         this.categoria = categoria;
@@ -32,7 +32,7 @@ public class Producto implements Serializable {
         this.imagen = imagen;
     }
 
-    public Producto(int idProducto, String nombre, String categoria, double precio, int stock, String imagen) {
+    public Producto(String idProducto, String nombre, String categoria, double precio, int stock, String imagen) {
         this.idProducto = idProducto;
         this.nombre = nombre;
         this.categoria = categoria;
@@ -41,36 +41,11 @@ public class Producto implements Serializable {
         this.imagen = imagen;
     }
 
-    public boolean consultarDisponibilidad() {
-        return this.stock > 0;
-    }
-
-    public boolean consultarDisponibilidad(int cantidad) {
-        return this.stock >= cantidad;
-    }
-
-    public void actualizarPrecio(double precio) {
-        this.precio = precio;
-    }
-
-    public void agregar() {
-    }
-
-    public void editar() {
-    }
-
-    public void eliminar() {
-    }
-
-    public List<Producto> consultarProductos() {
-        return Collections.singletonList(this);
-    }
-
-    public int getIdProducto() {
+    public String getIdProducto() {
         return idProducto;
     }
 
-    public void setIdProducto(int idProducto) {
+    public void setIdProducto(String idProducto) {
         this.idProducto = idProducto;
     }
 

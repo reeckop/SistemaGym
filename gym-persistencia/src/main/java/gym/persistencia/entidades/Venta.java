@@ -18,7 +18,7 @@ public class Venta implements Serializable {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idVenta;
+    private String idVenta;
     private LocalDateTime fechaHora;
     private double subtotal;
     private double descuento;
@@ -32,7 +32,7 @@ public class Venta implements Serializable {
         this.fechaHora = LocalDateTime.now();
     }
 
-    public Venta(int idVenta, LocalDateTime fechaHora, double subtotal, double descuento, double total) {
+    public Venta(String idVenta, LocalDateTime fechaHora, double subtotal, double descuento, double total) {
         this.idVenta = idVenta;
         this.fechaHora = fechaHora;
         this.subtotal = subtotal;
@@ -40,7 +40,7 @@ public class Venta implements Serializable {
         this.total = total;
     }
 
-    public Venta(int idVenta, Cliente cliente) {
+    public Venta(String idVenta, Cliente cliente) {
         this.idVenta = idVenta;
         this.cliente = cliente;
         this.fechaHora = LocalDateTime.now();
@@ -95,11 +95,11 @@ public class Venta implements Serializable {
     }
 
     // Getters y Setters
-    public int getIdVenta() {
+    public String getIdVenta() {
         return idVenta;
     }
 
-    public void setIdVenta(int idVenta) {
+    public void setIdVenta(String idVenta) {
         this.idVenta = idVenta;
     }
 

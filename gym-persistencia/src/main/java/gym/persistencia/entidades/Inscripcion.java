@@ -17,7 +17,7 @@ public class Inscripcion implements Serializable {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idInscripcion;
+    private String idInscripcion;
     private LocalDate fecha;
     private String estado;
     private Cliente cliente;
@@ -26,13 +26,13 @@ public class Inscripcion implements Serializable {
     public Inscripcion() {
     }
 
-    public Inscripcion(int idInscripcion, LocalDate fecha, String estado) {
+    public Inscripcion(String idInscripcion, LocalDate fecha, String estado) {
         this.idInscripcion = idInscripcion;
         this.fecha = fecha;
         this.estado = estado;
     }
 
-    public Inscripcion(int idInscripcion, LocalDate fecha, String estado, Cliente cliente, Horario horario) {
+    public Inscripcion(String idInscripcion, LocalDate fecha, String estado, Cliente cliente, Horario horario) {
         this.idInscripcion = idInscripcion;
         this.fecha = fecha;
         this.estado = estado;
@@ -54,11 +54,11 @@ public class Inscripcion implements Serializable {
     }
 
     // Getters y Setters
-    public int getIdInscripcion() {
+    public String getIdInscripcion() {
         return idInscripcion;
     }
 
-    public void setIdInscripcion(int idInscripcion) {
+    public void setIdInscripcion(String idInscripcion) {
         this.idInscripcion = idInscripcion;
     }
 

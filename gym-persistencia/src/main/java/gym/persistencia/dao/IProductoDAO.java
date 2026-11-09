@@ -1,11 +1,12 @@
 package gym.persistencia.dao;
 
 import gym.persistencia.entidades.Producto;
+import gym.persistencia.excepciones.PersistenciaException;
 import java.util.List;
 
 public interface IProductoDAO {
-    void guardar(Producto producto);
-    void actualizar(Producto producto);
-    void eliminar(int id);
-    List<Producto> obtenerTodos();
+    void guardar(Producto producto) throws PersistenciaException;
+    void actualizar(Producto producto) throws PersistenciaException;
+    void eliminar(String id) throws PersistenciaException;
+    List<Producto> obtenerTodos() throws PersistenciaException;
 }

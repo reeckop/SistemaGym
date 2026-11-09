@@ -15,7 +15,7 @@ public class Notificacion implements Serializable {
 
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idNotificacion;
+    private String idNotificacion;
     private String tipo;
     private String mensaje;
     private LocalDateTime fechaHora;
@@ -25,7 +25,7 @@ public class Notificacion implements Serializable {
     public Notificacion() {
     }
 
-    public Notificacion(int idNotificacion, String tipo, String mensaje, LocalDateTime fechaHora, String estado) {
+    public Notificacion(String idNotificacion, String tipo, String mensaje, LocalDateTime fechaHora, String estado) {
         this.idNotificacion = idNotificacion;
         this.tipo = tipo;
         this.mensaje = mensaje;
@@ -33,7 +33,7 @@ public class Notificacion implements Serializable {
         this.estado = estado;
     }
 
-    public Notificacion(int idNotificacion, String tipo, String mensaje, LocalDateTime fechaHora, String estado, Cliente cliente) {
+    public Notificacion(String idNotificacion, String tipo, String mensaje, LocalDateTime fechaHora, String estado, Cliente cliente) {
         this.idNotificacion = idNotificacion;
         this.tipo = tipo;
         this.mensaje = mensaje;
@@ -42,23 +42,12 @@ public class Notificacion implements Serializable {
         this.cliente = cliente;
     }
 
-    // Métodos del diagrama
-    public void generar() {
-        this.fechaHora = LocalDateTime.now();
-        this.estado = "GENERADA";
-    }
-
-    public boolean enviar() {
-        this.estado = "ENVIADA";
-        return true;
-    }
-
     // Getters y Setters
-    public int getIdNotificacion() {
+    public String getIdNotificacion() {
         return idNotificacion;
     }
 
-    public void setIdNotificacion(int idNotificacion) {
+    public void setIdNotificacion(String idNotificacion) {
         this.idNotificacion = idNotificacion;
     }
 

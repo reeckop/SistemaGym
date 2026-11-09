@@ -15,7 +15,7 @@ public class Membresia implements Serializable {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idMembresia;
+    private String idMembresia;
     private String nombre;
     private double precio;
     private String imagen;
@@ -28,7 +28,7 @@ public class Membresia implements Serializable {
         this.estado = "ACTIVA";
     }
 
-    public Membresia(int idMembresia, String nombre, double precio) {
+    public Membresia(String idMembresia, String nombre, double precio) {
         this.idMembresia = idMembresia;
         this.nombre = nombre;
         this.precio = precio;
@@ -36,7 +36,7 @@ public class Membresia implements Serializable {
         this.beneficios = new ArrayList<>();
     }
 
-    public Membresia(int idMembresia, String nombre, double precio, String imagen, String estado, LocalDate fechaInicio, LocalDate fechaFin) {
+    public Membresia(String idMembresia, String nombre, double precio, String imagen, String estado, LocalDate fechaInicio, LocalDate fechaFin) {
         this.idMembresia = idMembresia;
         this.nombre = nombre;
         this.precio = precio;
@@ -47,7 +47,7 @@ public class Membresia implements Serializable {
         this.beneficios = new ArrayList<>();
     }
 
-    public Membresia(int idMembresia, String nombre, double precio, String imagen, String estado, LocalDate fechaInicio, LocalDate fechaFin, List<Beneficio> beneficios) {
+    public Membresia(String idMembresia, String nombre, double precio, String imagen, String estado, LocalDate fechaInicio, LocalDate fechaFin, List<Beneficio> beneficios) {
         this.idMembresia = idMembresia;
         this.nombre = nombre;
         this.precio = precio;
@@ -58,34 +58,11 @@ public class Membresia implements Serializable {
         this.beneficios = beneficios != null ? new ArrayList<>(beneficios) : new ArrayList<>();
     }
 
-    public void agregar() {
-    }
-
-    public void editar() {
-    }
-
-    public void eliminar() {
-    }
-
-    public List<Membresia> consultarMembresias() {
-        return Collections.singletonList(this);
-    }
-
-    public void agregarBeneficio(Beneficio beneficio) {
-        if (beneficio != null) {
-            this.beneficios.add(beneficio);
-        }
-    }
-
-    public void removerBeneficio(Beneficio beneficio) {
-        this.beneficios.remove(beneficio);
-    }
-
-    public int getIdMembresia() {
+    public String getIdMembresia() {
         return idMembresia;
     }
 
-    public void setIdMembresia(int idMembresia) {
+    public void setIdMembresia(String idMembresia) {
         this.idMembresia = idMembresia;
     }
 

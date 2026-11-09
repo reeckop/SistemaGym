@@ -17,7 +17,7 @@ public class Cliente implements Serializable {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
-    private int idCliente;
+    private String idCliente;
     private String nombre;
     private String apellido;
     private String telefono;
@@ -27,7 +27,7 @@ public class Cliente implements Serializable {
     public Cliente() {
     }
 
-    public Cliente(int idCliente, String nombre, String apellido, String telefono, LocalDate fechaIngreso) {
+    public Cliente(String idCliente, String nombre, String apellido, String telefono, LocalDate fechaIngreso) {
         this.idCliente = idCliente;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -35,7 +35,7 @@ public class Cliente implements Serializable {
         this.fechaIngreso = fechaIngreso;
     }
 
-    public Cliente(int idCliente, String nombre, String apellido, String telefono, LocalDate fechaIngreso, Membresia membresia) {
+    public Cliente(String idCliente, String nombre, String apellido, String telefono, LocalDate fechaIngreso, Membresia membresia) {
         this.idCliente = idCliente;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -58,11 +58,11 @@ public class Cliente implements Serializable {
     }
 
     // Getters y Setters
-    public int getIdCliente() {
+    public String getIdCliente() {
         return idCliente;
     }
 
-    public void setIdCliente(int idCliente) {
+    public void setIdCliente(String idCliente) {
         this.idCliente = idCliente;
     }
 

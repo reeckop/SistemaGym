@@ -2,14 +2,20 @@ package gym.persistencia.entidades;
 
 import java.io.Serializable;
 import java.util.Objects;
+import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que representa un beneficio otorgado por una membresía.
  */
 public class Beneficio implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    
+    @BsonId
+    @BsonRepresentation(BsonType.OBJECT_ID)
     private int idBeneficio;
+    
     private String nombre;
     private double valor;
     private String unidad;

@@ -3,6 +3,9 @@ package gym.persistencia.entidades;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que registra el control de acceso/asistencia de los socios al gimnasio.
@@ -10,6 +13,8 @@ import java.util.Objects;
 public class RegistroIngreso implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @BsonId
+    @BsonRepresentation(BsonType.OBJECT_ID)
     private int idAcceso;
     private LocalDateTime fechaHoraEntrada;
     private LocalDateTime fechaHoraSalida;

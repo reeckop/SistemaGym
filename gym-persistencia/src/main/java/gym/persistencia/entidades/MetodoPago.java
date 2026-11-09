@@ -2,6 +2,9 @@ package gym.persistencia.entidades;
 
 import java.io.Serializable;
 import java.util.Objects;
+import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que representa la forma de pago utilizada (Efectivo, Tarjeta, Transferencia, etc.).
@@ -9,6 +12,8 @@ import java.util.Objects;
 public class MetodoPago implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @BsonId
+    @BsonRepresentation(BsonType.OBJECT_ID)
     private int idMetodoPago;
     private String nombre;
 

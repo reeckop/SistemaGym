@@ -5,10 +5,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 public class Curso implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    
+    @BsonId
+    @BsonRepresentation(BsonType.OBJECT_ID)
     private int idCurso;
     private String nombre;
     private String disciplina;

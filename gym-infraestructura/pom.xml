@@ -17,11 +17,16 @@
 
     <name>CapaInfraestructura</name>
     <description>Manejo de conexion a MongoDB y llamadas a API externa REST</description>
-
     <dependencies>
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>bson</artifactId>
+            <version>5.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -30,6 +35,8 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

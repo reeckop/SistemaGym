@@ -2,6 +2,7 @@ package gym.infraestructura.notificaciones;
 
 import com.google.gson.Gson;
 import gym.infraestructura.config.AppConfig;
+import java.lang.System.Logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -3,13 +3,18 @@ package gym.persistencia.entidades;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que modela un pago efectuado por una transacción o venta.
  */
 public class Pago implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    
+    @BsonId
+    @BsonRepresentation(BsonType.OBJECT_ID)
     private int idPago;
     private double monto;
     private LocalDateTime fechaHora;

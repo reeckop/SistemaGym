@@ -3,6 +3,9 @@ package gym.persistencia.entidades;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que modela una notificación generada para un cliente del gimnasio.
@@ -10,6 +13,8 @@ import java.util.Objects;
 public class Notificacion implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @BsonId
+    @BsonRepresentation(BsonType.OBJECT_ID)
     private int idNotificacion;
     private String tipo;
     private String mensaje;

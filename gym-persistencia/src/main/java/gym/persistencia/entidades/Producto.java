@@ -4,10 +4,15 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 public class Producto implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @BsonId
+    @BsonRepresentation(BsonType.OBJECT_ID)
     private int idProducto;
     private String nombre;
     private String categoria;

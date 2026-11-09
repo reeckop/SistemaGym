@@ -20,6 +20,7 @@ import gym.persistencia.excepciones.PersistenciaException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -97,7 +98,7 @@ public class InscripcionDAO implements IInscripcionDAO {
             MongoDatabase baseDatos = obtenerBaseDatos(conexion);
             MongoCollection<Inscripcion> coleccion = obtenerColeccion(baseDatos);
 
-            UpdateResult resultado = coleccion.replaceOne(Filters.eq("idInscripcion", inscripcion.getIdInscripcion()),inscripcion);
+            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", new ObjectId(inscripcion.getIdInscripcion())),inscripcion);
 
             if (!resultado.wasAcknowledged()) {
                 throw new PersistenciaException("No se pudo confirmar la actualización de la inscripción.");
@@ -125,7 +126,7 @@ public class InscripcionDAO implements IInscripcionDAO {
             MongoDatabase baseDatos = obtenerBaseDatos(conexion);
             MongoCollection<Inscripcion> coleccion = obtenerColeccion(baseDatos);
 
-            DeleteResult resultado = coleccion.deleteOne(Filters.eq("idInscripcion", id));
+            DeleteResult resultado = coleccion.deleteOne(Filters.eq("_id", new ObjectId(id)));
 
             if (!resultado.wasAcknowledged()) {
                 throw new PersistenciaException("No se pudo confirmar la eliminación de la inscripción.");

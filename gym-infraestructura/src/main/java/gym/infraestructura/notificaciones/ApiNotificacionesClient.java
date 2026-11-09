@@ -2,8 +2,6 @@ package gym.infraestructura.notificaciones;
 
 import com.google.gson.Gson;
 import gym.infraestructura.config.AppConfig;
-import java.lang.System.Logger;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
@@ -13,6 +11,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
 
 public class ApiNotificacionesClient {
     private static final Logger logger = LoggerFactory.getLogger(ApiNotificacionesClient.class);

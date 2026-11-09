@@ -15,6 +15,7 @@ import gym.persistencia.excepciones.PersistenciaException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import org.bson.types.ObjectId;
 
 public class ClienteDAO implements IClienteDAO {
 
@@ -90,7 +91,7 @@ public class ClienteDAO implements IClienteDAO {
             MongoDatabase baseDatos = obtenerBaseDatos(conexion);
             MongoCollection<Cliente> coleccion = obtenerColeccion(baseDatos);
 
-            UpdateResult resultado = coleccion.replaceOne(Filters.eq("idCliente", cliente.getIdCliente()),cliente);
+            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", new ObjectId(cliente.getIdCliente())),cliente);
 
             if (!resultado.wasAcknowledged()) {
                 throw new PersistenciaException("No se pudo confirmar la actualización del cliente.");
@@ -120,7 +121,7 @@ public class ClienteDAO implements IClienteDAO {
             MongoDatabase baseDatos = obtenerBaseDatos(conexion);
             MongoCollection<Cliente> coleccion = obtenerColeccion(baseDatos);
 
-            Cliente cliente = coleccion.find(Filters.eq("idCliente", id)).first();
+            Cliente cliente = coleccion.find(Filters.eq("_id", new ObjectId(id))).first();
 
             return cliente;
 

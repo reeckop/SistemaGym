@@ -1,1 +1,8 @@
-gym\persistencia\entidades\EntidadesTest.class
+gym\persistencia\dao\impl\AccesoDAOTest.class
+gym\persistencia\dao\impl\ClienteDAOTest.class
+gym\persistencia\dao\impl\MembresiaDAOTest.class
+gym\persistencia\dao\impl\VentasDAOTest.class
+gym\persistencia\dao\impl\CursoDAOTest.class
+gym\persistencia\dao\impl\InscripcionDAOTest.class
+gym\persistencia\dao\impl\NotificacionDAOTest.class
+gym\persistencia\dao\impl\ProductosDAOTest.class

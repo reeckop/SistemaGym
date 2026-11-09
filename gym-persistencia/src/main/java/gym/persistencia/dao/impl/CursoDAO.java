@@ -16,6 +16,7 @@ import gym.persistencia.excepciones.PersistenciaException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import org.bson.types.ObjectId;
 
 public class CursoDAO implements ICursoDAO {
     private static final Logger LOGGER = Logger.getLogger(CursoDAO.class.getName());
@@ -92,7 +93,7 @@ public class CursoDAO implements ICursoDAO {
             MongoDatabase baseDatos = obtenerBaseDatos(conexion);
             MongoCollection<Curso> coleccion = obtenerColeccion(baseDatos);
 
-            UpdateResult resultado = coleccion.replaceOne(Filters.eq("idCurso", curso.getIdCurso()),curso);
+            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", new ObjectId(curso.getIdCurso())), curso);
 
             if (!resultado.wasAcknowledged()) {
                 throw new PersistenciaException("No se pudo confirmar la actualización del curso.");
@@ -120,7 +121,7 @@ public class CursoDAO implements ICursoDAO {
             MongoDatabase baseDatos = obtenerBaseDatos(conexion);
             MongoCollection<Curso> coleccion = obtenerColeccion(baseDatos);
 
-            DeleteResult resultado = coleccion.deleteOne(Filters.eq("idCurso", id));
+            DeleteResult resultado = coleccion.deleteOne(Filters.eq("_id", new ObjectId(id)));
 
             if (!resultado.wasAcknowledged()) {
                 throw new PersistenciaException("No se pudo confirmar la eliminación del curso.");

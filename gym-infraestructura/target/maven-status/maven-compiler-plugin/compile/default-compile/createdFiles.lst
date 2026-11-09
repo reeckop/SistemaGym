@@ -1,4 +1,3 @@
 gym\infraestructura\config\AppConfig.class
 gym\infraestructura\persistencia\MongoConnectionManager.class
 gym\infraestructura\notificaciones\ApiNotificacionesClient.class
-gym\infraestructura\package-info.class

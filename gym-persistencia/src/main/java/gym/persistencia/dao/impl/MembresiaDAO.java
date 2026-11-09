@@ -16,6 +16,7 @@ import gym.persistencia.excepciones.PersistenciaException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import org.bson.types.ObjectId;
 
 public class MembresiaDAO implements IMembresiaDAO {
     private static final Logger LOGGER = Logger.getLogger(MembresiaDAO.class.getName());
@@ -88,7 +89,7 @@ public class MembresiaDAO implements IMembresiaDAO {
             MongoDatabase baseDatos = obtenerBaseDatos(conexion);
             MongoCollection<Membresia> coleccion = obtenerColeccion(baseDatos);
 
-            UpdateResult resultado = coleccion.replaceOne(Filters.eq("idMembresia", membresia.getIdMembresia()),membresia);
+            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", new ObjectId(membresia.getIdMembresia())),membresia);
 
             if (!resultado.wasAcknowledged()) {
                 throw new PersistenciaException("No se pudo confirmar la actualización de la membresía.");
@@ -116,7 +117,7 @@ public class MembresiaDAO implements IMembresiaDAO {
             MongoDatabase baseDatos = obtenerBaseDatos(conexion);
             MongoCollection<Membresia> coleccion = obtenerColeccion(baseDatos);
 
-            DeleteResult resultado = coleccion.deleteOne(Filters.eq("idMembresia", id));
+            DeleteResult resultado = coleccion.deleteOne(Filters.eq("_id", new ObjectId(id)));
 
             if (!resultado.wasAcknowledged()) {
                 throw new PersistenciaException("No se pudo confirmar la eliminación de la membresía.");

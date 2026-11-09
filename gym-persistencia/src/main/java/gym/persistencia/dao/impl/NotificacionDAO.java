@@ -18,6 +18,7 @@ import gym.persistencia.excepciones.PersistenciaException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -93,7 +94,7 @@ public class NotificacionDAO implements INotificacionDAO {
             MongoDatabase baseDatos = obtenerBaseDatos(conexion);
             MongoCollection<Notificacion> coleccion = obtenerColeccion(baseDatos);
 
-            coleccion.find(Filters.eq("cliente.idCliente", idCliente)).into(notificaciones);
+            coleccion.find(Filters.eq("cliente._id", new ObjectId(idCliente))).into(notificaciones);
 
             return notificaciones;
 

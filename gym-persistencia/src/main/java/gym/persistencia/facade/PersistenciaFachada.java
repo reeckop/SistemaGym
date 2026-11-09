@@ -4,22 +4,22 @@
  */
 package gym.persistencia.facade;
 
-import gym.persistencia.dao.IAccesoDAO;
-import gym.persistencia.dao.IClienteDAO;
-import gym.persistencia.dao.ICursoDAO;
-import gym.persistencia.dao.IInscripcionDAO;
-import gym.persistencia.dao.IMembresiaDAO;
-import gym.persistencia.dao.INotificacionDAO;
-import gym.persistencia.dao.IProductoDAO;
-import gym.persistencia.dao.IVentaDAO;
-import gym.persistencia.dao.impl.AccesoDAO;
-import gym.persistencia.dao.impl.ClienteDAO;
-import gym.persistencia.dao.impl.CursoDAO;
-import gym.persistencia.dao.impl.InscripcionDAO;
-import gym.persistencia.dao.impl.MembresiaDAO;
-import gym.persistencia.dao.impl.NotificacionDAO;
-import gym.persistencia.dao.impl.ProductosDAO;
-import gym.persistencia.dao.impl.VentasDAO;
+import gym.persistencia.interfaces.IAccesoDAO;
+import gym.persistencia.interfaces.IClienteDAO;
+import gym.persistencia.interfaces.ICursoDAO;
+import gym.persistencia.interfaces.IInscripcionDAO;
+import gym.persistencia.interfaces.IMembresiaDAO;
+import gym.persistencia.interfaces.INotificacionDAO;
+import gym.persistencia.interfaces.IProductoDAO;
+import gym.persistencia.interfaces.IVentaDAO;
+import gym.persistencia.dao.AccesoDAO;
+import gym.persistencia.dao.ClienteDAO;
+import gym.persistencia.dao.CursoDAO;
+import gym.persistencia.dao.InscripcionDAO;
+import gym.persistencia.dao.MembresiaDAO;
+import gym.persistencia.dao.NotificacionDAO;
+import gym.persistencia.dao.ProductosDAO;
+import gym.persistencia.dao.VentasDAO;
 
 
 /**

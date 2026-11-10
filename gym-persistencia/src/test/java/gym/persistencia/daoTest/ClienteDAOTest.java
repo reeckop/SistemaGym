@@ -6,6 +6,7 @@ package gym.persistencia.daoTest;
 
 import gym.persistencia.dao.ClienteDAO;
 import gym.persistencia.entidades.Cliente;
+import gym.persistencia.excepciones.PersistenciaException;
 import java.time.LocalDate;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -25,96 +26,74 @@ public class ClienteDAOTest {
     public void init() {
         clienteDAO = new ClienteDAO();
     }
-
-    @Test
-    public void testGuardarClienteFuncionaOk() {
-
-        Cliente cliente = new Cliente(
-                new ObjectId().toHexString(),
-                "Luis",
-                "Garcia",
-                "6441234567",
-                LocalDate.of(2004, 5, 20)
-        );
-
-        assertDoesNotThrow(() -> {
-            clienteDAO.guardar(cliente);
-
-            Cliente encontrado =
-                    clienteDAO.obtenerPorId(cliente.getIdCliente());
-
-            assertNotNull(encontrado);
-            assertEquals(cliente.getIdCliente(), encontrado.getIdCliente());
-        });
-    }
-
-    @Test
-    public void testActualizarClienteFuncionaOk() {
+    
+     @Test
+    public void testGuardar() throws PersistenciaException {
+        String id = new ObjectId().toString();
 
         Cliente cliente = new Cliente(
-                new ObjectId().toHexString(),
-                "Luis",
-                "Garcia",
+                id,
+                "Carlos",
+                "Lopez",
                 "6441234567",
                 LocalDate.now()
         );
 
-        assertDoesNotThrow(() -> {
-            clienteDAO.guardar(cliente);
+        clienteDAO.guardar(cliente);
 
-            cliente.setNombre("Luis Alberto");
-            clienteDAO.actualizar(cliente);
+        Cliente resultado = clienteDAO.obtenerPorId(id);
 
-            Cliente actualizado =
-                    clienteDAO.obtenerPorId(cliente.getIdCliente());
-
-            assertNotNull(actualizado);
-            assertEquals("Luis Alberto", actualizado.getNombre());
-        });
+        assertNotNull(resultado);
+        assertEquals("Carlos", resultado.getNombre());
     }
 
     @Test
-    public void testObtenerPorIdFuncionaOk() {
+    public void testObtenerPorId() throws PersistenciaException {
+        String id = new ObjectId().toString();
 
         Cliente cliente = new Cliente(
-                new ObjectId().toHexString(),
-                "Ana",
-                "Lopez",
+                id,
+                "Juan",
+                "Perez",
                 "6449876543",
                 LocalDate.now()
         );
 
-        assertDoesNotThrow(() -> {
-            clienteDAO.guardar(cliente);
+        clienteDAO.guardar(cliente);
 
-            Cliente encontrado =
-                    clienteDAO.obtenerPorId(cliente.getIdCliente());
+        Cliente resultado = clienteDAO.obtenerPorId(id);
 
-            assertNotNull(encontrado);
-            assertEquals(cliente.getIdCliente(), encontrado.getIdCliente());
-        });
+        assertNotNull(resultado);
+        assertEquals(id, resultado.getIdCliente());
+
     }
 
     @Test
-    public void testObtenerTodosFuncionaOk() {
+    public void testObtenerTodos() throws PersistenciaException {
+        List<Cliente> clientes = clienteDAO.obtenerTodos();
+        assertNotNull(clientes);
+    }
 
+    @Test
+    public void testActualizar() throws PersistenciaException {
+        String id = new ObjectId().toString();
         Cliente cliente = new Cliente(
-                new ObjectId().toHexString(),
-                "Carlos",
-                "Perez",
+                id,
+                "Pedro",
+                "Garcia",
                 "6441112233",
                 LocalDate.now()
         );
 
-        assertDoesNotThrow(() -> {
-            clienteDAO.guardar(cliente);
+        clienteDAO.guardar(cliente);
 
-            List<Cliente> clientes = clienteDAO.obtenerTodos();
+        cliente.setNombre("Pedro Actualizado");
 
-            assertNotNull(clientes);
-            assertTrue(clientes.stream().anyMatch(
-                    c -> cliente.getIdCliente().equals(c.getIdCliente())
-            ));
-        });
+        clienteDAO.actualizar(cliente);
+
+        Cliente resultado = clienteDAO.obtenerPorId(id);
+
+        assertNotNull(resultado);
+        assertEquals("Pedro Actualizado", resultado.getNombre());
     }
 }

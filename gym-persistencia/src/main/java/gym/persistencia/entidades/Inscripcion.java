@@ -1,5 +1,6 @@
 package gym.persistencia.entidades;
 
+import gym.persistencia.enums.EstadoRegistroIngreso;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -12,27 +13,26 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 /**
  * Entidad que modela la inscripción de un cliente en un horario de curso.
  */
-public class Inscripcion implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Inscripcion {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idInscripcion;
     private LocalDate fecha;
-    private String estado;
+    private EstadoRegistroIngreso estado;
     private Cliente cliente;
     private Horario horario;
 
     public Inscripcion() {
     }
 
-    public Inscripcion(String idInscripcion, LocalDate fecha, String estado) {
+    public Inscripcion(String idInscripcion, LocalDate fecha, EstadoRegistroIngreso estado) {
         this.idInscripcion = idInscripcion;
         this.fecha = fecha;
         this.estado = estado;
     }
 
-    public Inscripcion(String idInscripcion, LocalDate fecha, String estado, Cliente cliente, Horario horario) {
+    public Inscripcion(String idInscripcion, LocalDate fecha, EstadoRegistroIngreso estado, Cliente cliente, Horario horario) {
         this.idInscripcion = idInscripcion;
         this.fecha = fecha;
         this.estado = estado;
@@ -40,20 +40,6 @@ public class Inscripcion implements Serializable {
         this.horario = horario;
     }
 
-    // Métodos del diagrama
-    public void registrarInscripcion() {
-        this.estado = "ACTIVA";
-    }
-
-    public void cancelarInscripcion() {
-        this.estado = "CANCELADA";
-    }
-
-    public List<Inscripcion> consultarInscripciones() {
-        return Collections.singletonList(this);
-    }
-
-    // Getters y Setters
     public String getIdInscripcion() {
         return idInscripcion;
     }
@@ -70,11 +56,11 @@ public class Inscripcion implements Serializable {
         this.fecha = fecha;
     }
 
-    public String getEstado() {
+    public EstadoRegistroIngreso getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoRegistroIngreso estado) {
         this.estado = estado;
     }
 
@@ -95,26 +81,8 @@ public class Inscripcion implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Inscripcion that = (Inscripcion) o;
-        return idInscripcion == that.idInscripcion;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idInscripcion);
-    }
-
-    @Override
     public String toString() {
-        return "Inscripcion{" +
-                "idInscripcion=" + idInscripcion +
-                ", fecha=" + fecha +
-                ", estado='" + estado + '\'' +
-                ", cliente=" + (cliente != null ? cliente.getNombre() : "N/A") +
-                ", horario=" + (horario != null ? horario.getIdHorario() : "N/A") +
-                '}';
+        return "Inscripcion{" + "idInscripcion=" + idInscripcion + ", fecha=" + fecha + ", estado=" + estado + ", cliente=" + cliente + ", horario=" + horario + '}';
     }
+   
 }

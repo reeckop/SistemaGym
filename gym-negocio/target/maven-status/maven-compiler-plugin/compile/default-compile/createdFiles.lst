@@ -1,3 +1,5 @@
-gym\negocio\mappers\package-info.class
-gym\negocio\NegocioException.class
-gym\negocio\dto\package-info.class
+gym\servicios\dto\ClienteDTO.class
+gym\servicios\mappers\Mappers.class
+gym\excepciones\NegocioException.class
+gym\servicios\servicios\ClienteBO.class
+gym\servicios\interfaces\IClienteBO.class

@@ -14,12 +14,6 @@ import java.util.List;
  */
 public interface IClienteBO {
     
-    void registrarCliente(ClienteDTO cliente) throws NegocioException;
-
-    void actualizarCliente(ClienteDTO cliente) throws NegocioException;
-
-    ClienteDTO obtenerClientePorId(String id) throws NegocioException;
-
-    List<ClienteDTO> obtenerTodosLosClientes() throws NegocioException;
+    
     
 }

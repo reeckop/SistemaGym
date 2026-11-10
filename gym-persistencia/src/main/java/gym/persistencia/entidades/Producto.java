@@ -8,12 +8,12 @@ import org.bson.BsonType;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
-public class Producto implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Producto {
 
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idProducto;
+    
     private String nombre;
     private String categoria;
     private double precio;
@@ -23,15 +23,6 @@ public class Producto implements Serializable {
     public Producto() {
     }
 
-    public Producto(String idProducto, String nombre, String categoria, double precio, String imagen) {
-        this.idProducto = idProducto;
-        this.nombre = nombre;
-        this.categoria = categoria;
-        this.precio = precio;
-        this.stock = 0;
-        this.imagen = imagen;
-    }
-
     public Producto(String idProducto, String nombre, String categoria, double precio, int stock, String imagen) {
         this.idProducto = idProducto;
         this.nombre = nombre;
@@ -39,6 +30,14 @@ public class Producto implements Serializable {
         this.precio = precio;
         this.stock = stock;
         this.imagen = imagen;
+    }
+
+    public Producto(String idProducto, String nombre, String categoria, double precio, int stock) {
+        this.idProducto = idProducto;
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.precio = precio;
+        this.stock = stock;
     }
 
     public String getIdProducto() {
@@ -90,27 +89,8 @@ public class Producto implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Producto producto = (Producto) o;
-        return idProducto == producto.idProducto;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idProducto);
-    }
-
-    @Override
     public String toString() {
-        return "Producto{" +
-                "idProducto=" + idProducto +
-                ", nombre='" + nombre + '\'' +
-                ", categoria='" + categoria + '\'' +
-                ", precio=" + precio +
-                ", stock=" + stock +
-                ", imagen='" + imagen + '\'' +
-                '}';
+        return "Producto{" + "idProducto=" + idProducto + ", nombre=" + nombre + ", categoria=" + categoria + ", precio=" + precio + ", stock=" + stock + ", imagen=" + imagen + '}';
     }
+
 }

@@ -1,8 +1,8 @@
-gym\persistencia\dao\impl\AccesoDAOTest.class
-gym\persistencia\dao\impl\ClienteDAOTest.class
-gym\persistencia\dao\impl\MembresiaDAOTest.class
-gym\persistencia\dao\impl\VentasDAOTest.class
-gym\persistencia\dao\impl\CursoDAOTest.class
-gym\persistencia\dao\impl\InscripcionDAOTest.class
-gym\persistencia\dao\impl\NotificacionDAOTest.class
-gym\persistencia\dao\impl\ProductosDAOTest.class
+gym\persistencia\daoTest\MembresiaDAOTest.class
+gym\persistencia\daoTest\CursoDAOTest.class
+gym\persistencia\daoTest\InscripcionDAOTest.class
+gym\persistencia\daoTest\NotificacionDAOTest.class
+gym\persistencia\daoTest\AccesoDAOTest.class
+gym\persistencia\daoTest\ProductosDAOTest.class
+gym\persistencia\daoTest\ClienteDAOTest.class
+gym\persistencia\daoTest\VentasDAOTest.class

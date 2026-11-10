@@ -9,13 +9,12 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 /**
  * Entidad que representa un beneficio otorgado por una membresía.
  */
-public class Beneficio implements Serializable {
-    private static final long serialVersionUID = 1L;
-    
+public class Beneficio {
+   
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idBeneficio;
-    
+   
     private String nombre;
     private double valor;
     private String unidad;
@@ -30,23 +29,6 @@ public class Beneficio implements Serializable {
         this.unidad = unidad;
     }
 
-    /**
-     * Valida que el beneficio tenga datos consistentes.
-     * @return true si el beneficio es válido.
-     */
-    public boolean validarBeneficio() {
-        return nombre != null && !nombre.trim().isEmpty() && valor >= 0;
-    }
-
-    /**
-     * Calcula o retorna el valor del beneficio aplicable.
-     * @return el valor del beneficio.
-     */
-    public double aplicarBeneficio() {
-        return this.valor;
-    }
-
-    // Getters y Setters
     public String getIdBeneficio() {
         return idBeneficio;
     }
@@ -80,25 +62,9 @@ public class Beneficio implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Beneficio beneficio = (Beneficio) o;
-        return idBeneficio == beneficio.idBeneficio;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idBeneficio);
-    }
-
-    @Override
     public String toString() {
-        return "Beneficio{" +
-                "idBeneficio=" + idBeneficio +
-                ", nombre='" + nombre + '\'' +
-                ", valor=" + valor +
-                ", unidad='" + unidad + '\'' +
-                '}';
+        return "Beneficio{" + "idBeneficio=" + idBeneficio + ", nombre=" + nombre + ", valor=" + valor + ", unidad=" + unidad + '}';
     }
+
+    
 }

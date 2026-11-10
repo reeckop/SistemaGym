@@ -1,5 +1,6 @@
 package gym.persistencia.entidades;
 
+import gym.persistencia.enums.EstadoRegistroIngreso;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,28 +11,28 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 /**
  * Entidad que registra el control de acceso/asistencia de los socios al gimnasio.
  */
-public class RegistroIngreso implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class RegistroIngreso {
 
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idAcceso;
+    
     private LocalDateTime fechaHoraEntrada;
     private LocalDateTime fechaHoraSalida;
-    private String estado;
+    private EstadoRegistroIngreso estado;
     private Cliente cliente;
 
     public RegistroIngreso() {
     }
 
-    public RegistroIngreso(String idAcceso, LocalDateTime fechaHoraEntrada, LocalDateTime fechaHoraSalida, String estado) {
+    public RegistroIngreso(String idAcceso, LocalDateTime fechaHoraEntrada, LocalDateTime fechaHoraSalida, EstadoRegistroIngreso estado) {
         this.idAcceso = idAcceso;
         this.fechaHoraEntrada = fechaHoraEntrada;
         this.fechaHoraSalida = fechaHoraSalida;
         this.estado = estado;
     }
 
-    public RegistroIngreso(String idAcceso, LocalDateTime fechaHoraEntrada, LocalDateTime fechaHoraSalida, String estado, Cliente cliente) {
+    public RegistroIngreso(String idAcceso, LocalDateTime fechaHoraEntrada, LocalDateTime fechaHoraSalida, EstadoRegistroIngreso estado, Cliente cliente) {
         this.idAcceso = idAcceso;
         this.fechaHoraEntrada = fechaHoraEntrada;
         this.fechaHoraSalida = fechaHoraSalida;
@@ -39,22 +40,6 @@ public class RegistroIngreso implements Serializable {
         this.cliente = cliente;
     }
 
-    // Métodos del diagrama
-    public boolean validarAcceso() {
-        return "ACTIVO".equalsIgnoreCase(this.estado) || "PERMITIDO".equalsIgnoreCase(this.estado);
-    }
-
-    public void registrarEntrada() {
-        this.fechaHoraEntrada = LocalDateTime.now();
-        this.estado = "DENTRO";
-    }
-
-    public void registrarSalida() {
-        this.fechaHoraSalida = LocalDateTime.now();
-        this.estado = "SALIDO";
-    }
-
-    // Getters y Setters
     public String getIdAcceso() {
         return idAcceso;
     }
@@ -79,11 +64,11 @@ public class RegistroIngreso implements Serializable {
         this.fechaHoraSalida = fechaHoraSalida;
     }
 
-    public String getEstado() {
+    public EstadoRegistroIngreso getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoRegistroIngreso estado) {
         this.estado = estado;
     }
 
@@ -96,26 +81,9 @@ public class RegistroIngreso implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RegistroIngreso that = (RegistroIngreso) o;
-        return idAcceso == that.idAcceso;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idAcceso);
-    }
-
-    @Override
     public String toString() {
-        return "RegistroIngreso{" +
-                "idAcceso=" + idAcceso +
-                ", fechaHoraEntrada=" + fechaHoraEntrada +
-                ", fechaHoraSalida=" + fechaHoraSalida +
-                ", estado='" + estado + '\'' +
-                ", cliente=" + (cliente != null ? cliente.getNombre() : "N/A") +
-                '}';
+        return "RegistroIngreso{" + "idAcceso=" + idAcceso + ", fechaHoraEntrada=" + fechaHoraEntrada + ", fechaHoraSalida=" + fechaHoraSalida + ", estado=" + estado + ", cliente=" + cliente + '}';
     }
+
+    
 }

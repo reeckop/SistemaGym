@@ -1,5 +1,6 @@
 package gym.persistencia.entidades;
 
+import gym.persistencia.enums.EstadoPago;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,28 +11,28 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 /**
  * Entidad que modela un pago efectuado por una transacción o venta.
  */
-public class Pago implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Pago {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idPago;
+    
     private double monto;
     private LocalDateTime fechaHora;
-    private String estado;
+    private EstadoPago estado;
     private MetodoPago metodoPago;
 
     public Pago() {
     }
 
-    public Pago(String idPago, double monto, LocalDateTime fechaHora, String estado) {
+    public Pago(String idPago, double monto, LocalDateTime fechaHora, EstadoPago estado) {
         this.idPago = idPago;
         this.monto = monto;
         this.fechaHora = fechaHora;
         this.estado = estado;
     }
 
-    public Pago(String idPago, double monto, LocalDateTime fechaHora, String estado, MetodoPago metodoPago) {
+    public Pago(String idPago, double monto, LocalDateTime fechaHora, EstadoPago estado, MetodoPago metodoPago) {
         this.idPago = idPago;
         this.monto = monto;
         this.fechaHora = fechaHora;
@@ -39,19 +40,6 @@ public class Pago implements Serializable {
         this.metodoPago = metodoPago;
     }
 
-    // Métodos del diagrama
-    public void registrarPago() {
-        if (this.fechaHora == null) {
-            this.fechaHora = LocalDateTime.now();
-        }
-        this.estado = "REGISTRADO";
-    }
-
-    public void confirmarPago() {
-        this.estado = "CONFIRMADO";
-    }
-
-    // Getters y Setters
     public String getIdPago() {
         return idPago;
     }
@@ -76,11 +64,11 @@ public class Pago implements Serializable {
         this.fechaHora = fechaHora;
     }
 
-    public String getEstado() {
+    public EstadoPago getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoPago estado) {
         this.estado = estado;
     }
 
@@ -93,26 +81,8 @@ public class Pago implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pago pago = (Pago) o;
-        return idPago == pago.idPago;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idPago);
-    }
-
-    @Override
     public String toString() {
-        return "Pago{" +
-                "idPago=" + idPago +
-                ", monto=" + monto +
-                ", fechaHora=" + fechaHora +
-                ", estado='" + estado + '\'' +
-                ", metodoPago=" + (metodoPago != null ? metodoPago.getNombre() : "N/A") +
-                '}';
+        return "Pago{" + "idPago=" + idPago + ", monto=" + monto + ", fechaHora=" + fechaHora + ", estado=" + estado + ", metodoPago=" + metodoPago + '}';
     }
+
 }

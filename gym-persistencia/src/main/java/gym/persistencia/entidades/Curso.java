@@ -9,14 +9,13 @@ import org.bson.BsonType;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
-public class Curso implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Curso {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idCurso;
+    
     private String nombre;
-    private String disciplina;
     private double precio;
     private int cupo;
     private String imagen;
@@ -28,49 +27,9 @@ public class Curso implements Serializable {
     public Curso(String idCurso, String nombre, double precio, int cupo, String imagen) {
         this.idCurso = idCurso;
         this.nombre = nombre;
-        this.disciplina = "";
         this.precio = precio;
         this.cupo = cupo;
         this.imagen = imagen;
-        this.horarios = new ArrayList<>();
-    }
-
-    public Curso(String idCurso, String nombre, String disciplina, double precio, int cupo, String imagen) {
-        this.idCurso = idCurso;
-        this.nombre = nombre;
-        this.disciplina = disciplina;
-        this.precio = precio;
-        this.cupo = cupo;
-        this.imagen = imagen;
-        this.horarios = new ArrayList<>();
-    }
-
-    public Curso(String idCurso, String nombre, String disciplina, double precio, int cupo, String imagen, List<Horario> horarios) {
-        this.idCurso = idCurso;
-        this.nombre = nombre;
-        this.disciplina = disciplina;
-        this.precio = precio;
-        this.cupo = cupo;
-        this.imagen = imagen;
-        this.horarios = horarios != null ? new ArrayList<>(horarios) : new ArrayList<>();
-    }
-
-    public List<Curso> consultarCursos() {
-        return Collections.singletonList(this);
-    }
-
-    public List<Horario> consultarHorarios() {
-        return this.horarios;
-    }
-
-    public boolean verificarCupo() {
-        return this.cupo > 0;
-    }
-
-    public void agregarHorario(Horario horario) {
-        if (horario != null) {
-            this.horarios.add(horario);
-        }
     }
 
     public String getIdCurso() {
@@ -87,14 +46,6 @@ public class Curso implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public String getDisciplina() {
-        return disciplina;
-    }
-
-    public void setDisciplina(String disciplina) {
-        this.disciplina = disciplina;
     }
 
     public double getPrecio() {
@@ -126,31 +77,12 @@ public class Curso implements Serializable {
     }
 
     public void setHorarios(List<Horario> horarios) {
-        this.horarios = horarios != null ? new ArrayList<>(horarios) : new ArrayList<>();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Curso curso = (Curso) o;
-        return idCurso == curso.idCurso;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idCurso);
+        this.horarios = horarios;
     }
 
     @Override
     public String toString() {
-        return "Curso{" +
-                "idCurso=" + idCurso +
-                ", nombre='" + nombre + '\'' +
-                ", disciplina='" + disciplina + '\'' +
-                ", precio=" + precio +
-                ", cupo=" + cupo +
-                ", horariosCount=" + (horarios != null ? horarios.size() : 0) +
-                '}';
+        return "Curso{" + "idCurso=" + idCurso + ", nombre=" + nombre + ", precio=" + precio + ", cupo=" + cupo + ", imagen=" + imagen + ", horarios=" + horarios + '}';
     }
+
 }

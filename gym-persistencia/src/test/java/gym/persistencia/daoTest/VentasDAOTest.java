@@ -6,7 +6,9 @@ package gym.persistencia.daoTest;
 
 import gym.persistencia.dao.VentasDAO;
 import gym.persistencia.entidades.Venta;
+import gym.persistencia.excepciones.PersistenciaException;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,42 +28,39 @@ public class VentasDAOTest {
     }
 
     @Test
-    void testGuardar() {
-        Venta venta = new Venta(
-                new ObjectId().toHexString(),
-                LocalDateTime.now(),
-                500.0,
-                0.0,
-                500.0
-        );
+    void testGuardar() throws PersistenciaException  {
+        String id = new ObjectId().toString();
 
-        assertDoesNotThrow(() -> ventasDAO.guardar(venta));
+        Venta venta = new Venta(
+                id, LocalDateTime.now(), 1000.00, 100.00, 900.00);
+
+        ventasDAO.guardar(venta);
+
+        Venta resultado = ventasDAO.obtenerPorId(id);
+
+        assertNotNull(resultado);
+        assertEquals(id, resultado.getIdVenta());
     }
 
     @Test
-    void testObtenerPorId() {
+    void testObtenerPorId() throws PersistenciaException {
+        String id = new ObjectId().toString();
+
         Venta venta = new Venta(
-                new ObjectId().toHexString(),
-                LocalDateTime.now(),
-                500.0,
-                0.0,
-                500.0
-        );
+                id, LocalDateTime.now(), 1500.00, 200.00, 1300.00);
 
-        assertDoesNotThrow(() -> ventasDAO.guardar(venta));
+        ventasDAO.guardar(venta);
 
-        Venta resultado = assertDoesNotThrow(
-                () -> ventasDAO.obtenerPorId(venta.getIdVenta())
-        );
+        Venta resultado = ventasDAO.obtenerPorId(id);
+
+        assertNotNull(resultado);
+        assertEquals(1500.00, resultado.getSubtotal());
+    }
+
+    @Test
+    void testObtenerTodas() throws PersistenciaException {
+        List<Venta> resultado = ventasDAO.obtenerTodas();
 
         assertNotNull(resultado);
     }
-
-    @Test
-    void testObtenerTodas() {
-        assertNotNull(
-                assertDoesNotThrow(() -> ventasDAO.obtenerTodas())
-        );
-    }
-    
 }

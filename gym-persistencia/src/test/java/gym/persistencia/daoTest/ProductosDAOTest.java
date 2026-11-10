@@ -6,6 +6,8 @@ package gym.persistencia.daoTest;
 
 import gym.persistencia.dao.ProductosDAO;
 import gym.persistencia.entidades.Producto;
+import gym.persistencia.excepciones.PersistenciaException;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,59 +27,69 @@ public class ProductosDAOTest {
     }
 
     @Test
-    void testGuardar() {
-        Producto producto = new Producto(
-                new ObjectId().toHexString(),
-                "Producto de prueba",
-                "Suplementos",
-                250.0,
-                10,
-                "imagen.jpg"
-        );
+    void testGuardar() throws PersistenciaException  {
+        String id = new ObjectId().toString();
 
-        assertDoesNotThrow(() -> productosDAO.guardar(producto));
+        Producto producto = new Producto(
+                id, "Proteína", "Suplementos", 800.00, 10, "proteina.png");
+
+        productosDAO.guardar(producto);
+
+        List<Producto> resultado = productosDAO.obtenerTodos();
+
+        assertTrue(resultado.stream()
+                .anyMatch(p -> id.equals(p.getIdProducto())));
+
+        productosDAO.eliminar(id);
     }
 
     @Test
-    void testActualizar() {
-        Producto producto = new Producto(
-                new ObjectId().toHexString(),
-                "Producto para actualizar",
-                "Suplementos",
-                250.0,
-                10,
-                "imagen.jpg"
-        );
+    void testActualizar() throws PersistenciaException {
+        String id = new ObjectId().toString();
 
-        assertDoesNotThrow(() -> {
-            productosDAO.guardar(producto);
-            producto.setNombre("Producto actualizado");
-            productosDAO.actualizar(producto);
-        });
+        Producto producto = new Producto(
+                id, "Proteína", "Suplementos", 800.00, 10, "proteina.png");
+
+        productosDAO.guardar(producto);
+
+        producto.setNombre("Proteína actualizada");
+        producto.setPrecio(900.00);
+
+        productosDAO.actualizar(producto);
+
+        List<Producto> resultado = productosDAO.obtenerTodos();
+
+        assertTrue(resultado.stream().anyMatch(p ->
+                id.equals(p.getIdProducto())
+                && "Proteína actualizada".equals(p.getNombre())
+                && p.getPrecio() == 900.00));
+
+        productosDAO.eliminar(id);
     }
 
     @Test
-    void testEliminar() {
-        Producto producto = new Producto(
-                new ObjectId().toHexString(),
-                "Producto para eliminar",
-                "Suplementos",
-                250.0,
-                10,
-                "imagen.jpg"
-        );
+    void testEliminar() throws PersistenciaException {
+        String id = new ObjectId().toString();
 
-        assertDoesNotThrow(() -> {
-            productosDAO.guardar(producto);
-            productosDAO.eliminar(producto.getIdProducto());
-        });
+        Producto producto = new Producto(
+                id, "Proteína", "Suplementos", 800.00, 10, "proteina.png");
+
+        productosDAO.guardar(producto);
+        productosDAO.eliminar(id);
+
+        List<Producto> resultado = productosDAO.obtenerTodos();
+
+        assertFalse(resultado.stream()
+                .anyMatch(p -> id.equals(p.getIdProducto())));
     }
 
     @Test
-    void testObtenerTodos() {
-        assertNotNull(
-                assertDoesNotThrow(() -> productosDAO.obtenerTodos())
-        );
+    void testObtenerTodos() throws PersistenciaException {
+        List<Producto> resultado = productosDAO.obtenerTodos();
+
+        assertNotNull(resultado);
     }
+
+    
     
 }

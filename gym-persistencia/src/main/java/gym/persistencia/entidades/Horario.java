@@ -13,12 +13,12 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 /**
  * Entidad que modela un horario específico para la impartición de cursos.
  */
-public class Horario implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Horario {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idHorario;
+    
     private LocalDate fecha;
     private LocalTime horaInicio;
     private LocalTime horaFin;
@@ -33,16 +33,6 @@ public class Horario implements Serializable {
         this.horaFin = horaFin;
     }
 
-    // Métodos del diagrama
-    public boolean verificarDisponibilidad() {
-        return horaInicio != null && horaFin != null && horaInicio.isBefore(horaFin);
-    }
-
-    public List<Horario> consultarHorarios() {
-        return Collections.singletonList(this);
-    }
-
-    // Getters y Setters
     public String getIdHorario() {
         return idHorario;
     }
@@ -76,25 +66,8 @@ public class Horario implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Horario horario = (Horario) o;
-        return idHorario == horario.idHorario;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idHorario);
-    }
-
-    @Override
     public String toString() {
-        return "Horario{" +
-                "idHorario=" + idHorario +
-                ", fecha=" + fecha +
-                ", horaInicio=" + horaInicio +
-                ", horaFin=" + horaFin +
-                '}';
+        return "Horario{" + "idHorario=" + idHorario + ", fecha=" + fecha + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + '}';
     }
+     
 }

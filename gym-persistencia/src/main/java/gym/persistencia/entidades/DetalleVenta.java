@@ -6,8 +6,7 @@ import java.util.Objects;
 /**
  * Entidad que modela una línea de detalle en una venta de productos.
  */
-public class DetalleVenta implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class DetalleVenta {
 
     private Producto producto;
     private int cantidad;
@@ -17,43 +16,25 @@ public class DetalleVenta implements Serializable {
     public DetalleVenta() {
     }
 
-    public DetalleVenta(int cantidad, double precioUnitario) {
-        this.cantidad = cantidad;
-        this.precioUnitario = precioUnitario;
-        this.subtotal = calcularSubtotal();
-    }
-
-    public DetalleVenta(Producto producto, int cantidad, double precioUnitario) {
+    public DetalleVenta(Producto producto, int cantidad, double precioUnitario, double subtotal) {
         this.producto = producto;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
-        this.subtotal = calcularSubtotal();
+        this.subtotal = subtotal;
     }
 
-    public DetalleVenta(Producto producto, int cantidad) {
-        this.producto = producto;
+    public DetalleVenta(int cantidad, double precioUnitario, double subtotal) {
         this.cantidad = cantidad;
-        this.precioUnitario = producto != null ? producto.getPrecio() : 0.0;
-        this.subtotal = calcularSubtotal();
+        this.precioUnitario = precioUnitario;
+        this.subtotal = subtotal;
     }
 
-    // Método del diagrama
-    public double calcularSubtotal() {
-        this.subtotal = this.cantidad * this.precioUnitario;
-        return this.subtotal;
-    }
-
-    // Getters y Setters
     public Producto getProducto() {
         return producto;
     }
 
     public void setProducto(Producto producto) {
         this.producto = producto;
-        if (producto != null && this.precioUnitario == 0) {
-            this.precioUnitario = producto.getPrecio();
-            calcularSubtotal();
-        }
     }
 
     public int getCantidad() {
@@ -62,7 +43,6 @@ public class DetalleVenta implements Serializable {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
-        calcularSubtotal();
     }
 
     public double getPrecioUnitario() {
@@ -71,7 +51,6 @@ public class DetalleVenta implements Serializable {
 
     public void setPrecioUnitario(double precioUnitario) {
         this.precioUnitario = precioUnitario;
-        calcularSubtotal();
     }
 
     public double getSubtotal() {
@@ -83,27 +62,8 @@ public class DetalleVenta implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DetalleVenta that = (DetalleVenta) o;
-        return cantidad == that.cantidad &&
-                Double.compare(that.precioUnitario, precioUnitario) == 0 &&
-                Objects.equals(producto, that.producto);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(producto, cantidad, precioUnitario);
-    }
-
-    @Override
     public String toString() {
-        return "DetalleVenta{" +
-                "producto=" + (producto != null ? producto.getNombre() : "N/A") +
-                ", cantidad=" + cantidad +
-                ", precioUnitario=" + precioUnitario +
-                ", subtotal=" + subtotal +
-                '}';
+        return "DetalleVenta{" + "producto=" + producto + ", cantidad=" + cantidad + ", precioUnitario=" + precioUnitario + ", subtotal=" + subtotal + '}';
     }
+    
 }

@@ -6,7 +6,9 @@ package gym.persistencia.daoTest;
 
 import gym.persistencia.dao.InscripcionDAO;
 import gym.persistencia.entidades.Inscripcion;
+import gym.persistencia.excepciones.PersistenciaException;
 import java.time.LocalDate;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,50 +28,67 @@ public class InscripcionDAOTest {
     }
 
     @Test
-    void testGuardar() {
-        Inscripcion inscripcion = new Inscripcion(
-                new ObjectId().toHexString(),
-                LocalDate.now(),
-                "ACTIVA"
-        );
+    void testGuardar() throws PersistenciaException {
+        String id = new ObjectId().toString();
 
-        assertDoesNotThrow(() -> inscripcionDAO.guardar(inscripcion));
+        Inscripcion inscripcion =
+                new Inscripcion(id, LocalDate.now(), null);
+        
+        Inscripcion inscripcion2 =
+                new Inscripcion(id, LocalDate.now(), null);
+
+        inscripcionDAO.guardar(inscripcion);
+
+        List<Inscripcion> resultado = inscripcionDAO.obtenerTodos();
+
+        assertTrue(resultado.stream()
+                .anyMatch(i -> id.equals(i.getIdInscripcion())));
+
     }
 
     @Test
-    void testActualizar() {
-        Inscripcion inscripcion = new Inscripcion(
-                new ObjectId().toHexString(),
-                LocalDate.now(),
-                "ACTIVA"
-        );
+    void testActualizar() throws PersistenciaException  {
+        String id = new ObjectId().toString();
 
-        assertDoesNotThrow(() -> {
-            inscripcionDAO.guardar(inscripcion);
-            inscripcion.setEstado("CANCELADA");
-            inscripcionDAO.actualizar(inscripcion);
-        });
+        Inscripcion inscripcion =
+                new Inscripcion(id, LocalDate.now(), null);
+
+        inscripcionDAO.guardar(inscripcion);
+
+        inscripcion.setFecha(LocalDate.now().plusDays(1));
+        inscripcionDAO.actualizar(inscripcion);
+
+        List<Inscripcion> resultado = inscripcionDAO.obtenerTodos();
+
+        assertTrue(resultado.stream().anyMatch(i ->
+                id.equals(i.getIdInscripcion())
+                && i.getFecha().equals(inscripcion.getFecha())));
+
     }
 
     @Test
-    void testEliminar() {
-        Inscripcion inscripcion = new Inscripcion(
-                new ObjectId().toHexString(),
-                LocalDate.now(),
-                "ACTIVA"
-        );
+    void testEliminar() throws PersistenciaException {
+        String id = new ObjectId().toString();
 
-        assertDoesNotThrow(() -> {
-            inscripcionDAO.guardar(inscripcion);
-            inscripcionDAO.eliminar(inscripcion.getIdInscripcion());
-        });
+        Inscripcion inscripcion =
+                new Inscripcion(id, LocalDate.now(), null);
+
+        inscripcionDAO.guardar(inscripcion);
+        inscripcionDAO.eliminar(id);
+
+        List<Inscripcion> resultado = inscripcionDAO.obtenerTodos();
+
+        assertFalse(resultado.stream()
+                .anyMatch(i -> id.equals(i.getIdInscripcion())));
     }
 
     @Test
-    void testObtenerTodos() {
-        assertNotNull(
-                assertDoesNotThrow(() -> inscripcionDAO.obtenerTodos())
-        );
+    void testObtenerTodos() throws PersistenciaException {
+        List<Inscripcion> resultado = inscripcionDAO.obtenerTodos();
+
+        assertNotNull(resultado);
     }
+
+    
     
 }

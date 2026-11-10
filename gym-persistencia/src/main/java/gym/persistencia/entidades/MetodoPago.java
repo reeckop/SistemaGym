@@ -9,12 +9,12 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 /**
  * Entidad que representa la forma de pago utilizada (Efectivo, Tarjeta, Transferencia, etc.).
  */
-public class MetodoPago implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class MetodoPago {
 
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idMetodoPago;
+    
     private String nombre;
 
     public MetodoPago() {
@@ -25,7 +25,6 @@ public class MetodoPago implements Serializable {
         this.nombre = nombre;
     }
 
-    // Getters y Setters
     public String getIdMetodoPago() {
         return idMetodoPago;
     }
@@ -43,23 +42,9 @@ public class MetodoPago implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MetodoPago that = (MetodoPago) o;
-        return idMetodoPago == that.idMetodoPago;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idMetodoPago);
-    }
-
-    @Override
     public String toString() {
-        return "MetodoPago{" +
-                "idMetodoPago=" + idMetodoPago +
-                ", nombre='" + nombre + '\'' +
-                '}';
+        return "MetodoPago{" + "idMetodoPago=" + idMetodoPago + ", nombre=" + nombre + '}';
     }
+
+   
 }

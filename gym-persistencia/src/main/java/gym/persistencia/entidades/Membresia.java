@@ -1,5 +1,6 @@
 package gym.persistencia.entidades;
 
+import gym.persistencia.enums.EstadoMembresia;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,33 +11,24 @@ import org.bson.BsonType;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
-public class Membresia implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Membresia {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idMembresia;
+    
     private String nombre;
     private double precio;
     private String imagen;
-    private String estado;
+    private EstadoMembresia estado;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-    private List<Beneficio> beneficios = new ArrayList<>();
+    private List<Beneficio> beneficios;
 
     public Membresia() {
-        this.estado = "ACTIVA";
     }
 
-    public Membresia(String idMembresia, String nombre, double precio) {
-        this.idMembresia = idMembresia;
-        this.nombre = nombre;
-        this.precio = precio;
-        this.estado = "ACTIVA";
-        this.beneficios = new ArrayList<>();
-    }
-
-    public Membresia(String idMembresia, String nombre, double precio, String imagen, String estado, LocalDate fechaInicio, LocalDate fechaFin) {
+    public Membresia(String idMembresia, String nombre, double precio, String imagen, EstadoMembresia estado, LocalDate fechaInicio, LocalDate fechaFin, List<Beneficio> beneficios) {
         this.idMembresia = idMembresia;
         this.nombre = nombre;
         this.precio = precio;
@@ -44,10 +36,10 @@ public class Membresia implements Serializable {
         this.estado = estado;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
-        this.beneficios = new ArrayList<>();
+        this.beneficios = beneficios;
     }
 
-    public Membresia(String idMembresia, String nombre, double precio, String imagen, String estado, LocalDate fechaInicio, LocalDate fechaFin, List<Beneficio> beneficios) {
+    public Membresia(String idMembresia, String nombre, double precio, String imagen, EstadoMembresia estado, LocalDate fechaInicio, LocalDate fechaFin) {
         this.idMembresia = idMembresia;
         this.nombre = nombre;
         this.precio = precio;
@@ -55,7 +47,6 @@ public class Membresia implements Serializable {
         this.estado = estado;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
-        this.beneficios = beneficios != null ? new ArrayList<>(beneficios) : new ArrayList<>();
     }
 
     public String getIdMembresia() {
@@ -90,11 +81,11 @@ public class Membresia implements Serializable {
         this.imagen = imagen;
     }
 
-    public String getEstado() {
+    public EstadoMembresia getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoMembresia estado) {
         this.estado = estado;
     }
 
@@ -119,30 +110,12 @@ public class Membresia implements Serializable {
     }
 
     public void setBeneficios(List<Beneficio> beneficios) {
-        this.beneficios = beneficios != null ? new ArrayList<>(beneficios) : new ArrayList<>();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Membresia membresia = (Membresia) o;
-        return idMembresia == membresia.idMembresia;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idMembresia);
+        this.beneficios = beneficios;
     }
 
     @Override
     public String toString() {
-        return "Membresia{" +
-                "idMembresia=" + idMembresia +
-                ", nombre='" + nombre + '\'' +
-                ", precio=" + precio +
-                ", estado='" + estado + '\'' +
-                ", beneficiosCount=" + (beneficios != null ? beneficios.size() : 0) +
-                '}';
+        return "Membresia{" + "idMembresia=" + idMembresia + ", nombre=" + nombre + ", precio=" + precio + ", imagen=" + imagen + ", estado=" + estado + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + ", beneficios=" + beneficios + '}';
     }
+   
 }

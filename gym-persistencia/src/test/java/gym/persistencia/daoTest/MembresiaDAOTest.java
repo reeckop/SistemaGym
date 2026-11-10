@@ -6,6 +6,9 @@ package gym.persistencia.daoTest;
 
 import gym.persistencia.dao.MembresiaDAO;
 import gym.persistencia.entidades.Membresia;
+import gym.persistencia.excepciones.PersistenciaException;
+import java.time.LocalDate;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,55 +23,96 @@ public class MembresiaDAOTest {
     private MembresiaDAO membresiaDAO;
 
     @BeforeEach
-    void setUp() {
+    public void init() {
         membresiaDAO = new MembresiaDAO();
     }
 
     @Test
-    void testGuardar() {
+    public void testGuardar() throws PersistenciaException {
+        String id = new ObjectId().toString();
+
         Membresia membresia = new Membresia(
-                new ObjectId().toHexString(),
-                "Membresia de prueba",
-                500.0
+                id,
+                "Mensual",
+                500.00,
+                "mensual.png",
+                null,
+                LocalDate.now(),
+                LocalDate.now().plusMonths(1)
         );
 
-        assertDoesNotThrow(() -> membresiaDAO.guardar(membresia));
+        membresiaDAO.guardar(membresia);
+
+        List<Membresia> resultado = membresiaDAO.obtenerTodos();
+
+        assertNotNull(resultado);
+        assertTrue(resultado.stream().anyMatch(
+                m -> id.equals(m.getIdMembresia())
+        ));
+
+        membresiaDAO.eliminar(id);
     }
 
     @Test
-    void testActualizar() {
-        Membresia membresia = new Membresia(
-                new ObjectId().toHexString(),
-                "Membresia para actualizar",
-                500.0
-        );
+    public void testObtenerTodos() throws PersistenciaException {
+        List<Membresia> membresias = membresiaDAO.obtenerTodos();
 
-        assertDoesNotThrow(() -> {
-            membresiaDAO.guardar(membresia);
-            membresia.setNombre("Membresia actualizada");
-            membresiaDAO.actualizar(membresia);
-        });
+        assertNotNull(membresias);
     }
 
     @Test
-    void testEliminar() {
+    public void testActualizar() throws PersistenciaException {
+        String id = new ObjectId().toString();
+
         Membresia membresia = new Membresia(
-                new ObjectId().toHexString(),
-                "Membresia para eliminar",
-                500.0
+                id,
+                "Mensual",
+                500.00,
+                "mensual.png",
+                null,
+                LocalDate.now(),
+                LocalDate.now().plusMonths(1)
         );
 
-        assertDoesNotThrow(() -> {
-            membresiaDAO.guardar(membresia);
-            membresiaDAO.eliminar(membresia.getIdMembresia());
-        });
+        membresiaDAO.guardar(membresia);
+
+        membresia.setNombre("Anual");
+        membresia.setPrecio(5000.00);
+
+        membresiaDAO.actualizar(membresia);
+
+        List<Membresia> resultado = membresiaDAO.obtenerTodos();
+
+        assertTrue(resultado.stream().anyMatch(
+                m -> id.equals(m.getIdMembresia())
+                        && "Anual".equals(m.getNombre())
+                        && m.getPrecio() == 5000.00
+        ));
+
+        membresiaDAO.eliminar(id);
     }
 
     @Test
-    void testObtenerTodos() {
-        assertNotNull(
-                assertDoesNotThrow(() -> membresiaDAO.obtenerTodos())
+    public void testEliminar() throws PersistenciaException {
+        String id = new ObjectId().toString();
+
+        Membresia membresia = new Membresia(
+                id,
+                "Temporal",
+                300.00,
+                "temporal.png",
+                null,
+                LocalDate.now(),
+                LocalDate.now().plusMonths(1)
         );
+
+        membresiaDAO.guardar(membresia);
+        membresiaDAO.eliminar(id);
+
+        List<Membresia> resultado = membresiaDAO.obtenerTodos();
+
+        assertFalse(resultado.stream().anyMatch(
+                m -> id.equals(m.getIdMembresia())
+        ));
     }
-    
 }

@@ -1,5 +1,6 @@
 package gym.persistencia.entidades;
 
+import gym.persistencia.enums.EstadoNotificacion;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,22 +11,22 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 /**
  * Entidad que modela una notificación generada para un cliente del gimnasio.
  */
-public class Notificacion implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Notificacion {
 
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idNotificacion;
+    
     private String tipo;
     private String mensaje;
     private LocalDateTime fechaHora;
-    private String estado;
+    private EstadoNotificacion estado;
     private Cliente cliente;
 
     public Notificacion() {
     }
 
-    public Notificacion(String idNotificacion, String tipo, String mensaje, LocalDateTime fechaHora, String estado) {
+    public Notificacion(String idNotificacion, String tipo, String mensaje, LocalDateTime fechaHora, EstadoNotificacion estado) {
         this.idNotificacion = idNotificacion;
         this.tipo = tipo;
         this.mensaje = mensaje;
@@ -33,7 +34,7 @@ public class Notificacion implements Serializable {
         this.estado = estado;
     }
 
-    public Notificacion(String idNotificacion, String tipo, String mensaje, LocalDateTime fechaHora, String estado, Cliente cliente) {
+    public Notificacion(String idNotificacion, String tipo, String mensaje, LocalDateTime fechaHora, EstadoNotificacion estado, Cliente cliente) {
         this.idNotificacion = idNotificacion;
         this.tipo = tipo;
         this.mensaje = mensaje;
@@ -42,7 +43,6 @@ public class Notificacion implements Serializable {
         this.cliente = cliente;
     }
 
-    // Getters y Setters
     public String getIdNotificacion() {
         return idNotificacion;
     }
@@ -75,11 +75,11 @@ public class Notificacion implements Serializable {
         this.fechaHora = fechaHora;
     }
 
-    public String getEstado() {
+    public EstadoNotificacion getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoNotificacion estado) {
         this.estado = estado;
     }
 
@@ -92,27 +92,8 @@ public class Notificacion implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Notificacion that = (Notificacion) o;
-        return idNotificacion == that.idNotificacion;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idNotificacion);
-    }
-
-    @Override
     public String toString() {
-        return "Notificacion{" +
-                "idNotificacion=" + idNotificacion +
-                ", tipo='" + tipo + '\'' +
-                ", mensaje='" + mensaje + '\'' +
-                ", fechaHora=" + fechaHora +
-                ", estado='" + estado + '\'' +
-                ", cliente=" + (cliente != null ? cliente.getNombre() : "N/A") +
-                '}';
+        return "Notificacion{" + "idNotificacion=" + idNotificacion + ", tipo=" + tipo + ", mensaje=" + mensaje + ", fechaHora=" + fechaHora + ", estado=" + estado + ", cliente=" + cliente + '}';
     }
+
 }

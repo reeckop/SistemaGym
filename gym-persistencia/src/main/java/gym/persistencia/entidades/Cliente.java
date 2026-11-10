@@ -12,12 +12,12 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 /**
  * Entidad que representa un cliente/socio registrado en el gimnasio.
  */
-public class Cliente implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Cliente {
     
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idCliente;
+    
     private String nombre;
     private String apellido;
     private String telefono;
@@ -44,20 +44,6 @@ public class Cliente implements Serializable {
         this.membresia = membresia;
     }
 
-    // Métodos del diagrama
-    public void registrar() {
-        // Método de ciclo de vida del diagrama
-    }
-
-    public void actualizar() {
-        // Método de ciclo de vida del diagrama
-    }
-
-    public List<Cliente> consultarClientes() {
-        return Collections.singletonList(this);
-    }
-
-    // Getters y Setters
     public String getIdCliente() {
         return idCliente;
     }
@@ -107,27 +93,9 @@ public class Cliente implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cliente cliente = (Cliente) o;
-        return idCliente == cliente.idCliente;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idCliente);
-    }
-
-    @Override
     public String toString() {
-        return "Cliente{" +
-                "idCliente=" + idCliente +
-                ", nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", fechaIngreso=" + fechaIngreso +
-                ", membresia=" + (membresia != null ? membresia.getNombre() : "Ninguna") +
-                '}';
+        return "Cliente{" + "idCliente=" + idCliente + ", nombre=" + nombre + ", apellido=" + apellido + ", telefono=" + telefono + ", fechaIngreso=" + fechaIngreso + ", membresia=" + membresia + '}';
     }
+
+    
 }

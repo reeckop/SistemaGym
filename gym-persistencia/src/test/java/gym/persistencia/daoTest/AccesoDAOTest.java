@@ -5,8 +5,13 @@
 package gym.persistencia.daoTest;
 
 import gym.persistencia.dao.AccesoDAO;
+import gym.persistencia.dao.ClienteDAO;
+import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.RegistroIngreso;
+import gym.persistencia.excepciones.PersistenciaException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,39 +23,86 @@ import org.junit.jupiter.api.BeforeEach;
  */
 public class AccesoDAOTest {
     
-     private AccesoDAO accesoDAO;
+    private AccesoDAO accesoDAO;
+    private ClienteDAO clienteDAO;
 
     @BeforeEach
-    void setUp() {
+    public void init() {
         accesoDAO = new AccesoDAO();
+        clienteDAO = new ClienteDAO();
     }
 
     @Test
-    void testGuardar() {
+    public void testGuardar() throws PersistenciaException {
+        String idCliente = new ObjectId().toString();
+
+        Cliente cliente = new Cliente(
+                idCliente,
+                "Carlos",
+                "Lopez",
+                "6441234567",
+                LocalDate.now()
+        );
+
+        clienteDAO.guardar(cliente);
+
         RegistroIngreso registro = new RegistroIngreso(
-                new ObjectId().toHexString(),
+                new ObjectId().toString(),
                 LocalDateTime.now(),
                 null,
-                "ACTIVO"
+                null,
+                cliente
         );
 
-        assertDoesNotThrow(() -> accesoDAO.guardar(registro));
+        accesoDAO.guardar(registro);
+
+        List<RegistroIngreso> resultado =
+                accesoDAO.obtenerPorCliente(idCliente);
+
+        assertNotNull(resultado);
+        assertFalse(resultado.isEmpty());
     }
 
     @Test
-    void testObtenerPorCliente() {
-        assertNotNull(
-                assertDoesNotThrow(() ->
-                        accesoDAO.obtenerPorCliente(new ObjectId().toHexString())
-                )
+    public void testObtenerPorCliente() throws PersistenciaException {
+        String idCliente = new ObjectId().toString();
+
+        Cliente cliente = new Cliente(
+                idCliente,
+                "Juan",
+                "Perez",
+                "6449876543",
+                LocalDate.now()
         );
+
+        clienteDAO.guardar(cliente);
+
+        RegistroIngreso registro = new RegistroIngreso(
+                new ObjectId().toString(),
+                LocalDateTime.now(),
+                null,
+                null,
+                cliente
+        );
+
+        accesoDAO.guardar(registro);
+
+        List<RegistroIngreso> resultado =
+                accesoDAO.obtenerPorCliente(idCliente);
+
+        assertNotNull(resultado);
+        assertFalse(resultado.isEmpty());
+        assertEquals(idCliente,
+                resultado.get(0).getCliente().getIdCliente());
     }
 
     @Test
-    void testObtenerTodos() {
-        assertNotNull(
-                assertDoesNotThrow(() -> accesoDAO.obtenerTodos())
-        );
+    public void testObtenerTodos() throws PersistenciaException {
+        List<RegistroIngreso> registros = accesoDAO.obtenerTodos();
+
+        assertNotNull(registros);
     }
+
+    
 }
     

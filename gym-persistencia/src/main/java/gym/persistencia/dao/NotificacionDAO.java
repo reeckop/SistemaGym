@@ -5,19 +5,13 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.result.InsertOneResult;
-import gym.infraestructura.persistencia.MongoConnectionManager;
-
 import gym.persistencia.interfaces.INotificacionDAO;
 import gym.persistencia.entidades.Notificacion;
 import gym.persistencia.excepciones.PersistenciaException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.bson.types.ObjectId;
 
 /**
@@ -55,6 +49,16 @@ public class NotificacionDAO extends BaseDAO implements INotificacionDAO {
             return coleccion.find().into(new ArrayList<>());
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener todas las notificaciones.");
+        }
+    }
+
+    @Override
+    public void actualizarNotificacion(Notificacion notificacion) throws PersistenciaException {
+        try {
+            MongoCollection<Notificacion> coleccion = obtenerColeccion(NOMBRE_COLECCION, Notificacion.class);
+            coleccion.replaceOne(Filters.eq("_id", new ObjectId(notificacion.getIdNotificacion())), notificacion);
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al actualizar la notificacion.");
         }
     }
     

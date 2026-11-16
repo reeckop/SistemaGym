@@ -4,22 +4,17 @@
  */
 package gym.persistencia.facade;
 
+import gym.persistencia.entidades.Beneficio;
 import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.Curso;
 import gym.persistencia.entidades.Inscripcion;
 import gym.persistencia.entidades.Membresia;
 import gym.persistencia.entidades.Notificacion;
+import gym.persistencia.entidades.Pago;
 import gym.persistencia.entidades.Producto;
 import gym.persistencia.entidades.RegistroIngreso;
 import gym.persistencia.entidades.Venta;
-import gym.persistencia.interfaces.IAccesoDAO;
-import gym.persistencia.interfaces.IClienteDAO;
-import gym.persistencia.interfaces.ICursoDAO;
-import gym.persistencia.interfaces.IInscripcionDAO;
-import gym.persistencia.interfaces.IMembresiaDAO;
-import gym.persistencia.interfaces.INotificacionDAO;
-import gym.persistencia.interfaces.IProductoDAO;
-import gym.persistencia.interfaces.IVentaDAO;
+import gym.persistencia.excepciones.PersistenciaException;
 import java.util.List;
 
 /**
@@ -27,107 +22,64 @@ import java.util.List;
  * @author PC GAMER MASTER RACE
  */
 public interface IPersistenciaFachada {
-    // =========================
+    
     // CLIENTE
-    // =========================
+    void guardarCliente(Cliente cliente) throws PersistenciaException;
+    void actualizarCliente(Cliente cliente) throws PersistenciaException;
+    Cliente obtenerClientePorId(String id) throws PersistenciaException;
+    List<Cliente> obtenerTodosLosClientes() throws PersistenciaException;
 
-    void guardarCliente(Cliente cliente);
-
-    void actualizarCliente(Cliente cliente);
-
-    Cliente obtenerClientePorId(String id);
-
-    List<Cliente> obtenerTodosLosClientes();
-
-
-    // =========================
     // MEMBRESIA
-    // =========================
+    void guardarMembresia(Membresia membresia) throws PersistenciaException;
+    void actualizarMembresia(Membresia membresia) throws PersistenciaException;
+    void eliminarMembresia(String id) throws PersistenciaException;
+    List<Membresia> obtenerTodasLasMembresias() throws PersistenciaException;
 
-    void guardarMembresia(Membresia membresia);
-
-    void actualizarMembresia(Membresia membresia);
-
-    Membresia obtenerMembresiaPorId(String id);
-
-    List<Membresia> obtenerTodasLasMembresias();
-
-
-    // =========================
     // CURSO
-    // =========================
+    void guardarCurso(Curso curso) throws PersistenciaException;
+    void actualizarCurso(Curso curso) throws PersistenciaException;
+    void eliminarCurso(String id) throws PersistenciaException;
+    List<Curso> obtenerTodosLosCursos() throws PersistenciaException;
 
-    void guardarCurso(Curso curso);
-
-    void actualizarCurso(Curso curso);
-
-    Curso obtenerCursoPorId(String id);
-
-    List<Curso> obtenerTodosLosCursos();
-
-
-    // =========================
     // INSCRIPCION
-    // =========================
+    void guardarInscripcion(Inscripcion inscripcion) throws PersistenciaException;
+    void actualizarInscripcion(Inscripcion inscripcion) throws PersistenciaException;
+    void eliminarInscripcion(String id) throws PersistenciaException;
+    List<Inscripcion> obtenerTodasLasInscripciones() throws PersistenciaException;
 
-    void guardarInscripcion(Inscripcion inscripcion);
-
-    void actualizarInscripcion(Inscripcion inscripcion);
-
-    Inscripcion obtenerInscripcionPorId(String id);
-
-    List<Inscripcion> obtenerTodasLasInscripciones();
-
-
-    // =========================
     // REGISTRO DE INGRESO
-    // =========================
+    void guardarRegistroIngreso(RegistroIngreso registroIngreso) throws PersistenciaException;
+    List<RegistroIngreso> obtenerRegistrosIngresoPorCliente(String idCliente) throws PersistenciaException;
+    List<RegistroIngreso> obtenerTodosLosRegistrosIngreso() throws PersistenciaException;
 
-    void guardarRegistroIngreso(RegistroIngreso registroIngreso);
-
-    void actualizarRegistroIngreso(RegistroIngreso registroIngreso);
-
-    RegistroIngreso obtenerRegistroIngresoPorId(String id);
-
-    List<RegistroIngreso> obtenerTodosLosRegistrosIngreso();
-
-
-    // =========================
     // PRODUCTO
-    // =========================
+    void guardarProducto(Producto producto) throws PersistenciaException;
+    void actualizarProducto(Producto producto) throws PersistenciaException;
+    void eliminarProducto(String id) throws PersistenciaException;
+    List<Producto> obtenerTodosLosProductos() throws PersistenciaException;
 
-    void guardarProducto(Producto producto);
-
-    void actualizarProducto(Producto producto);
-
-    Producto obtenerProductoPorId(String id);
-
-    List<Producto> obtenerTodosLosProductos();
-
-
-    // =========================
     // VENTA
-    // =========================
+    void guardarVenta(Venta venta) throws PersistenciaException;
+    Venta obtenerVentaPorId(String id) throws PersistenciaException;
+    List<Venta> obtenerTodasLasVentas() throws PersistenciaException;
 
-    void guardarVenta(Venta venta);
-
-    Venta obtenerVentaPorId(String id);
-
-    List<Venta> obtenerTodasLasVentas();
-
-
-    // =========================
     // NOTIFICACION
-    // =========================
+    void guardarNotificacion(Notificacion notificacion) throws PersistenciaException;
+    void actualizarNotificacion(Notificacion notificacion) throws PersistenciaException;
+    List<Notificacion> obtenerNotificacionesPorCliente(String idCliente) throws PersistenciaException;
+    List<Notificacion> obtenerTodasLasNotificaciones() throws PersistenciaException;
 
-    void guardarNotificacion(Notificacion notificacion);
+    // PAGO
+    void guardarPago(Pago pago) throws PersistenciaException;
+    void actualizarPago(Pago pago) throws PersistenciaException;
+    Pago obtenerPagoPorId(String id) throws PersistenciaException;
+    List<Pago> obtenerTodosLosPagos() throws PersistenciaException;
 
-    void actualizarNotificacion(Notificacion notificacion);
-
-    Notificacion obtenerNotificacionPorId(String id);
-
-    List<Notificacion> obtenerNotificacionesPorCliente(String idCliente);
-
-    List<Notificacion> obtenerTodasLasNotificaciones();
+    // BENEFICIO
+    void guardarBeneficio(Beneficio beneficio) throws PersistenciaException;
+    void actualizarBeneficio(Beneficio beneficio) throws PersistenciaException;
+    void eliminarBeneficio(String id) throws PersistenciaException;
+    Beneficio obtenerBeneficioPorId(String id) throws PersistenciaException;
+    List<Beneficio> obtenerTodosLosBeneficios() throws PersistenciaException;
     
 }

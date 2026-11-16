@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface INotificacionDAO {
     void guardar(Notificacion notificacion) throws PersistenciaException;
+    void actualizarNotificacion(Notificacion notificacion)throws PersistenciaException;
     List<Notificacion> obtenerPorCliente(String idCliente) throws PersistenciaException;
     List<Notificacion> obtenerTodas() throws PersistenciaException;
 }

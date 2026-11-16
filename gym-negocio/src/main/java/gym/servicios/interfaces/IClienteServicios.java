@@ -12,7 +12,12 @@ import java.util.List;
  *
  * @author PC GAMER MASTER RACE
  */
-public interface IClienteBO {
+public interface IClienteServicios {
+    void registrarCliente(ClienteDTO cliente) throws NegocioException;
+    void actualizarCliente(ClienteDTO cliente) throws NegocioException;
+    ClienteDTO consultarCliente(String id) throws NegocioException;
+    List<ClienteDTO> consultarTodosLosClientes() throws NegocioException;
+
     
     
     

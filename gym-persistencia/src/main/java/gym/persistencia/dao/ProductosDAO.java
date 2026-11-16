@@ -57,6 +57,18 @@ public class ProductosDAO extends BaseDAO implements IProductoDAO {
             throw new PersistenciaException("Error al eliminar el producto.");
         }
     }
+    
+    @Override
+    public Producto obtenerPorId(String id) throws PersistenciaException {
+        try {
+            MongoCollection<Producto> coleccion = obtenerColeccion("productos", Producto.class);
+
+            return coleccion.find(Filters.eq("_id", new ObjectId(id))).first();
+
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al obtener el producto.",e);
+        }
+    }
 
     @Override
     public List<Producto> obtenerTodos() throws PersistenciaException {

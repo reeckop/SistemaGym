@@ -7,6 +7,7 @@ package gym.persistencia.dao;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.UpdateResult;
 import gym.persistencia.interfaces.IVentaDAO;
 import gym.persistencia.entidades.Venta;
 import gym.persistencia.excepciones.PersistenciaException;
@@ -29,6 +30,22 @@ public class VentasDAO extends BaseDAO implements IVentaDAO {
             coleccion.insertOne(venta);
         } catch (MongoException e) {
             throw new PersistenciaException("Error al guardar la venta.");
+        }
+    }
+    
+    @Override
+    public void actualizarVenta(Venta venta) throws PersistenciaException {
+        try {
+            MongoCollection<Venta> coleccion = obtenerColeccion(NOMBRE_COLECCION, Venta.class);
+            ObjectId id = new ObjectId(venta.getIdVenta());
+            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", id), venta);
+
+            if (resultado.getMatchedCount() == 0) {
+                throw new PersistenciaException("No se encontró la venta que se desea actualizar.");
+            }
+
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al actualizar la venta.", e);
         }
     }
 

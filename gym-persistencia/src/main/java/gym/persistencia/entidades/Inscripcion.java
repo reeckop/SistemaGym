@@ -1,11 +1,8 @@
 package gym.persistencia.entidades;
 
+import gym.persistencia.enums.EstadoInscripcion;
 import gym.persistencia.enums.EstadoRegistroIngreso;
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 import org.bson.BsonType;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonRepresentation;
@@ -19,20 +16,20 @@ public class Inscripcion {
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String idInscripcion;
     private LocalDate fecha;
-    private EstadoRegistroIngreso estado;
+    private EstadoInscripcion estado;
     private Cliente cliente;
     private Horario horario;
 
     public Inscripcion() {
     }
 
-    public Inscripcion(String idInscripcion, LocalDate fecha, EstadoRegistroIngreso estado) {
+    public Inscripcion(String idInscripcion, LocalDate fecha, EstadoInscripcion estado) {
         this.idInscripcion = idInscripcion;
         this.fecha = fecha;
         this.estado = estado;
     }
 
-    public Inscripcion(String idInscripcion, LocalDate fecha, EstadoRegistroIngreso estado, Cliente cliente, Horario horario) {
+    public Inscripcion(String idInscripcion, LocalDate fecha, EstadoInscripcion estado, Cliente cliente, Horario horario) {
         this.idInscripcion = idInscripcion;
         this.fecha = fecha;
         this.estado = estado;
@@ -56,11 +53,11 @@ public class Inscripcion {
         this.fecha = fecha;
     }
 
-    public EstadoRegistroIngreso getEstado() {
+    public EstadoInscripcion getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoRegistroIngreso estado) {
+    public void setEstado(EstadoInscripcion estado) {
         this.estado = estado;
     }
 

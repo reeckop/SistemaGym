@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface IVentaDAO {
     void guardar(Venta venta) throws PersistenciaException;
+    void actualizarVenta(Venta venta) throws PersistenciaException;
     Venta obtenerPorId(String id) throws PersistenciaException;
     List<Venta> obtenerTodas() throws PersistenciaException;
 }

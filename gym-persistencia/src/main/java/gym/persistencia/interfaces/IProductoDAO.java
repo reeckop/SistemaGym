@@ -8,5 +8,6 @@ public interface IProductoDAO {
     void guardar(Producto producto) throws PersistenciaException;
     void actualizar(Producto producto) throws PersistenciaException;
     void eliminar(String id) throws PersistenciaException;
+    Producto obtenerPorId(String id) throws PersistenciaException;
     List<Producto> obtenerTodos() throws PersistenciaException;
 }

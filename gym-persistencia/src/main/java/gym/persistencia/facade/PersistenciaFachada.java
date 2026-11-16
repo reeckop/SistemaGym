@@ -182,6 +182,11 @@ public class PersistenciaFachada implements IPersistenciaFachada {
     public void eliminarProducto(String id) throws PersistenciaException {
         productoDAO.eliminar(id);
     }
+    
+    @Override
+    public Producto obtenerProductoPorId(String id) throws PersistenciaException {
+        return productoDAO.obtenerPorId(id);
+    }
 
     @Override
     public List<Producto> obtenerTodosLosProductos() throws PersistenciaException {
@@ -192,6 +197,11 @@ public class PersistenciaFachada implements IPersistenciaFachada {
     @Override
     public void guardarVenta(Venta venta) throws PersistenciaException {
         ventaDAO.guardar(venta);
+    }
+    
+    @Override
+    public void actualizarVenta(Venta venta) throws PersistenciaException {
+        ventaDAO.actualizarVenta(venta);
     }
 
     @Override

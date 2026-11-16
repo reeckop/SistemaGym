@@ -56,10 +56,12 @@ public interface IPersistenciaFachada {
     void guardarProducto(Producto producto) throws PersistenciaException;
     void actualizarProducto(Producto producto) throws PersistenciaException;
     void eliminarProducto(String id) throws PersistenciaException;
+    Producto obtenerProductoPorId(String id) throws PersistenciaException;
     List<Producto> obtenerTodosLosProductos() throws PersistenciaException;
 
     // VENTA
     void guardarVenta(Venta venta) throws PersistenciaException;
+    void actualizarVenta(Venta venta) throws PersistenciaException;
     Venta obtenerVentaPorId(String id) throws PersistenciaException;
     List<Venta> obtenerTodasLasVentas() throws PersistenciaException;
 

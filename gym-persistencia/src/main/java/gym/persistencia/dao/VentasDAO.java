@@ -5,6 +5,7 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
@@ -22,6 +23,10 @@ import org.bson.types.ObjectId;
 public class VentasDAO extends BaseDAO implements IVentaDAO {
 
     private static final String NOMBRE_COLECCION = "ventas";
+    
+    public VentasDAO(ClientSession sesion) { 
+        super(sesion); 
+    }
 
     @Override
     public void guardar(Venta venta) throws PersistenciaException {

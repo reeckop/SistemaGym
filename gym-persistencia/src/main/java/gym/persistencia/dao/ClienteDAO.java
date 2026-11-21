@@ -1,6 +1,7 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
@@ -15,10 +16,18 @@ public class ClienteDAO extends BaseDAO implements IClienteDAO {
 
     private static final String NOMBRE_COLECCION = "clientes";
 
+    public ClienteDAO(ClientSession sesion) {
+        super(sesion);
+    }
+
     @Override
-    public void guardar(Cliente cliente) {
-        MongoCollection<Cliente> coleccion = obtenerColeccion(NOMBRE_COLECCION, Cliente.class);
-        coleccion.insertOne(cliente);
+    public void guardar(Cliente cliente) throws PersistenciaException {
+        try {
+            MongoCollection<Cliente> coleccion = obtenerColeccion(NOMBRE_COLECCION, Cliente.class);
+            coleccion.insertOne(obtenerSesion(), cliente);
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al guardar el cliente.");
+        }
     }
 
     @Override
@@ -26,7 +35,7 @@ public class ClienteDAO extends BaseDAO implements IClienteDAO {
         try {
             MongoCollection<Cliente> coleccion = obtenerColeccion(NOMBRE_COLECCION, Cliente.class);
             ObjectId id = new ObjectId(cliente.getIdCliente());
-            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", id), cliente);
+            UpdateResult resultado = coleccion.replaceOne(obtenerSesion(),Filters.eq("_id", id),cliente);
 
             if (resultado.getMatchedCount() == 0) {
                 throw new PersistenciaException("No se encontró el Cliente que se desea actualizar.");
@@ -40,7 +49,7 @@ public class ClienteDAO extends BaseDAO implements IClienteDAO {
     public Cliente obtenerPorId(String id) throws PersistenciaException {
         try {
             MongoCollection<Cliente> coleccion = obtenerColeccion(NOMBRE_COLECCION, Cliente.class);
-            return coleccion.find(Filters.eq("_id", new ObjectId(id))).first();
+            return coleccion.find(obtenerSesion(), Filters.eq("_id", new ObjectId(id))).first();
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener el cliente.");
         }
@@ -50,7 +59,7 @@ public class ClienteDAO extends BaseDAO implements IClienteDAO {
     public List<Cliente> obtenerTodos() throws PersistenciaException {
         try {
             MongoCollection<Cliente> coleccion = obtenerColeccion(NOMBRE_COLECCION, Cliente.class);
-            return coleccion.find().into(new ArrayList<>());
+            return coleccion.find(obtenerSesion()).into(new ArrayList<>());
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener los clientes.");
         }

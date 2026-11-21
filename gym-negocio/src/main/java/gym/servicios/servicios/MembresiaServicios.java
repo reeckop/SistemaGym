@@ -6,9 +6,10 @@ package gym.servicios.servicios;
 
 import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Membresia;
-import gym.persistencia.facade.IPersistenciaFachada;
 import gym.servicios.dto.MembresiaDTO;
 import gym.persistencia.excepciones.PersistenciaException;
+import gym.persistencia.unitofwork.IUnitOfWork;
+import gym.persistencia.unitofwork.UnitOfWork;
 import gym.servicios.mappers.Mappers;
 import gym.servicios.interfaces.IMembresiaServicios;
 import java.util.ArrayList;
@@ -21,20 +22,22 @@ import java.util.List;
 
 public class MembresiaServicios implements IMembresiaServicios {
 
-    private final IPersistenciaFachada fachada;
-
-    public MembresiaServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
-    }
-
     @Override
     public void registrarMembresia(MembresiaDTO membresia) throws NegocioException {
         validarMembresia(membresia);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.guardarMembresia(Mappers.convertirAEntidad(membresia));
+            Membresia entidad = Mappers.convertirAEntidad(membresia);
+
+            unitOfWork.membresiaDAO().guardar(entidad);
+
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
-            throw new NegocioException("No fue posible registrar la membresía.", e);
+            unitOfWork.rollback();
+            throw new NegocioException("No fue posible registrar la membresia.", e);
         }
     }
 
@@ -43,10 +46,18 @@ public class MembresiaServicios implements IMembresiaServicios {
         validarMembresia(membresia);
         validarId(membresia.getIdMembresia());
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.actualizarMembresia(Mappers.convertirAEntidad(membresia));
+            Membresia entidad = Mappers.convertirAEntidad(membresia);
+
+            unitOfWork.membresiaDAO().actualizar(entidad);
+
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
-            throw new NegocioException("No fue posible actualizar la membresía.", e);
+            unitOfWork.rollback();
+            throw new NegocioException("No fue posible actualizar la membresia.", e);
         }
     }
 
@@ -54,18 +65,28 @@ public class MembresiaServicios implements IMembresiaServicios {
     public void eliminarMembresia(String id) throws NegocioException {
         validarId(id);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.eliminarMembresia(id);
+            unitOfWork.membresiaDAO().eliminar(id);
+
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
-            throw new NegocioException("No fue posible eliminar la membresía.", e);
+            unitOfWork.rollback();
+            throw new NegocioException("No fue posible eliminar la membresia.", e);
         }
     }
 
     @Override
     public List<MembresiaDTO> consultarTodasLasMembresias() throws NegocioException {
+
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
             List<MembresiaDTO> resultado = new ArrayList<>();
-            List<Membresia> membresias = fachada.obtenerTodasLasMembresias();
+
+            List<Membresia> membresias = unitOfWork.membresiaDAO().obtenerTodos();
 
             if (membresias != null) {
                 for (Membresia membresia : membresias) {
@@ -75,19 +96,23 @@ public class MembresiaServicios implements IMembresiaServicios {
                 }
             }
 
+            unitOfWork.commit();
+
             return resultado;
+
         } catch (PersistenciaException e) {
-            throw new NegocioException("No fue posible consultar las membresías.", e);
+            unitOfWork.rollback();
+            throw new NegocioException("No fue posible consultar las membresias.", e);
         }
     }
 
     private void validarMembresia(MembresiaDTO membresia) throws NegocioException {
         if (membresia == null) {
-            throw new NegocioException("Los datos de la membresía son obligatorios.");
+            throw new NegocioException("Los datos de la membresia son obligatorios.");
         }
 
         if (membresia.getNombre() == null || membresia.getNombre().isBlank()) {
-            throw new NegocioException("El nombre de la membresía es obligatorio.");
+            throw new NegocioException("El nombre de la membresia es obligatorio.");
         }
 
         if (membresia.getPrecio() < 0) {
@@ -95,11 +120,11 @@ public class MembresiaServicios implements IMembresiaServicios {
         }
 
         if (membresia.getEstado() == null) {
-            throw new NegocioException("El estado de la membresía es obligatorio.");
+            throw new NegocioException("El estado de la membresia es obligatorio.");
         }
 
         if (membresia.getFechaInicio() == null || membresia.getFechaFin() == null) {
-            throw new NegocioException("Las fechas de la membresía son obligatorias.");
+            throw new NegocioException("Las fechas de la membresia son obligatorias.");
         }
 
         if (membresia.getFechaFin().isBefore(membresia.getFechaInicio())) {

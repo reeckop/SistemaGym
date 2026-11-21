@@ -7,7 +7,8 @@ package gym.servicios.servicios;
 import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Curso;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.facade.IPersistenciaFachada;
+import gym.persistencia.unitofwork.IUnitOfWork;
+import gym.persistencia.unitofwork.UnitOfWork;
 import gym.servicios.dto.CursoDTO;
 import gym.servicios.interfaces.ICursoServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,19 +21,17 @@ import java.util.List;
  */
 public class CursoServicios implements ICursoServicios {
 
-    private final IPersistenciaFachada fachada;
-
-    public CursoServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
-    }
-
     @Override
     public void registrarCurso(CursoDTO curso) throws NegocioException {
         validarCurso(curso);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.guardarCurso(Mappers.convertirAEntidad(curso));
+            unitOfWork.cursoDAO().guardar(Mappers.convertirAEntidad(curso));
+            unitOfWork.commit();
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible registrar el curso.", e);
         }
     }
@@ -42,9 +41,13 @@ public class CursoServicios implements ICursoServicios {
         validarCurso(curso);
         validarId(curso.getIdCurso());
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.actualizarCurso(Mappers.convertirAEntidad(curso));
+            unitOfWork.cursoDAO().actualizar(Mappers.convertirAEntidad(curso));
+            unitOfWork.commit();
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible actualizar el curso.", e);
         }
     }
@@ -53,18 +56,24 @@ public class CursoServicios implements ICursoServicios {
     public void eliminarCurso(String id) throws NegocioException {
         validarId(id);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.eliminarCurso(id);
+            unitOfWork.cursoDAO().eliminar(id);
+            unitOfWork.commit();
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible eliminar el curso.", e);
         }
     }
 
     @Override
     public List<CursoDTO> consultarTodosLosCursos() throws NegocioException {
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
             List<CursoDTO> resultado = new ArrayList<>();
-            List<Curso> cursos = fachada.obtenerTodosLosCursos();
+            List<Curso> cursos = unitOfWork.cursoDAO().obtenerTodos();
 
             if (cursos != null) {
                 for (Curso curso : cursos) {
@@ -74,8 +83,11 @@ public class CursoServicios implements ICursoServicios {
                 }
             }
 
+            unitOfWork.commit();
             return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar los cursos.", e);
         }
     }

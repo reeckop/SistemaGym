@@ -7,7 +7,8 @@ package gym.servicios.servicios;
 import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Producto;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.facade.IPersistenciaFachada;
+import gym.persistencia.unitofwork.IUnitOfWork;
+import gym.persistencia.unitofwork.UnitOfWork;
 import gym.servicios.dto.ProductoDTO;
 import gym.servicios.interfaces.IProductoServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,19 +21,18 @@ import java.util.List;
  */
 public class ProductoServicios implements IProductoServicios {
 
-    private final IPersistenciaFachada fachada;
-
-    public ProductoServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
-    }
-
     @Override
     public void registrarProducto(ProductoDTO producto) throws NegocioException {
         validarProducto(producto);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.guardarProducto(Mappers.convertirAEntidad(producto));
+            unitOfWork.productoDAO().guardar(Mappers.convertirAEntidad(producto));
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible registrar el producto.", e);
         }
     }
@@ -42,9 +42,14 @@ public class ProductoServicios implements IProductoServicios {
         validarProducto(producto);
         validarId(producto.getIdProducto());
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.actualizarProducto(Mappers.convertirAEntidad(producto));
+            unitOfWork.productoDAO().actualizar(Mappers.convertirAEntidad(producto));
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible actualizar el producto.", e);
         }
     }
@@ -53,18 +58,25 @@ public class ProductoServicios implements IProductoServicios {
     public void eliminarProducto(String id) throws NegocioException {
         validarId(id);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.eliminarProducto(id);
+            unitOfWork.productoDAO().eliminar(id);
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible eliminar el producto.", e);
         }
     }
 
     @Override
     public List<ProductoDTO> consultarTodosLosProductos() throws NegocioException {
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
             List<ProductoDTO> resultado = new ArrayList<>();
-            List<Producto> productos = fachada.obtenerTodosLosProductos();
+            List<Producto> productos = unitOfWork.productoDAO().obtenerTodos();
 
             if (productos != null) {
                 for (Producto producto : productos) {
@@ -74,8 +86,11 @@ public class ProductoServicios implements IProductoServicios {
                 }
             }
 
+            unitOfWork.commit();
             return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar los productos.", e);
         }
     }

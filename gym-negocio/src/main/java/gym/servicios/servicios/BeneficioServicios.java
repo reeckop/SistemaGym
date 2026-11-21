@@ -7,7 +7,8 @@ package gym.servicios.servicios;
 import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Beneficio;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.facade.IPersistenciaFachada;
+import gym.persistencia.unitofwork.IUnitOfWork;
+import gym.persistencia.unitofwork.UnitOfWork;
 import gym.servicios.dto.BeneficioDTO;
 import gym.servicios.interfaces.IBeneficioServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,18 +21,17 @@ import java.util.List;
  */
 public class BeneficioServicios implements IBeneficioServicios {
 
-    private final IPersistenciaFachada fachada;
-
-    public BeneficioServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
-    }
-
     @Override
     public void registrarBeneficio(BeneficioDTO beneficio) throws NegocioException {
         validarBeneficio(beneficio);
+
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.guardarBeneficio(Mappers.convertirAEntidad(beneficio));
+            unitOfWork.beneficioDAO().guardar(Mappers.convertirAEntidad(beneficio));
+            unitOfWork.commit();
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible registrar el beneficio.", e);
         }
     }
@@ -40,13 +40,19 @@ public class BeneficioServicios implements IBeneficioServicios {
     public void actualizarBeneficio(BeneficioDTO beneficio) throws NegocioException {
         validarBeneficio(beneficio);
         validarId(beneficio.getIdBeneficio());
+
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            if (fachada.obtenerBeneficioPorId(beneficio.getIdBeneficio()) == null) {
+            if (unitOfWork.beneficioDAO().obtenerPorId(beneficio.getIdBeneficio()) == null) {
                 throw new NegocioException("El beneficio no existe.");
             }
 
-            fachada.actualizarBeneficio(Mappers.convertirAEntidad(beneficio));
+            unitOfWork.beneficioDAO().actualizar(Mappers.convertirAEntidad(beneficio));
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible actualizar el beneficio.", e);
         }
     }
@@ -54,13 +60,19 @@ public class BeneficioServicios implements IBeneficioServicios {
     @Override
     public void eliminarBeneficio(String id) throws NegocioException {
         validarId(id);
+
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            if (fachada.obtenerBeneficioPorId(id) == null) {
+            if (unitOfWork.beneficioDAO().obtenerPorId(id) == null) {
                 throw new NegocioException("El beneficio no existe.");
             }
 
-            fachada.eliminarBeneficio(id);
+            unitOfWork.beneficioDAO().eliminar(id);
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible eliminar el beneficio.", e);
         }
     }
@@ -68,24 +80,34 @@ public class BeneficioServicios implements IBeneficioServicios {
     @Override
     public BeneficioDTO consultarBeneficio(String id) throws NegocioException {
         validarId(id);
+
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Beneficio beneficio = fachada.obtenerBeneficioPorId(id);
+            Beneficio beneficio = unitOfWork.beneficioDAO().obtenerPorId(id);
 
             if (beneficio == null) {
                 throw new NegocioException("El beneficio no existe.");
             }
 
-            return Mappers.convertirADTO(beneficio);
+            BeneficioDTO resultado = Mappers.convertirADTO(beneficio);
+            unitOfWork.commit();
+
+            return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar el beneficio.", e);
         }
     }
 
     @Override
     public List<BeneficioDTO> consultarTodosLosBeneficios() throws NegocioException {
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
             List<BeneficioDTO> resultado = new ArrayList<>();
-            List<Beneficio> beneficios = fachada.obtenerTodosLosBeneficios();
+            List<Beneficio> beneficios = unitOfWork.beneficioDAO().obtenerTodos();
 
             if (beneficios != null) {
                 for (Beneficio beneficio : beneficios) {
@@ -95,8 +117,11 @@ public class BeneficioServicios implements IBeneficioServicios {
                 }
             }
 
+            unitOfWork.commit();
             return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar los beneficios.", e);
         }
     }

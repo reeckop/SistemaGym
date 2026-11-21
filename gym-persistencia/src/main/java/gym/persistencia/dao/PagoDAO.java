@@ -5,6 +5,7 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import gym.persistencia.entidades.Pago;
@@ -21,6 +22,10 @@ import org.bson.types.ObjectId;
 public class PagoDAO extends BaseDAO implements IPagoDAO {
 
     private static final String NOMBRE_COLECCION = "pagos";
+    
+    public PagoDAO(ClientSession sesion) { 
+        super(sesion); 
+    }
 
     @Override
     public void guardar(Pago pago) throws PersistenciaException {

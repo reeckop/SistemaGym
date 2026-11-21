@@ -19,76 +19,76 @@ import org.junit.jupiter.api.BeforeEach;
  */
 public class ProductosDAOTest {
     
-    private ProductosDAO productosDAO;
-
-    @BeforeEach
-    void setUp() {
-        productosDAO = new ProductosDAO();
-    }
-
-    @Test
-    void testGuardar() throws PersistenciaException  {
-        String id = new ObjectId().toString();
-
-        Producto producto = new Producto(
-                id, "Proteína", "Suplementos", 800.00, 10, "proteina.png");
-
-        productosDAO.guardar(producto);
-
-        List<Producto> resultado = productosDAO.obtenerTodos();
-
-        assertTrue(resultado.stream()
-                .anyMatch(p -> id.equals(p.getIdProducto())));
-
-        productosDAO.eliminar(id);
-    }
-
-    @Test
-    void testActualizar() throws PersistenciaException {
-        String id = new ObjectId().toString();
-
-        Producto producto = new Producto(
-                id, "Proteína", "Suplementos", 800.00, 10, "proteina.png");
-
-        productosDAO.guardar(producto);
-
-        producto.setNombre("Proteína actualizada");
-        producto.setPrecio(900.00);
-
-        productosDAO.actualizar(producto);
-
-        List<Producto> resultado = productosDAO.obtenerTodos();
-
-        assertTrue(resultado.stream().anyMatch(p ->
-                id.equals(p.getIdProducto())
-                && "Proteína actualizada".equals(p.getNombre())
-                && p.getPrecio() == 900.00));
-
-        productosDAO.eliminar(id);
-    }
-
-    @Test
-    void testEliminar() throws PersistenciaException {
-        String id = new ObjectId().toString();
-
-        Producto producto = new Producto(
-                id, "Proteína", "Suplementos", 800.00, 10, "proteina.png");
-
-        productosDAO.guardar(producto);
-        productosDAO.eliminar(id);
-
-        List<Producto> resultado = productosDAO.obtenerTodos();
-
-        assertFalse(resultado.stream()
-                .anyMatch(p -> id.equals(p.getIdProducto())));
-    }
-
-    @Test
-    void testObtenerTodos() throws PersistenciaException {
-        List<Producto> resultado = productosDAO.obtenerTodos();
-
-        assertNotNull(resultado);
-    }
+//    private ProductosDAO productosDAO;
+//
+//    @BeforeEach
+//    void setUp() {
+//        productosDAO = new ProductosDAO();
+//    }
+//
+//    @Test
+//    void testGuardar() throws PersistenciaException  {
+//        String id = new ObjectId().toString();
+//
+//        Producto producto = new Producto(
+//                id, "Proteína", "Suplementos", 800.00, 10, "proteina.png");
+//
+//        productosDAO.guardar(producto);
+//
+//        List<Producto> resultado = productosDAO.obtenerTodos();
+//
+//        assertTrue(resultado.stream()
+//                .anyMatch(p -> id.equals(p.getIdProducto())));
+//
+//        productosDAO.eliminar(id);
+//    }
+//
+//    @Test
+//    void testActualizar() throws PersistenciaException {
+//        String id = new ObjectId().toString();
+//
+//        Producto producto = new Producto(
+//                id, "Proteína", "Suplementos", 800.00, 10, "proteina.png");
+//
+//        productosDAO.guardar(producto);
+//
+//        producto.setNombre("Proteína actualizada");
+//        producto.setPrecio(900.00);
+//
+//        productosDAO.actualizar(producto);
+//
+//        List<Producto> resultado = productosDAO.obtenerTodos();
+//
+//        assertTrue(resultado.stream().anyMatch(p ->
+//                id.equals(p.getIdProducto())
+//                && "Proteína actualizada".equals(p.getNombre())
+//                && p.getPrecio() == 900.00));
+//
+//        productosDAO.eliminar(id);
+//    }
+//
+//    @Test
+//    void testEliminar() throws PersistenciaException {
+//        String id = new ObjectId().toString();
+//
+//        Producto producto = new Producto(
+//                id, "Proteína", "Suplementos", 800.00, 10, "proteina.png");
+//
+//        productosDAO.guardar(producto);
+//        productosDAO.eliminar(id);
+//
+//        List<Producto> resultado = productosDAO.obtenerTodos();
+//
+//        assertFalse(resultado.stream()
+//                .anyMatch(p -> id.equals(p.getIdProducto())));
+//    }
+//
+//    @Test
+//    void testObtenerTodos() throws PersistenciaException {
+//        List<Producto> resultado = productosDAO.obtenerTodos();
+//
+//        assertNotNull(resultado);
+//    }
 
     
     

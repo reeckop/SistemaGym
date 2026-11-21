@@ -8,7 +8,8 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.Inscripcion;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.facade.IPersistenciaFachada;
+import gym.persistencia.unitofwork.IUnitOfWork;
+import gym.persistencia.unitofwork.UnitOfWork;
 import gym.servicios.dto.InscripcionDTO;
 import gym.servicios.interfaces.IInscripcionServicios;
 import gym.servicios.mappers.Mappers;
@@ -21,26 +22,25 @@ import java.util.List;
  */
 public class InscripcionServicios implements IInscripcionServicios {
 
-    private final IPersistenciaFachada fachada;
-
-    public InscripcionServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
-    }
-
     @Override
     public void registrarInscripcion(InscripcionDTO inscripcion) throws NegocioException {
         validarInscripcion(inscripcion);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Cliente cliente = fachada.obtenerClientePorId(inscripcion.getIdCliente());
+            Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(inscripcion.getIdCliente());
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
 
-            fachada.guardarInscripcion(Mappers.convertirAEntidad(inscripcion, cliente));
+            unitOfWork.inscripcionDAO().guardar(Mappers.convertirAEntidad(inscripcion, cliente));
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
-            throw new NegocioException("No fue posible registrar la inscripción.", e);
+            unitOfWork.rollback();
+            throw new NegocioException("No fue posible registrar la inscripcion.", e);
         }
     }
 
@@ -49,16 +49,21 @@ public class InscripcionServicios implements IInscripcionServicios {
         validarInscripcion(inscripcion);
         validarId(inscripcion.getIdInscripcion());
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Cliente cliente = fachada.obtenerClientePorId(inscripcion.getIdCliente());
+            Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(inscripcion.getIdCliente());
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
 
-            fachada.actualizarInscripcion(Mappers.convertirAEntidad(inscripcion, cliente));
+            unitOfWork.inscripcionDAO().actualizar(Mappers.convertirAEntidad(inscripcion, cliente));
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
-            throw new NegocioException("No fue posible actualizar la inscripción.", e);
+            unitOfWork.rollback();
+            throw new NegocioException("No fue posible actualizar la inscripcion.", e);
         }
     }
 
@@ -66,18 +71,25 @@ public class InscripcionServicios implements IInscripcionServicios {
     public void eliminarInscripcion(String id) throws NegocioException {
         validarId(id);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.eliminarInscripcion(id);
+            unitOfWork.inscripcionDAO().eliminar(id);
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
-            throw new NegocioException("No fue posible eliminar la inscripción.", e);
+            unitOfWork.rollback();
+            throw new NegocioException("No fue posible eliminar la inscripcion.", e);
         }
     }
 
     @Override
     public List<InscripcionDTO> consultarTodasLasInscripciones() throws NegocioException {
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
             List<InscripcionDTO> resultado = new ArrayList<>();
-            List<Inscripcion> inscripciones = fachada.obtenerTodasLasInscripciones();
+            List<Inscripcion> inscripciones = unitOfWork.inscripcionDAO().obtenerTodos();
 
             if (inscripciones != null) {
                 for (Inscripcion inscripcion : inscripciones) {
@@ -87,23 +99,26 @@ public class InscripcionServicios implements IInscripcionServicios {
                 }
             }
 
+            unitOfWork.commit();
             return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar las inscripciones.", e);
         }
     }
 
     private void validarInscripcion(InscripcionDTO inscripcion) throws NegocioException {
         if (inscripcion == null) {
-            throw new NegocioException("Los datos de la inscripción son obligatorios.");
+            throw new NegocioException("Los datos de la inscripcion son obligatorios.");
         }
 
         if (inscripcion.getFecha() == null) {
-            throw new NegocioException("La fecha de inscripción es obligatoria.");
+            throw new NegocioException("La fecha de inscripcion es obligatoria.");
         }
 
         if (inscripcion.getEstado() == null) {
-            throw new NegocioException("El estado de inscripción es obligatorio.");
+            throw new NegocioException("El estado de inscripcion es obligatorio.");
         }
 
         if (inscripcion.getIdCliente() == null || inscripcion.getIdCliente().isBlank()) {
@@ -113,7 +128,7 @@ public class InscripcionServicios implements IInscripcionServicios {
 
     private void validarId(String id) throws NegocioException {
         if (id == null || id.isBlank()) {
-            throw new NegocioException("El ID de inscripción es obligatorio.");
+            throw new NegocioException("El ID de inscripcion es obligatorio.");
         }
     }
 }

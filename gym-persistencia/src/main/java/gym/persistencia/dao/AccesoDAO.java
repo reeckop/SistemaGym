@@ -5,6 +5,7 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import gym.persistencia.interfaces.IAccesoDAO;
@@ -22,11 +23,15 @@ public class  AccesoDAO extends BaseDAO implements IAccesoDAO {
 
     private static final String NOMBRE_COLECCION = "accesos";
 
+    public AccesoDAO(ClientSession sesion) {
+        super(sesion);
+    }
+
     @Override
     public void guardar(RegistroIngreso registroIngreso) throws PersistenciaException {
         try {
             MongoCollection<RegistroIngreso> coleccion = obtenerColeccion(NOMBRE_COLECCION, RegistroIngreso.class);
-            coleccion.insertOne(registroIngreso);
+            coleccion.insertOne(obtenerSesion(), registroIngreso);
         } catch (MongoException e) {
             throw new PersistenciaException("Error al guardar el registro de acceso.");
         }
@@ -36,7 +41,7 @@ public class  AccesoDAO extends BaseDAO implements IAccesoDAO {
     public List<RegistroIngreso> obtenerPorCliente(String idCliente) throws PersistenciaException {
         try {
             MongoCollection<RegistroIngreso> coleccion = obtenerColeccion(NOMBRE_COLECCION, RegistroIngreso.class);
-            return coleccion.find(Filters.eq("cliente._id", new ObjectId(idCliente))).into(new ArrayList<>());
+            return coleccion.find(obtenerSesion(), Filters.eq("cliente._id", new ObjectId(idCliente))).into(new ArrayList<>());
         } catch (MongoException | IllegalArgumentException e) {
             throw new PersistenciaException("Error al obtener los registros de acceso del cliente.");
         }
@@ -46,7 +51,7 @@ public class  AccesoDAO extends BaseDAO implements IAccesoDAO {
     public List<RegistroIngreso> obtenerTodos() throws PersistenciaException {
         try {
             MongoCollection<RegistroIngreso> coleccion = obtenerColeccion(NOMBRE_COLECCION, RegistroIngreso.class);
-            return coleccion.find().into(new ArrayList<>());
+            return coleccion.find(obtenerSesion()).into(new ArrayList<>());
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener los registros de acceso.");
         }

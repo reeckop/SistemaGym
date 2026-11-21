@@ -8,6 +8,7 @@ import gym.persistencia.entidades.Beneficio;
 import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.Curso;
 import gym.persistencia.entidades.DetalleVenta;
+import gym.persistencia.entidades.Empleado;
 import gym.persistencia.entidades.Horario;
 import gym.persistencia.entidades.Inscripcion;
 import gym.persistencia.entidades.Membresia;
@@ -21,6 +22,7 @@ import gym.servicios.dto.BeneficioDTO;
 import gym.servicios.dto.ClienteDTO;
 import gym.servicios.dto.CursoDTO;
 import gym.servicios.dto.DetalleVentaDTO;
+import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.dto.HorarioDTO;
 import gym.servicios.dto.InscripcionDTO;
 import gym.servicios.dto.MembresiaDTO;
@@ -459,6 +461,37 @@ public class Mappers {
                 entidad.getEstado() == null ? null : gym.servicios.enums.EstadoNotificacion.valueOf(entidad.getEstado().name()),
                 entidad.getCliente() == null ? null : entidad.getCliente().getIdCliente()
         );
+    }
+    
+    // EMPLEADO
+    public static Empleado convertirAEntidad(EmpleadoDTO empleado) {
+        Empleado entidad = new Empleado();
+
+        entidad.setIdEmpleado(empleado.getIdEmpleado());
+        entidad.setNombre(empleado.getNombre());
+        entidad.setApellido(empleado.getApellido());
+        entidad.setTelefono(empleado.getTelefono());
+        entidad.setNip(empleado.getNip());
+        entidad.setContrasena(empleado.getContrasena());
+        entidad.setFechaIngreso(empleado.getFechaIngreso());
+        entidad.setPuesto(empleado.getPuesto());
+
+        return entidad;
+    }
+
+    public static EmpleadoDTO convertirADTO(Empleado empleado) {
+        EmpleadoDTO dto = new EmpleadoDTO();
+
+        dto.setIdEmpleado(empleado.getIdEmpleado());
+        dto.setNombre(empleado.getNombre());
+        dto.setApellido(empleado.getApellido());
+        dto.setTelefono(empleado.getTelefono());
+        dto.setNip(empleado.getNip());
+        dto.setContrasena(empleado.getContrasena());
+        dto.setFechaIngreso(empleado.getFechaIngreso());
+        dto.setPuesto(empleado.getPuesto());
+
+        return dto;
     }
 }
     

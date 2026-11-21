@@ -7,7 +7,8 @@ package gym.servicios.servicios;
 import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Pago;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.facade.IPersistenciaFachada;
+import gym.persistencia.unitofwork.IUnitOfWork;
+import gym.persistencia.unitofwork.UnitOfWork;
 import gym.servicios.dto.PagoDTO;
 import gym.servicios.interfaces.IPagoServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,19 +21,18 @@ import java.util.List;
  */
 public class PagoServicios implements IPagoServicios {
 
-    private final IPersistenciaFachada fachada;
-
-    public PagoServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
-    }
-
     @Override
     public void registrarPago(PagoDTO pago) throws NegocioException {
         validarPago(pago);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            fachada.guardarPago(Mappers.convertirAEntidad(pago));
+            unitOfWork.pagoDAO().guardar(Mappers.convertirAEntidad(pago));
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible registrar el pago.", e);
         }
     }
@@ -42,13 +42,18 @@ public class PagoServicios implements IPagoServicios {
         validarPago(pago);
         validarId(pago.getIdPago());
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            if (fachada.obtenerPagoPorId(pago.getIdPago()) == null) {
+            if (unitOfWork.pagoDAO().obtenerPorId(pago.getIdPago()) == null) {
                 throw new NegocioException("El pago no existe.");
             }
 
-            fachada.actualizarPago(Mappers.convertirAEntidad(pago));
+            unitOfWork.pagoDAO().actualizar(Mappers.convertirAEntidad(pago));
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible actualizar el pago.", e);
         }
     }
@@ -57,24 +62,33 @@ public class PagoServicios implements IPagoServicios {
     public PagoDTO consultarPago(String id) throws NegocioException {
         validarId(id);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Pago pago = fachada.obtenerPagoPorId(id);
+            Pago pago = unitOfWork.pagoDAO().obtenerPorId(id);
 
             if (pago == null) {
                 throw new NegocioException("El pago no existe.");
             }
 
-            return Mappers.convertirADTO(pago);
+            PagoDTO resultado = Mappers.convertirADTO(pago);
+            unitOfWork.commit();
+
+            return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar el pago.", e);
         }
     }
 
     @Override
     public List<PagoDTO> consultarTodosLosPagos() throws NegocioException {
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
             List<PagoDTO> resultado = new ArrayList<>();
-            List<Pago> pagos = fachada.obtenerTodosLosPagos();
+            List<Pago> pagos = unitOfWork.pagoDAO().obtenerTodos();
 
             if (pagos != null) {
                 for (Pago pago : pagos) {
@@ -84,8 +98,11 @@ public class PagoServicios implements IPagoServicios {
                 }
             }
 
+            unitOfWork.commit();
             return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar los pagos.", e);
         }
     }
@@ -107,8 +124,9 @@ public class PagoServicios implements IPagoServicios {
             throw new NegocioException("El estado del pago es obligatorio.");
         }
 
-        if (pago.getMetodoPago() == null || pago.getMetodoPago().getNombre() == null || pago.getMetodoPago().getNombre().isBlank()) {
-            throw new NegocioException("El método de pago es obligatorio.");
+        if (pago.getMetodoPago() == null || pago.getMetodoPago().getNombre() == null
+                || pago.getMetodoPago().getNombre().isBlank()) {
+            throw new NegocioException("El metodo de pago es obligatorio.");
         }
     }
 

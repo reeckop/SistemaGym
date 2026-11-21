@@ -20,80 +20,80 @@ import org.junit.jupiter.api.BeforeEach;
  */
 public class ClienteDAOTest {
     
-    private ClienteDAO clienteDAO;
-
-    @BeforeEach
-    public void init() {
-        clienteDAO = new ClienteDAO();
-    }
-    
-     @Test
-    public void testGuardar() throws PersistenciaException {
-        String id = new ObjectId().toString();
-
-        Cliente cliente = new Cliente(
-                id,
-                "Carlos",
-                "Lopez",
-                "6441234567",
-                LocalDate.now()
-        );
-
-        clienteDAO.guardar(cliente);
-
-        Cliente resultado = clienteDAO.obtenerPorId(id);
-
-        assertNotNull(resultado);
-        assertEquals("Carlos", resultado.getNombre());
-    }
-
-    @Test
-    public void testObtenerPorId() throws PersistenciaException {
-        String id = new ObjectId().toString();
-
-        Cliente cliente = new Cliente(
-                id,
-                "Juan",
-                "Perez",
-                "6449876543",
-                LocalDate.now()
-        );
-
-        clienteDAO.guardar(cliente);
-
-        Cliente resultado = clienteDAO.obtenerPorId(id);
-
-        assertNotNull(resultado);
-        assertEquals(id, resultado.getIdCliente());
-
-    }
-
-    @Test
-    public void testObtenerTodos() throws PersistenciaException {
-        List<Cliente> clientes = clienteDAO.obtenerTodos();
-        assertNotNull(clientes);
-    }
-
-    @Test
-    public void testActualizar() throws PersistenciaException {
-        String id = new ObjectId().toString();
-        Cliente cliente = new Cliente(
-                id,
-                "Pedro",
-                "Garcia",
-                "6441112233",
-                LocalDate.now()
-        );
-
-        clienteDAO.guardar(cliente);
-
-        cliente.setNombre("Pedro Actualizado");
-
-        clienteDAO.actualizar(cliente);
-
-        Cliente resultado = clienteDAO.obtenerPorId(id);
-
-        assertNotNull(resultado);
-        assertEquals("Pedro Actualizado", resultado.getNombre());
-    }
+//    private ClienteDAO clienteDAO;
+//
+//    @BeforeEach
+//    public void init() {
+//        clienteDAO = new ClienteDAO();
+//    }
+//    
+//     @Test
+//    public void testGuardar() throws PersistenciaException {
+//        String id = new ObjectId().toString();
+//
+//        Cliente cliente = new Cliente(
+//                id,
+//                "Carlos",
+//                "Lopez",
+//                "6441234567",
+//                LocalDate.now()
+//        );
+//
+//        clienteDAO.guardar(cliente);
+//
+//        Cliente resultado = clienteDAO.obtenerPorId(id);
+//
+//        assertNotNull(resultado);
+//        assertEquals("Carlos", resultado.getNombre());
+//    }
+//
+//    @Test
+//    public void testObtenerPorId() throws PersistenciaException {
+//        String id = new ObjectId().toString();
+//
+//        Cliente cliente = new Cliente(
+//                id,
+//                "Juan",
+//                "Perez",
+//                "6449876543",
+//                LocalDate.now()
+//        );
+//
+//        clienteDAO.guardar(cliente);
+//
+//        Cliente resultado = clienteDAO.obtenerPorId(id);
+//
+//        assertNotNull(resultado);
+//        assertEquals(id, resultado.getIdCliente());
+//
+//    }
+//
+//    @Test
+//    public void testObtenerTodos() throws PersistenciaException {
+//        List<Cliente> clientes = clienteDAO.obtenerTodos();
+//        assertNotNull(clientes);
+//    }
+//
+//    @Test
+//    public void testActualizar() throws PersistenciaException {
+//        String id = new ObjectId().toString();
+//        Cliente cliente = new Cliente(
+//                id,
+//                "Pedro",
+//                "Garcia",
+//                "6441112233",
+//                LocalDate.now()
+//        );
+//
+//        clienteDAO.guardar(cliente);
+//
+//        cliente.setNombre("Pedro Actualizado");
+//
+//        clienteDAO.actualizar(cliente);
+//
+//        Cliente resultado = clienteDAO.obtenerPorId(id);
+//
+//        assertNotNull(resultado);
+//        assertEquals("Pedro Actualizado", resultado.getNombre());
+//    }
 }

@@ -8,7 +8,8 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.RegistroIngreso;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.facade.IPersistenciaFachada;
+import gym.persistencia.unitofwork.IUnitOfWork;
+import gym.persistencia.unitofwork.UnitOfWork;
 import gym.servicios.dto.RegistroIngresoDTO;
 import gym.servicios.interfaces.IRegistroIngresoServicios;
 import gym.servicios.mappers.Mappers;
@@ -21,39 +22,38 @@ import java.util.List;
  */
 public class RegistroIngresoServicios implements IRegistroIngresoServicios {
 
-    private final IPersistenciaFachada fachada;
-
-    public RegistroIngresoServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
-    }
-
     @Override
     public void registrarIngreso(RegistroIngresoDTO registro) throws NegocioException {
         validarRegistro(registro);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Cliente cliente = fachada.obtenerClientePorId(registro.getIdCliente());
+            Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(registro.getIdCliente());
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
 
-            fachada.guardarRegistroIngreso(Mappers.convertirAEntidad(registro, cliente));
+            unitOfWork.accesoDAO().guardar(Mappers.convertirAEntidad(registro, cliente));
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible registrar el ingreso.", e);
         }
     }
 
     @Override
-    public List<RegistroIngresoDTO> consultarIngresosPorCliente(String idCliente)
-            throws NegocioException {
-
+    public List<RegistroIngresoDTO> consultarIngresosPorCliente(String idCliente) throws NegocioException {
         validarId(idCliente);
+
+        IUnitOfWork unitOfWork = new UnitOfWork();
 
         try {
             List<RegistroIngresoDTO> resultado = new ArrayList<>();
             List<RegistroIngreso> registros =
-                fachada.obtenerRegistrosIngresoPorCliente(idCliente);
+                    unitOfWork.accesoDAO().obtenerPorCliente(idCliente);
 
             if (registros != null) {
                 for (RegistroIngreso registro : registros) {
@@ -63,17 +63,22 @@ public class RegistroIngresoServicios implements IRegistroIngresoServicios {
                 }
             }
 
+            unitOfWork.commit();
             return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar los ingresos del cliente.", e);
         }
     }
 
     @Override
     public List<RegistroIngresoDTO> consultarTodosLosIngresos() throws NegocioException {
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
             List<RegistroIngresoDTO> resultado = new ArrayList<>();
-            List<RegistroIngreso> registros = fachada.obtenerTodosLosRegistrosIngreso();
+            List<RegistroIngreso> registros = unitOfWork.accesoDAO().obtenerTodos();
 
             if (registros != null) {
                 for (RegistroIngreso registro : registros) {
@@ -83,8 +88,11 @@ public class RegistroIngresoServicios implements IRegistroIngresoServicios {
                 }
             }
 
+            unitOfWork.commit();
             return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar los ingresos.", e);
         }
     }

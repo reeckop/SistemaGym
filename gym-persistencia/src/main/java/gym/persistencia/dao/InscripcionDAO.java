@@ -5,6 +5,7 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
@@ -21,15 +22,19 @@ import org.bson.types.ObjectId;
  */
 public class InscripcionDAO extends BaseDAO implements IInscripcionDAO {
 
-     private static final String NOMBRE_COLECCION = "inscripciones";
+    private static final String NOMBRE_COLECCION = "inscripciones";
+
+    public InscripcionDAO(ClientSession sesion) {
+        super(sesion);
+    }
 
     @Override
     public void guardar(Inscripcion inscripcion) throws PersistenciaException {
         try {
             MongoCollection<Inscripcion> coleccion = obtenerColeccion(NOMBRE_COLECCION, Inscripcion.class);
-            coleccion.insertOne(inscripcion);
+            coleccion.insertOne(obtenerSesion(), inscripcion);
         } catch (MongoException e) {
-            throw new PersistenciaException("Error al guardar la inscripción.");
+            throw new PersistenciaException("Error al guardar la inscripcion.");
         }
     }
 
@@ -38,13 +43,12 @@ public class InscripcionDAO extends BaseDAO implements IInscripcionDAO {
         try {
             MongoCollection<Inscripcion> coleccion = obtenerColeccion(NOMBRE_COLECCION, Inscripcion.class);
             ObjectId id = new ObjectId(inscripcion.getIdInscripcion());
-            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", id), inscripcion);
-
+            UpdateResult resultado = coleccion.replaceOne(obtenerSesion(), Filters.eq("_id", id), inscripcion);
             if (resultado.getMatchedCount() == 0) {
-                throw new PersistenciaException("No se encontró la inscripción que se desea actualizar.");
+                throw new PersistenciaException("No se encontro la inscripcion que se desea actualizar.");
             }
-        } catch (MongoException e) {
-            throw new PersistenciaException("Error al actualizar la inscripción.");
+        } catch (MongoException | IllegalArgumentException e) {
+            throw new PersistenciaException("Error al actualizar la inscripcion.");
         }
     }
 
@@ -52,9 +56,9 @@ public class InscripcionDAO extends BaseDAO implements IInscripcionDAO {
     public void eliminar(String id) throws PersistenciaException {
         try {
             MongoCollection<Inscripcion> coleccion = obtenerColeccion(NOMBRE_COLECCION, Inscripcion.class);
-            coleccion.deleteOne(Filters.eq("_id", new ObjectId(id)));
-        } catch (MongoException e) {
-            throw new PersistenciaException("Error al eliminar la inscripción.");
+            coleccion.deleteOne(obtenerSesion(), Filters.eq("_id", new ObjectId(id)));
+        } catch (MongoException | IllegalArgumentException e) {
+            throw new PersistenciaException("Error al eliminar la inscripcion.");
         }
     }
 
@@ -62,10 +66,9 @@ public class InscripcionDAO extends BaseDAO implements IInscripcionDAO {
     public List<Inscripcion> obtenerTodos() throws PersistenciaException {
         try {
             MongoCollection<Inscripcion> coleccion = obtenerColeccion(NOMBRE_COLECCION, Inscripcion.class);
-            return coleccion.find().into(new ArrayList<>());
+            return coleccion.find(obtenerSesion()).into(new ArrayList<>());
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener las inscripciones.");
         }
     }
-    
 }

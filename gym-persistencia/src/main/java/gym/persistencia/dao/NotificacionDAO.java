@@ -5,6 +5,7 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import gym.persistencia.interfaces.INotificacionDAO;
@@ -21,6 +22,10 @@ import org.bson.types.ObjectId;
 public class NotificacionDAO extends BaseDAO implements INotificacionDAO {
 
     private static final String NOMBRE_COLECCION = "notificaciones";
+    
+    public NotificacionDAO(ClientSession sesion) { 
+        super(sesion); 
+    }
 
     @Override
     public void guardar(Notificacion notificacion) throws PersistenciaException {
@@ -28,7 +33,7 @@ public class NotificacionDAO extends BaseDAO implements INotificacionDAO {
             MongoCollection<Notificacion> coleccion = obtenerColeccion(NOMBRE_COLECCION, Notificacion.class);
             coleccion.insertOne(notificacion);
         } catch (MongoException e) {
-            throw new PersistenciaException("Error al guardar la notificación.");
+            throw new PersistenciaException("Error al guardar la notificacion.");
         }
     }
 

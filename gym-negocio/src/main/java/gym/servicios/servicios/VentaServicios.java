@@ -11,7 +11,8 @@ import gym.persistencia.entidades.Pago;
 import gym.persistencia.entidades.Producto;
 import gym.persistencia.entidades.Venta;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.facade.IPersistenciaFachada;
+import gym.persistencia.unitofwork.IUnitOfWork;
+import gym.persistencia.unitofwork.UnitOfWork;
 import gym.servicios.dto.PagoDTO;
 import gym.servicios.dto.VentaDTO;
 import gym.servicios.interfaces.IVentaServicios;
@@ -25,21 +26,17 @@ import java.util.List;
  */
 public class VentaServicios implements IVentaServicios {
 
-    private final IPersistenciaFachada fachada;
-
-    public VentaServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
-    }
-
     @Override
-    public void agregarProducto(String idVenta, String idProducto, int cantidad)throws NegocioException {
+    public void agregarProducto(String idVenta, String idProducto, int cantidad) throws NegocioException {
         validarId(idVenta);
         validarIdProducto(idProducto);
         validarCantidad(cantidad);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Venta venta = obtenerVenta(idVenta);
-            Producto producto = fachada.obtenerProductoPorId(idProducto);
+            Venta venta = obtenerVenta(unitOfWork, idVenta);
+            Producto producto = unitOfWork.productoDAO().obtenerPorId(idProducto);
 
             if (producto == null) {
                 throw new NegocioException("El producto no existe.");
@@ -51,12 +48,7 @@ public class VentaServicios implements IVentaServicios {
 
             double subtotal = producto.getPrecio() * cantidad;
 
-            DetalleVenta detalle = new DetalleVenta(
-                    producto,
-                    cantidad,
-                    producto.getPrecio(),
-                    subtotal
-            );
+            DetalleVenta detalle = new DetalleVenta(producto, cantidad, producto.getPrecio(), subtotal);
 
             if (venta.getDetalles() == null) {
                 venta.setDetalles(new ArrayList<>());
@@ -66,9 +58,11 @@ public class VentaServicios implements IVentaServicios {
 
             calcularImportes(venta);
 
-            fachada.actualizarVenta(venta);
+            unitOfWork.ventaDAO().actualizarVenta(venta);
+            unitOfWork.commit();
 
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible agregar el producto a la venta.", e);
         }
     }
@@ -77,30 +71,34 @@ public class VentaServicios implements IVentaServicios {
     public double calcularTotal(String idVenta) throws NegocioException {
         validarId(idVenta);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Venta venta = obtenerVenta(idVenta);
+            Venta venta = obtenerVenta(unitOfWork, idVenta);
 
             calcularImportes(venta);
 
-            fachada.actualizarVenta(venta);
+            unitOfWork.ventaDAO().actualizarVenta(venta);
+            unitOfWork.commit();
 
             return venta.getTotal();
 
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible calcular el total de la venta.", e);
         }
     }
 
     @Override
-    public double aplicarDescuento(String idVenta, String idCliente)
-            throws NegocioException {
-
+    public double aplicarDescuento(String idVenta, String idCliente) throws NegocioException {
         validarId(idVenta);
         validarIdCliente(idCliente);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Venta venta = obtenerVenta(idVenta);
-            Cliente cliente = fachada.obtenerClientePorId(idCliente);
+            Venta venta = obtenerVenta(unitOfWork, idVenta);
+            Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(idCliente);
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
@@ -108,11 +106,13 @@ public class VentaServicios implements IVentaServicios {
 
             calcularImportes(venta);
 
-            fachada.actualizarVenta(venta);
+            unitOfWork.ventaDAO().actualizarVenta(venta);
+            unitOfWork.commit();
 
             return venta.getDescuento();
 
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible aplicar el descuento.", e);
         }
     }
@@ -121,8 +121,10 @@ public class VentaServicios implements IVentaServicios {
     public void confirmarVenta(String idVenta) throws NegocioException {
         validarId(idVenta);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Venta venta = obtenerVenta(idVenta);
+            Venta venta = obtenerVenta(unitOfWork, idVenta);
 
             if (venta.getDetalles() == null || venta.getDetalles().isEmpty()) {
                 throw new NegocioException("La venta debe contener al menos un producto.");
@@ -138,12 +140,15 @@ public class VentaServicios implements IVentaServicios {
                 }
 
                 producto.setStock(producto.getStock() - detalle.getCantidad());
-                fachada.actualizarProducto(producto);
+
+                unitOfWork.productoDAO().actualizar(producto);
             }
 
-            fachada.actualizarVenta(venta);
+            unitOfWork.ventaDAO().actualizarVenta(venta);
+            unitOfWork.commit();
 
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible confirmar la venta.", e);
         }
     }
@@ -153,8 +158,10 @@ public class VentaServicios implements IVentaServicios {
         validarId(idVenta);
         validarPago(pago);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Venta venta = obtenerVenta(idVenta);
+            Venta venta = obtenerVenta(unitOfWork, idVenta);
 
             if (pago.getMonto() < venta.getTotal()) {
                 throw new NegocioException("El monto del pago es insuficiente.");
@@ -164,20 +171,22 @@ public class VentaServicios implements IVentaServicios {
 
             venta.setPago(pagoEntidad);
 
-            fachada.actualizarVenta(venta);
+            unitOfWork.ventaDAO().actualizarVenta(venta);
+            unitOfWork.commit();
 
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible registrar el pago.", e);
         }
     }
 
     @Override
     public List<VentaDTO> consultarVentas() throws NegocioException {
+        IUnitOfWork unitOfWork = new UnitOfWork();
 
         try {
             List<VentaDTO> ventasDTO = new ArrayList<>();
-
-            List<Venta> ventas = fachada.obtenerTodasLasVentas();
+            List<Venta> ventas = unitOfWork.ventaDAO().obtenerTodas();
 
             if (ventas != null) {
                 for (Venta venta : ventas) {
@@ -187,15 +196,16 @@ public class VentaServicios implements IVentaServicios {
                 }
             }
 
+            unitOfWork.commit();
             return ventasDTO;
 
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar las ventas.", e);
         }
     }
 
     private void calcularImportes(Venta venta) {
-
         double subtotal = 0;
 
         if (venta.getDetalles() != null) {
@@ -208,54 +218,43 @@ public class VentaServicios implements IVentaServicios {
         venta.setTotal(subtotal - venta.getDescuento());
     }
 
-    private Venta obtenerVenta(String idVenta) throws NegocioException {
-
+    private Venta obtenerVenta(IUnitOfWork unitOfWork, String idVenta) throws NegocioException, PersistenciaException {
         validarId(idVenta);
 
-        try {
-            Venta venta = fachada.obtenerVentaPorId(idVenta);
+        Venta venta = unitOfWork.ventaDAO().obtenerPorId(idVenta);
 
-            if (venta == null) {
-                throw new NegocioException("La venta no existe.");
-            }
-
-            return venta;
-
-        } catch (PersistenciaException e) {
-            throw new NegocioException("No fue posible consultar la venta.", e);
+        if (venta == null) {
+            throw new NegocioException("La venta no existe.");
         }
+
+        return venta;
     }
 
     private void validarId(String id) throws NegocioException {
-
         if (id == null || id.isBlank()) {
             throw new NegocioException("El ID de la venta es obligatorio.");
         }
     }
 
     private void validarIdProducto(String idProducto) throws NegocioException {
-
         if (idProducto == null || idProducto.isBlank()) {
             throw new NegocioException("El ID del producto es obligatorio.");
         }
     }
 
     private void validarIdCliente(String idCliente) throws NegocioException {
-
         if (idCliente == null || idCliente.isBlank()) {
             throw new NegocioException("El ID del cliente es obligatorio.");
         }
     }
 
     private void validarCantidad(int cantidad) throws NegocioException {
-
         if (cantidad <= 0) {
             throw new NegocioException("La cantidad debe ser mayor a cero.");
         }
     }
 
     private void validarPago(PagoDTO pago) throws NegocioException {
-
         if (pago == null) {
             throw new NegocioException("Los datos del pago son obligatorios.");
         }

@@ -8,7 +8,8 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.Notificacion;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.facade.IPersistenciaFachada;
+import gym.persistencia.unitofwork.IUnitOfWork;
+import gym.persistencia.unitofwork.UnitOfWork;
 import gym.servicios.dto.NotificacionDTO;
 import gym.servicios.interfaces.INotificacionServicios;
 import gym.servicios.mappers.Mappers;
@@ -21,26 +22,25 @@ import java.util.List;
  */
 public class NotificacionServicios implements INotificacionServicios {
 
-    private final IPersistenciaFachada fachada;
-
-    public NotificacionServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
-    }
-
     @Override
     public void registrarNotificacion(NotificacionDTO notificacion) throws NegocioException {
         validarNotificacion(notificacion);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Cliente cliente = fachada.obtenerClientePorId(notificacion.getIdCliente());
+            Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(notificacion.getIdCliente());
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
 
-            fachada.guardarNotificacion(Mappers.convertirAEntidad(notificacion, cliente));
+            unitOfWork.notificacionDAO().guardar(Mappers.convertirAEntidad(notificacion, cliente));
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
-            throw new NegocioException("No fue posible registrar la notificación.", e);
+            unitOfWork.rollback();
+            throw new NegocioException("No fue posible registrar la notificacion.", e);
         }
     }
 
@@ -49,16 +49,21 @@ public class NotificacionServicios implements INotificacionServicios {
         validarNotificacion(notificacion);
         validarId(notificacion.getIdNotificacion());
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
-            Cliente cliente = fachada.obtenerClientePorId(notificacion.getIdCliente());
+            Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(notificacion.getIdCliente());
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
 
-            fachada.actualizarNotificacion(Mappers.convertirAEntidad(notificacion, cliente));
+            unitOfWork.notificacionDAO().actualizarNotificacion(Mappers.convertirAEntidad(notificacion, cliente));
+            unitOfWork.commit();
+
         } catch (PersistenciaException e) {
-            throw new NegocioException("No fue posible actualizar la notificación.", e);
+            unitOfWork.rollback();
+            throw new NegocioException("No fue posible actualizar la notificacion.", e);
         }
     }
 
@@ -67,10 +72,11 @@ public class NotificacionServicios implements INotificacionServicios {
 
         validarId(idCliente);
 
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
             List<NotificacionDTO> resultado = new ArrayList<>();
-            List<Notificacion> notificaciones =
-                fachada.obtenerNotificacionesPorCliente(idCliente);
+            List<Notificacion> notificaciones = unitOfWork.notificacionDAO().obtenerPorCliente(idCliente);
 
             if (notificaciones != null) {
                 for (Notificacion notificacion : notificaciones) {
@@ -80,17 +86,22 @@ public class NotificacionServicios implements INotificacionServicios {
                 }
             }
 
+            unitOfWork.commit();
             return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar las notificaciones del cliente.", e);
         }
     }
 
     @Override
     public List<NotificacionDTO> consultarTodasLasNotificaciones() throws NegocioException {
+        IUnitOfWork unitOfWork = new UnitOfWork();
+
         try {
             List<NotificacionDTO> resultado = new ArrayList<>();
-            List<Notificacion> notificaciones = fachada.obtenerTodasLasNotificaciones();
+            List<Notificacion> notificaciones = unitOfWork.notificacionDAO().obtenerTodas();
 
             if (notificaciones != null) {
                 for (Notificacion notificacion : notificaciones) {
@@ -100,19 +111,22 @@ public class NotificacionServicios implements INotificacionServicios {
                 }
             }
 
+            unitOfWork.commit();
             return resultado;
+
         } catch (PersistenciaException e) {
+            unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar las notificaciones.", e);
         }
     }
 
     private void validarNotificacion(NotificacionDTO notificacion) throws NegocioException {
         if (notificacion == null) {
-            throw new NegocioException("Los datos de la notificación son obligatorios.");
+            throw new NegocioException("Los datos de la notificacion son obligatorios.");
         }
 
         if (notificacion.getTipo() == null || notificacion.getTipo().isBlank()) {
-            throw new NegocioException("El tipo de notificación es obligatorio.");
+            throw new NegocioException("El tipo de notificacion es obligatorio.");
         }
 
         if (notificacion.getMensaje() == null || notificacion.getMensaje().isBlank()) {
@@ -120,11 +134,11 @@ public class NotificacionServicios implements INotificacionServicios {
         }
 
         if (notificacion.getFechaHora() == null) {
-            throw new NegocioException("La fecha de notificación es obligatoria.");
+            throw new NegocioException("La fecha de notificacion es obligatoria.");
         }
 
         if (notificacion.getEstado() == null) {
-            throw new NegocioException("El estado de la notificación es obligatorio.");
+            throw new NegocioException("El estado de la notificacion es obligatorio.");
         }
 
         if (notificacion.getIdCliente() == null || notificacion.getIdCliente().isBlank()) {
@@ -134,7 +148,7 @@ public class NotificacionServicios implements INotificacionServicios {
 
     private void validarId(String id) throws NegocioException {
         if (id == null || id.isBlank()) {
-            throw new NegocioException("El ID de notificación es obligatorio.");
+            throw new NegocioException("El ID de notificacion es obligatorio.");
         }
     }
 }

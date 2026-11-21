@@ -8,6 +8,7 @@ import gym.login.iniciar_sesion;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IEmpleadoServicios;
 import java.time.LocalDate;
+import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JOptionPane;
 
 /**
@@ -39,8 +40,18 @@ public class pantalla_registro_empleado extends javax.swing.JFrame {
         campo_txt_nombre_empleadoN.setText(empleado.getNombre());
         campo_txt_apellido_empleadoN.setText(empleado.getApellido());
         campo_txt_telefono_empleadoN.setText(empleado.getTelefono());
-        campo_txt_nip_empleadoN.setText(empleado.getNip());
         campo_txt_contraseña_empleadoN.setText(empleado.getContrasena());
+
+        // Generar NIP automáticamente si todavía no existe
+        if (empleado.getNip() == null || empleado.getNip().isBlank()) {
+            campo_txt_nip_empleadoN.setText(generarNip());
+        } else {
+            campo_txt_nip_empleadoN.setText(empleado.getNip());
+        }
+
+        // El empleado no puede modificar su NIP
+        campo_txt_nip_empleadoN.setEditable(false);
+
     }
 
     /**
@@ -253,20 +264,52 @@ public class pantalla_registro_empleado extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_aceptar_empleadoNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_aceptar_empleadoNActionPerformed
-        EmpleadoDTO empleado = new EmpleadoDTO();
+        String nombre = campo_txt_nombre_empleadoN.getText().trim();
+        String apellido = campo_txt_apellido_empleadoN.getText().trim();
+        String telefono = campo_txt_telefono_empleadoN.getText().trim();
+        String nip = campo_txt_nip_empleadoN.getText().trim();
+        String contrasena = campo_txt_contraseña_empleadoN.getText();
 
-        empleado.setNombre(campo_txt_nombre_empleadoN.getText().trim());
-        empleado.setApellido(campo_txt_apellido_empleadoN.getText().trim());
-        empleado.setTelefono(campo_txt_telefono_empleadoN.getText().trim());
-        empleado.setNip(campo_txt_nip_empleadoN.getText().trim());
-        empleado.setContrasena(campo_txt_contraseña_empleadoN.getText());
-        empleado.setFechaIngreso(campo_fecha_ingreso_empleadoN.getText());
-        empleado.setPuesto(campo_txt_puesto_empleadoN.getText());
-
-        if (empleado.getNombre().isBlank() || empleado.getApellido().isBlank() || empleado.getTelefono().isBlank() || empleado.getNip().isBlank() || empleado.getContrasena().isBlank()) {
+        // Validar campos vacíos
+        if (nombre.isBlank() || apellido.isBlank() || telefono.isBlank() || nip.isBlank() || contrasena.isBlank()) {
             JOptionPane.showMessageDialog(this, "Completa todos los campos obligatorios.");
             return;
         }
+
+        // Validar nombre
+        if (!nombre.matches("[\\p{L} '-]+")) {
+            JOptionPane.showMessageDialog(this, "El nombre solo debe contener letras.");
+            return;
+        }
+
+        // Validar apellido
+        if (!apellido.matches("[\\p{L} '-]+")) {
+            JOptionPane.showMessageDialog(this, "El apellido solo debe contener letras.");
+            return;
+        }
+
+        // Validar teléfono
+        if (!telefono.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(this, "El teléfono debe contener exactamente 10 números.");
+            return;
+        }
+
+        // Validar NIP
+        if (!nip.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "El NIP solo debe contener números.");
+            return;
+        }
+
+        // Crear empleado
+        EmpleadoDTO empleado = new EmpleadoDTO();
+
+        empleado.setNombre(nombre);
+        empleado.setApellido(apellido);
+        empleado.setTelefono(telefono);
+        empleado.setNip(nip);
+        empleado.setContrasena(contrasena);
+        empleado.setFechaIngreso(campo_fecha_ingreso_empleadoN.getText());
+        empleado.setPuesto(campo_txt_puesto_empleadoN.getText());
 
         pantalla_confirmar_empleadoN confirmacion = new pantalla_confirmar_empleadoN(empleadoServicios, empleado);
 
@@ -280,9 +323,10 @@ public class pantalla_registro_empleado extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btn_volver_empleadoNActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private String generarNip() {
+        int nip = ThreadLocalRandom.current().nextInt(100000, 1000000);
+        return String.valueOf(nip);
+    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -8,6 +8,7 @@ import gym.excepciones.NegocioException;
 import gym.registrar_empleado.pantalla_registro_empleado;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IEmpleadoServicios;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -206,7 +207,19 @@ public class iniciar_sesion extends javax.swing.JFrame {
 
     private void btn_iniciar_sesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_iniciar_sesionActionPerformed
        String nip = txtNip.getText().trim();
-       String contrasena = new String(txt_contraseña.getPassword());
+        String contrasena = new String(txt_contraseña.getPassword());
+
+        // Validar campos vacíos
+        if (nip.isBlank() || contrasena.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Ingresa tu NIP y contraseña.");
+            return;
+        }
+
+        // Validar que el NIP solo tenga números
+        if (!nip.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "El NIP solo debe contener números.");
+            return;
+        }
 
         try {
             EmpleadoDTO empleado = empleadoServicios.iniciarSesion(nip, contrasena);
@@ -219,7 +232,6 @@ public class iniciar_sesion extends javax.swing.JFrame {
         } catch (NegocioException e) {
             error_login pantalla = new error_login(empleadoServicios);
             pantalla.setVisible(true);
-
             this.dispose();
         }
     }//GEN-LAST:event_btn_iniciar_sesionActionPerformed

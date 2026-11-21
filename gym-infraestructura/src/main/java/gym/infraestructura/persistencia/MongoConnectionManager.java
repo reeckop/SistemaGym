@@ -29,7 +29,7 @@ public class MongoConnectionManager {
     /**
      * Única conexión compartida de MongoDB.
      */
-    private static final MongoClient CLIENTE = MongoClients.create(CADENA_CONEXION);
+    private static final MongoClient CLIENTE = MongoClients.create(System.getProperty("mongodb.uri", CADENA_CONEXION));
 
     /**
      * Constructor privado para evitar crear instancias.

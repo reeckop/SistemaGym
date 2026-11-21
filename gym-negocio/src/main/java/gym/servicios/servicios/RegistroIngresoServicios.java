@@ -8,7 +8,7 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.RegistroIngreso;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.facade.IPersistenciaFachada;
+import gym.persistencia.uow.SociosUnitOfWork;
 import gym.servicios.dto.RegistroIngresoDTO;
 import gym.servicios.interfaces.IRegistroIngresoServicios;
 import gym.servicios.mappers.Mappers;
@@ -21,10 +21,10 @@ import java.util.List;
  */
 public class RegistroIngresoServicios implements IRegistroIngresoServicios {
 
-    private final IPersistenciaFachada fachada;
+    private final SociosUnitOfWork unidad;
 
-    public RegistroIngresoServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
+    public RegistroIngresoServicios(SociosUnitOfWork unidad) {
+        this.unidad = unidad;
     }
 
     @Override
@@ -32,13 +32,13 @@ public class RegistroIngresoServicios implements IRegistroIngresoServicios {
         validarRegistro(registro);
 
         try {
-            Cliente cliente = fachada.obtenerClientePorId(registro.getIdCliente());
+            Cliente cliente = unidad.clientes().obtenerPorId(registro.getIdCliente());
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
 
-            fachada.guardarRegistroIngreso(Mappers.convertirAEntidad(registro, cliente));
+            unidad.accesos().guardar(Mappers.convertirAEntidad(registro, cliente));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible registrar el ingreso.", e);
         }
@@ -53,7 +53,7 @@ public class RegistroIngresoServicios implements IRegistroIngresoServicios {
         try {
             List<RegistroIngresoDTO> resultado = new ArrayList<>();
             List<RegistroIngreso> registros =
-                fachada.obtenerRegistrosIngresoPorCliente(idCliente);
+                unidad.accesos().obtenerPorCliente(idCliente);
 
             if (registros != null) {
                 for (RegistroIngreso registro : registros) {
@@ -73,7 +73,7 @@ public class RegistroIngresoServicios implements IRegistroIngresoServicios {
     public List<RegistroIngresoDTO> consultarTodosLosIngresos() throws NegocioException {
         try {
             List<RegistroIngresoDTO> resultado = new ArrayList<>();
-            List<RegistroIngreso> registros = fachada.obtenerTodosLosRegistrosIngreso();
+            List<RegistroIngreso> registros = unidad.accesos().obtenerTodos();
 
             if (registros != null) {
                 for (RegistroIngreso registro : registros) {

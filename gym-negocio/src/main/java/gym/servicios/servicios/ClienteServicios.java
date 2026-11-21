@@ -8,7 +8,7 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.Membresia;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.facade.IPersistenciaFachada;
+import gym.persistencia.uow.SociosUnitOfWork;
 import gym.servicios.dto.ClienteDTO;
 import gym.servicios.mappers.Mappers;
 import java.util.ArrayList;
@@ -21,23 +21,23 @@ import java.util.regex.Pattern;
  * @author PC GAMER MASTER RACE
  */
 public class ClienteServicios implements IClienteServicios {
-     private final IPersistenciaFachada fachada;
+     private final SociosUnitOfWork unidad;
 
-    public ClienteServicios(IPersistenciaFachada fachada) {
-        this.fachada = fachada;
+    public ClienteServicios(SociosUnitOfWork unidad) {
+        this.unidad = unidad;
     }
 
     @Override
     public void registrarCliente(ClienteDTO cliente) throws NegocioException {
         try {
             validarCliente(cliente);
-            Cliente existente = fachada.obtenerClientePorId(cliente.getIdCliente());
+            Cliente existente = unidad.clientes().obtenerPorId(cliente.getIdCliente());
             if (existente != null) {
                 throw new NegocioException("El cliente ya está registrado.");
             }
             Membresia membresia = obtenerMembresia(cliente.getIdMembresia());
             Cliente entidad = Mappers.convertirAEntidad(cliente, membresia);
-            fachada.guardarCliente(entidad);
+            unidad.clientes().guardar(entidad);
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al registrar el cliente.", e);
         }
@@ -47,13 +47,13 @@ public class ClienteServicios implements IClienteServicios {
     public void actualizarCliente(ClienteDTO cliente) throws NegocioException {
         try {
             validarCliente(cliente);
-            Cliente existente = fachada.obtenerClientePorId(cliente.getIdCliente());
+            Cliente existente = unidad.clientes().obtenerPorId(cliente.getIdCliente());
             if (existente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
             Membresia membresia = obtenerMembresia(cliente.getIdMembresia());
             Cliente entidad = Mappers.convertirAEntidad(cliente, membresia);
-            fachada.actualizarCliente(entidad);
+            unidad.clientes().actualizar(entidad);
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al actualizar el cliente.", e);
         }
@@ -65,7 +65,7 @@ public class ClienteServicios implements IClienteServicios {
             if (id == null || id.isBlank()) {
                 throw new NegocioException("El ID del cliente es obligatorio.");
             }
-            Cliente cliente = fachada.obtenerClientePorId(id);
+            Cliente cliente = unidad.clientes().obtenerPorId(id);
             if (cliente == null) {
                 throw new NegocioException("No se encontró el cliente.");
             }
@@ -78,7 +78,7 @@ public class ClienteServicios implements IClienteServicios {
     @Override
     public List<ClienteDTO> consultarTodosLosClientes() throws NegocioException {
         try {
-            List<Cliente> clientes = fachada.obtenerTodosLosClientes();
+            List<Cliente> clientes = unidad.clientes().obtenerTodos();
             List<ClienteDTO> clientesDTO = new ArrayList<>();
             if (clientes != null) {
                 for (Cliente cliente : clientes) {
@@ -120,7 +120,7 @@ public class ClienteServicios implements IClienteServicios {
             return null;
         }
 
-        List<Membresia> membresias = fachada.obtenerTodasLasMembresias();
+        List<Membresia> membresias = unidad.membresias().obtenerTodos();
 
         if (membresias != null) {
             for (Membresia membresia : membresias) {

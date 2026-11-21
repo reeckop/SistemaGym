@@ -5,6 +5,7 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import gym.persistencia.entidades.Pago;
@@ -20,13 +21,20 @@ import org.bson.types.ObjectId;
  */
 public class PagoDAO extends BaseDAO implements IPagoDAO {
 
+    public PagoDAO() {
+    }
+
+    public PagoDAO(ClientSession sesion) {
+        super(sesion);
+    }
+
     private static final String NOMBRE_COLECCION = "pagos";
 
     @Override
     public void guardar(Pago pago) throws PersistenciaException {
         try {
             MongoCollection<Pago> coleccion = obtenerColeccion(NOMBRE_COLECCION, Pago.class);
-            coleccion.insertOne(pago);
+            insertOne(coleccion, pago);
         } catch (MongoException e) {
             throw new PersistenciaException("Error al guardar el pago.");
         }
@@ -36,7 +44,7 @@ public class PagoDAO extends BaseDAO implements IPagoDAO {
     public void actualizar(Pago pago) throws PersistenciaException {
         try {
             MongoCollection<Pago> coleccion = obtenerColeccion(NOMBRE_COLECCION, Pago.class);
-            coleccion.replaceOne(Filters.eq("_id", new ObjectId(pago.getIdPago())), pago);
+            replaceOne(coleccion, Filters.eq("_id", new ObjectId(pago.getIdPago())), pago);
         } catch (MongoException e) {
             throw new PersistenciaException("Error al actualizar el pago.");
         }
@@ -46,7 +54,7 @@ public class PagoDAO extends BaseDAO implements IPagoDAO {
     public Pago obtenerPorId(String id) throws PersistenciaException {
         try {
             MongoCollection<Pago> coleccion = obtenerColeccion(NOMBRE_COLECCION, Pago.class);
-            return coleccion.find(Filters.eq("_id", new ObjectId(id))).first();
+            return find(coleccion, Filters.eq("_id", new ObjectId(id))).first();
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener el pago.");
         }
@@ -56,7 +64,7 @@ public class PagoDAO extends BaseDAO implements IPagoDAO {
     public List<Pago> obtenerTodos() throws PersistenciaException {
         try {
             MongoCollection<Pago> coleccion = obtenerColeccion(NOMBRE_COLECCION, Pago.class);
-            return coleccion.find().into(new ArrayList<>());
+            return find(coleccion).into(new ArrayList<>());
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener todos los pagos.");
         }

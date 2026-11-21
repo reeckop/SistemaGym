@@ -26,7 +26,6 @@ public class Venta {
     private Cliente cliente;
     private List<DetalleVenta> detalles = new ArrayList<>();
     private Pago pago;
-    private boolean confirmada;
 
     public Venta() {
     }
@@ -110,14 +109,6 @@ public class Venta {
 
     public void setDetalles(List<DetalleVenta> detalles) {
         this.detalles = detalles;
-    }
-
-    public boolean isConfirmada() {
-        return confirmada;
-    }
-
-    public void setConfirmada(boolean confirmada) {
-        this.confirmada = confirmada;
     }
 
     public Pago getPago() {

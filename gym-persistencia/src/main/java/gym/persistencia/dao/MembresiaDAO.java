@@ -1,7 +1,6 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
-import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
@@ -14,20 +13,13 @@ import org.bson.types.ObjectId;
 
 public class MembresiaDAO extends BaseDAO implements IMembresiaDAO {
 
-    public MembresiaDAO() {
-    }
-
-    public MembresiaDAO(ClientSession sesion) {
-        super(sesion);
-    }
-
     private static final String NOMBRE_COLECCION = "membresias";
 
     @Override
     public void guardar(Membresia membresia) throws PersistenciaException {
         try {
             MongoCollection<Membresia> coleccion = obtenerColeccion(NOMBRE_COLECCION, Membresia.class);
-            insertOne(coleccion, membresia);
+            coleccion.insertOne(membresia);
         } catch (MongoException e) {
             throw new PersistenciaException("Error al guardar la membresía.");
         }
@@ -38,7 +30,7 @@ public class MembresiaDAO extends BaseDAO implements IMembresiaDAO {
         try {
             MongoCollection<Membresia> coleccion = obtenerColeccion(NOMBRE_COLECCION, Membresia.class);
             ObjectId id = new ObjectId(membresia.getIdMembresia());
-            UpdateResult resultado = replaceOne(coleccion, Filters.eq("_id", id), membresia);
+            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", id), membresia);
 
             if (resultado.getMatchedCount() == 0) {
                 throw new PersistenciaException("No se encontró la membresía que se desea actualizar.");
@@ -52,7 +44,7 @@ public class MembresiaDAO extends BaseDAO implements IMembresiaDAO {
     public void eliminar(String id) throws PersistenciaException {
         try {
             MongoCollection<Membresia> coleccion = obtenerColeccion(NOMBRE_COLECCION, Membresia.class);
-            deleteOne(coleccion, Filters.eq("_id", new ObjectId(id)));
+            coleccion.deleteOne(Filters.eq("_id", new ObjectId(id)));
         } catch (MongoException e) {
             throw new PersistenciaException("Error al eliminar la membresía.");
         }
@@ -62,7 +54,7 @@ public class MembresiaDAO extends BaseDAO implements IMembresiaDAO {
     public List<Membresia> obtenerTodos() throws PersistenciaException {
         try {
             MongoCollection<Membresia> coleccion = obtenerColeccion(NOMBRE_COLECCION, Membresia.class);
-            return find(coleccion).into(new ArrayList<>());
+            return coleccion.find().into(new ArrayList<>());
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener las membresías.");
         }

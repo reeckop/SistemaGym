@@ -1,7 +1,6 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
-import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
@@ -14,19 +13,12 @@ import org.bson.types.ObjectId;
 
 public class ClienteDAO extends BaseDAO implements IClienteDAO {
 
-    public ClienteDAO() {
-    }
-
-    public ClienteDAO(ClientSession sesion) {
-        super(sesion);
-    }
-
     private static final String NOMBRE_COLECCION = "clientes";
 
     @Override
     public void guardar(Cliente cliente) {
         MongoCollection<Cliente> coleccion = obtenerColeccion(NOMBRE_COLECCION, Cliente.class);
-        insertOne(coleccion, cliente);
+        coleccion.insertOne(cliente);
     }
 
     @Override
@@ -34,7 +26,7 @@ public class ClienteDAO extends BaseDAO implements IClienteDAO {
         try {
             MongoCollection<Cliente> coleccion = obtenerColeccion(NOMBRE_COLECCION, Cliente.class);
             ObjectId id = new ObjectId(cliente.getIdCliente());
-            UpdateResult resultado = replaceOne(coleccion, Filters.eq("_id", id), cliente);
+            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", id), cliente);
 
             if (resultado.getMatchedCount() == 0) {
                 throw new PersistenciaException("No se encontró el Cliente que se desea actualizar.");
@@ -48,7 +40,7 @@ public class ClienteDAO extends BaseDAO implements IClienteDAO {
     public Cliente obtenerPorId(String id) throws PersistenciaException {
         try {
             MongoCollection<Cliente> coleccion = obtenerColeccion(NOMBRE_COLECCION, Cliente.class);
-            return find(coleccion, Filters.eq("_id", new ObjectId(id))).first();
+            return coleccion.find(Filters.eq("_id", new ObjectId(id))).first();
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener el cliente.");
         }
@@ -58,7 +50,7 @@ public class ClienteDAO extends BaseDAO implements IClienteDAO {
     public List<Cliente> obtenerTodos() throws PersistenciaException {
         try {
             MongoCollection<Cliente> coleccion = obtenerColeccion(NOMBRE_COLECCION, Cliente.class);
-            return find(coleccion).into(new ArrayList<>());
+            return coleccion.find().into(new ArrayList<>());
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener los clientes.");
         }

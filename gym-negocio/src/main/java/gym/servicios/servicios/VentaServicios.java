@@ -11,7 +11,7 @@ import gym.persistencia.entidades.Pago;
 import gym.persistencia.entidades.Producto;
 import gym.persistencia.entidades.Venta;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.uow.VentasUnitOfWork;
+import gym.persistencia.facade.IPersistenciaFachada;
 import gym.servicios.dto.PagoDTO;
 import gym.servicios.dto.VentaDTO;
 import gym.servicios.interfaces.IVentaServicios;
@@ -25,10 +25,10 @@ import java.util.List;
  */
 public class VentaServicios implements IVentaServicios {
 
-    private final VentasUnitOfWork unidad;
+    private final IPersistenciaFachada fachada;
 
-    public VentaServicios(VentasUnitOfWork unidad) {
-        this.unidad = unidad;
+    public VentaServicios(IPersistenciaFachada fachada) {
+        this.fachada = fachada;
     }
 
     @Override
@@ -38,42 +38,36 @@ public class VentaServicios implements IVentaServicios {
         validarCantidad(cantidad);
 
         try {
-            unidad.enTransaccion(transaccion -> {
-                Venta venta = obtenerVenta(transaccion, idVenta);
-                if (venta.isConfirmada()) {
-                    throw new NegocioException("La venta ya está confirmada.");
-                }
+            Venta venta = obtenerVenta(idVenta);
+            Producto producto = fachada.obtenerProductoPorId(idProducto);
 
-                Producto producto = transaccion.productos().obtenerPorId(idProducto);
+            if (producto == null) {
+                throw new NegocioException("El producto no existe.");
+            }
 
-                if (producto == null) {
-                    throw new NegocioException("El producto no existe.");
-                }
+            if (producto.getStock() < cantidad) {
+                throw new NegocioException("No hay suficiente stock del producto.");
+            }
 
-                if (producto.getStock() < cantidad) {
-                    throw new NegocioException("No hay suficiente stock del producto.");
-                }
+            double subtotal = producto.getPrecio() * cantidad;
 
-                double subtotal = producto.getPrecio() * cantidad;
+            DetalleVenta detalle = new DetalleVenta(
+                    producto,
+                    cantidad,
+                    producto.getPrecio(),
+                    subtotal
+            );
 
-                DetalleVenta detalle = new DetalleVenta(
-                        producto,
-                        cantidad,
-                        producto.getPrecio(),
-                        subtotal
-                );
+            if (venta.getDetalles() == null) {
+                venta.setDetalles(new ArrayList<>());
+            }
 
-                if (venta.getDetalles() == null) {
-                    venta.setDetalles(new ArrayList<>());
-                }
+            venta.getDetalles().add(detalle);
 
-                venta.getDetalles().add(detalle);
+            calcularImportes(venta);
 
-                calcularImportes(venta);
+            fachada.actualizarVenta(venta);
 
-                transaccion.ventas().actualizarVenta(venta);
-                return null;
-            });
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible agregar el producto a la venta.", e);
         }
@@ -84,15 +78,14 @@ public class VentaServicios implements IVentaServicios {
         validarId(idVenta);
 
         try {
-            return unidad.enTransaccion(transaccion -> {
-                Venta venta = obtenerVenta(transaccion, idVenta);
+            Venta venta = obtenerVenta(idVenta);
 
-                calcularImportes(venta);
+            calcularImportes(venta);
 
-                transaccion.ventas().actualizarVenta(venta);
+            fachada.actualizarVenta(venta);
 
-                return venta.getTotal();
-            });
+            return venta.getTotal();
+
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible calcular el total de la venta.", e);
         }
@@ -106,20 +99,19 @@ public class VentaServicios implements IVentaServicios {
         validarIdCliente(idCliente);
 
         try {
-            return unidad.enTransaccion(transaccion -> {
-                Venta venta = obtenerVenta(transaccion, idVenta);
-                Cliente cliente = transaccion.clientes().obtenerPorId(idCliente);
+            Venta venta = obtenerVenta(idVenta);
+            Cliente cliente = fachada.obtenerClientePorId(idCliente);
 
-                if (cliente == null) {
-                    throw new NegocioException("El cliente no existe.");
-                }
+            if (cliente == null) {
+                throw new NegocioException("El cliente no existe.");
+            }
 
-                calcularImportes(venta);
+            calcularImportes(venta);
 
-                transaccion.ventas().actualizarVenta(venta);
+            fachada.actualizarVenta(venta);
 
-                return venta.getDescuento();
-            });
+            return venta.getDescuento();
+
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible aplicar el descuento.", e);
         }
@@ -130,39 +122,27 @@ public class VentaServicios implements IVentaServicios {
         validarId(idVenta);
 
         try {
-            unidad.enTransaccion(transaccion -> {
-                Venta venta = obtenerVenta(transaccion, idVenta);
+            Venta venta = obtenerVenta(idVenta);
 
-                if (venta.isConfirmada()) {
-                    return null;
+            if (venta.getDetalles() == null || venta.getDetalles().isEmpty()) {
+                throw new NegocioException("La venta debe contener al menos un producto.");
+            }
+
+            calcularImportes(venta);
+
+            for (DetalleVenta detalle : venta.getDetalles()) {
+                Producto producto = detalle.getProducto();
+
+                if (producto.getStock() < detalle.getCantidad()) {
+                    throw new NegocioException("No hay suficiente stock del producto: " + producto.getNombre());
                 }
 
-                if (venta.getDetalles() == null || venta.getDetalles().isEmpty()) {
-                    throw new NegocioException("La venta debe contener al menos un producto.");
-                }
+                producto.setStock(producto.getStock() - detalle.getCantidad());
+                fachada.actualizarProducto(producto);
+            }
 
-                calcularImportes(venta);
+            fachada.actualizarVenta(venta);
 
-                for (DetalleVenta detalle : venta.getDetalles()) {
-                    String idProducto = detalle.getProducto().getIdProducto();
-                    Producto producto = transaccion.productos().obtenerPorId(idProducto);
-
-                    if (producto == null) {
-                        throw new NegocioException("El producto de la venta ya no existe.");
-                    }
-
-                    if (producto.getStock() < detalle.getCantidad()) {
-                        throw new NegocioException("No hay suficiente stock del producto: " + producto.getNombre());
-                    }
-
-                    producto.setStock(producto.getStock() - detalle.getCantidad());
-                    transaccion.productos().actualizar(producto);
-                }
-
-                venta.setConfirmada(true);
-                transaccion.ventas().actualizarVenta(venta);
-                return null;
-            });
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible confirmar la venta.", e);
         }
@@ -174,20 +154,18 @@ public class VentaServicios implements IVentaServicios {
         validarPago(pago);
 
         try {
-            unidad.enTransaccion(transaccion -> {
-                Venta venta = obtenerVenta(transaccion, idVenta);
+            Venta venta = obtenerVenta(idVenta);
 
-                if (pago.getMonto() < venta.getTotal()) {
-                    throw new NegocioException("El monto del pago es insuficiente.");
-                }
+            if (pago.getMonto() < venta.getTotal()) {
+                throw new NegocioException("El monto del pago es insuficiente.");
+            }
 
-                Pago pagoEntidad = Mappers.convertirAEntidad(pago);
+            Pago pagoEntidad = Mappers.convertirAEntidad(pago);
 
-                venta.setPago(pagoEntidad);
+            venta.setPago(pagoEntidad);
 
-                transaccion.ventas().actualizarVenta(venta);
-                return null;
-            });
+            fachada.actualizarVenta(venta);
+
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible registrar el pago.", e);
         }
@@ -199,7 +177,7 @@ public class VentaServicios implements IVentaServicios {
         try {
             List<VentaDTO> ventasDTO = new ArrayList<>();
 
-            List<Venta> ventas = unidad.ventas().obtenerTodas();
+            List<Venta> ventas = fachada.obtenerTodasLasVentas();
 
             if (ventas != null) {
                 for (Venta venta : ventas) {
@@ -230,12 +208,12 @@ public class VentaServicios implements IVentaServicios {
         venta.setTotal(subtotal - venta.getDescuento());
     }
 
-    private Venta obtenerVenta(VentasUnitOfWork transaccion, String idVenta) throws NegocioException {
+    private Venta obtenerVenta(String idVenta) throws NegocioException {
 
         validarId(idVenta);
 
         try {
-            Venta venta = transaccion.ventas().obtenerPorId(idVenta);
+            Venta venta = fachada.obtenerVentaPorId(idVenta);
 
             if (venta == null) {
                 throw new NegocioException("La venta no existe.");

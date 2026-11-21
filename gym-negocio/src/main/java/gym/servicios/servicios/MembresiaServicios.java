@@ -6,7 +6,7 @@ package gym.servicios.servicios;
 
 import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Membresia;
-import gym.persistencia.uow.SociosUnitOfWork;
+import gym.persistencia.facade.IPersistenciaFachada;
 import gym.servicios.dto.MembresiaDTO;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.servicios.mappers.Mappers;
@@ -21,10 +21,10 @@ import java.util.List;
 
 public class MembresiaServicios implements IMembresiaServicios {
 
-    private final SociosUnitOfWork unidad;
+    private final IPersistenciaFachada fachada;
 
-    public MembresiaServicios(SociosUnitOfWork unidad) {
-        this.unidad = unidad;
+    public MembresiaServicios(IPersistenciaFachada fachada) {
+        this.fachada = fachada;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class MembresiaServicios implements IMembresiaServicios {
         validarMembresia(membresia);
 
         try {
-            unidad.membresias().guardar(Mappers.convertirAEntidad(membresia));
+            fachada.guardarMembresia(Mappers.convertirAEntidad(membresia));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible registrar la membresía.", e);
         }
@@ -44,7 +44,7 @@ public class MembresiaServicios implements IMembresiaServicios {
         validarId(membresia.getIdMembresia());
 
         try {
-            unidad.membresias().actualizar(Mappers.convertirAEntidad(membresia));
+            fachada.actualizarMembresia(Mappers.convertirAEntidad(membresia));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible actualizar la membresía.", e);
         }
@@ -55,7 +55,7 @@ public class MembresiaServicios implements IMembresiaServicios {
         validarId(id);
 
         try {
-            unidad.membresias().eliminar(id);
+            fachada.eliminarMembresia(id);
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible eliminar la membresía.", e);
         }
@@ -65,7 +65,7 @@ public class MembresiaServicios implements IMembresiaServicios {
     public List<MembresiaDTO> consultarTodasLasMembresias() throws NegocioException {
         try {
             List<MembresiaDTO> resultado = new ArrayList<>();
-            List<Membresia> membresias = unidad.membresias().obtenerTodos();
+            List<Membresia> membresias = fachada.obtenerTodasLasMembresias();
 
             if (membresias != null) {
                 for (Membresia membresia : membresias) {

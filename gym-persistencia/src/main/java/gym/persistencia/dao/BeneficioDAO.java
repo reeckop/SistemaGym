@@ -5,7 +5,6 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
-import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import gym.persistencia.entidades.Beneficio;
@@ -20,13 +19,6 @@ import org.bson.types.ObjectId;
  * @author PC GAMER MASTER RACE
  */
 public class BeneficioDAO  extends BaseDAO implements IBeneficioDAO {
-    public BeneficioDAO() {
-    }
-
-    public BeneficioDAO(ClientSession sesion) {
-        super(sesion);
-    }
-
 
     private static final String NOMBRE_COLECCION = "beneficios";
 
@@ -34,7 +26,7 @@ public class BeneficioDAO  extends BaseDAO implements IBeneficioDAO {
     public void guardar(Beneficio beneficio) throws PersistenciaException {
         try {
             MongoCollection<Beneficio> coleccion = obtenerColeccion(NOMBRE_COLECCION, Beneficio.class);
-            insertOne(coleccion, beneficio);
+            coleccion.insertOne(beneficio);
         } catch (MongoException e) {
             throw new PersistenciaException("Error al guardar el beneficio.");
         }
@@ -44,7 +36,7 @@ public class BeneficioDAO  extends BaseDAO implements IBeneficioDAO {
     public void actualizar(Beneficio beneficio) throws PersistenciaException {
         try {
             MongoCollection<Beneficio> coleccion = obtenerColeccion(NOMBRE_COLECCION, Beneficio.class);
-            replaceOne(coleccion, Filters.eq("_id", new ObjectId(beneficio.getIdBeneficio())), beneficio);
+            coleccion.replaceOne(Filters.eq("_id", new ObjectId(beneficio.getIdBeneficio())), beneficio);
         } catch (MongoException | IllegalArgumentException e) {
             throw new PersistenciaException("Error al actualizar el beneficio.");
         }
@@ -54,7 +46,7 @@ public class BeneficioDAO  extends BaseDAO implements IBeneficioDAO {
     public void eliminar(String id) throws PersistenciaException {
         try {
             MongoCollection<Beneficio> coleccion = obtenerColeccion(NOMBRE_COLECCION, Beneficio.class);
-            deleteOne(coleccion, Filters.eq("_id", new ObjectId(id)));
+            coleccion.deleteOne(Filters.eq("_id", new ObjectId(id)));
         } catch (MongoException e) {
             throw new PersistenciaException("Error al eliminar el beneficio.");
         }
@@ -64,7 +56,7 @@ public class BeneficioDAO  extends BaseDAO implements IBeneficioDAO {
     public Beneficio obtenerPorId(String id) throws PersistenciaException {
         try {
             MongoCollection<Beneficio> coleccion = obtenerColeccion(NOMBRE_COLECCION, Beneficio.class);
-            return find(coleccion, Filters.eq("_id", new ObjectId(id))).first();
+            return coleccion.find(Filters.eq("_id", new ObjectId(id))).first();
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener el beneficio.");
         }
@@ -74,7 +66,7 @@ public class BeneficioDAO  extends BaseDAO implements IBeneficioDAO {
     public List<Beneficio> obtenerTodos() throws PersistenciaException {
         try {
             MongoCollection<Beneficio> coleccion = obtenerColeccion(NOMBRE_COLECCION, Beneficio.class);
-            return find(coleccion).into(new ArrayList<>());
+            return coleccion.find().into(new ArrayList<>());
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener los beneficios.");
         }

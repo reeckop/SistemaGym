@@ -1,7 +1,6 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
-import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
@@ -14,20 +13,13 @@ import org.bson.types.ObjectId;
 
 public class CursoDAO extends BaseDAO implements ICursoDAO {
 
-    public CursoDAO() {
-    }
-
-    public CursoDAO(ClientSession sesion) {
-        super(sesion);
-    }
-
     private static final String NOMBRE_COLECCION = "cursos";
 
     @Override
     public void guardar(Curso curso) throws PersistenciaException {
         try {
             MongoCollection<Curso> coleccion = obtenerColeccion(NOMBRE_COLECCION, Curso.class);
-            insertOne(coleccion, curso);
+            coleccion.insertOne(curso);
         } catch (MongoException e) {
             throw new PersistenciaException("Error al guardar el curso.");
         }
@@ -38,7 +30,7 @@ public class CursoDAO extends BaseDAO implements ICursoDAO {
         try {
             MongoCollection<Curso> coleccion = obtenerColeccion(NOMBRE_COLECCION, Curso.class);
             ObjectId id = new ObjectId(curso.getIdCurso());
-            UpdateResult resultado = replaceOne(coleccion, Filters.eq("_id", id), curso);
+            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", id), curso);
 
             if (resultado.getMatchedCount() == 0) {
                 throw new PersistenciaException("No se encontró el Curso que se desea actualizar.");
@@ -52,7 +44,7 @@ public class CursoDAO extends BaseDAO implements ICursoDAO {
     public void eliminar(String id) throws PersistenciaException {
         try {
             MongoCollection<Curso> coleccion = obtenerColeccion(NOMBRE_COLECCION, Curso.class);
-            deleteOne(coleccion, Filters.eq("_id", new ObjectId(id)));
+            coleccion.deleteOne(Filters.eq("_id", new ObjectId(id)));
         } catch (MongoException e) {
             throw new PersistenciaException("Error al eliminar el curso.");
         }
@@ -62,7 +54,7 @@ public class CursoDAO extends BaseDAO implements ICursoDAO {
     public List<Curso> obtenerTodos() throws PersistenciaException {
         try {
             MongoCollection<Curso> coleccion = obtenerColeccion(NOMBRE_COLECCION, Curso.class);
-            return find(coleccion).into(new ArrayList<>());
+            return coleccion.find().into(new ArrayList<>());
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener los cursos.");
         }

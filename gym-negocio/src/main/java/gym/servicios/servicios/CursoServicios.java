@@ -7,7 +7,7 @@ package gym.servicios.servicios;
 import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Curso;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.uow.CursosUnitOfWork;
+import gym.persistencia.facade.IPersistenciaFachada;
 import gym.servicios.dto.CursoDTO;
 import gym.servicios.interfaces.ICursoServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,10 +20,10 @@ import java.util.List;
  */
 public class CursoServicios implements ICursoServicios {
 
-    private final CursosUnitOfWork unidad;
+    private final IPersistenciaFachada fachada;
 
-    public CursoServicios(CursosUnitOfWork unidad) {
-        this.unidad = unidad;
+    public CursoServicios(IPersistenciaFachada fachada) {
+        this.fachada = fachada;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class CursoServicios implements ICursoServicios {
         validarCurso(curso);
 
         try {
-            unidad.cursos().guardar(Mappers.convertirAEntidad(curso));
+            fachada.guardarCurso(Mappers.convertirAEntidad(curso));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible registrar el curso.", e);
         }
@@ -43,7 +43,7 @@ public class CursoServicios implements ICursoServicios {
         validarId(curso.getIdCurso());
 
         try {
-            unidad.cursos().actualizar(Mappers.convertirAEntidad(curso));
+            fachada.actualizarCurso(Mappers.convertirAEntidad(curso));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible actualizar el curso.", e);
         }
@@ -54,7 +54,7 @@ public class CursoServicios implements ICursoServicios {
         validarId(id);
 
         try {
-            unidad.cursos().eliminar(id);
+            fachada.eliminarCurso(id);
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible eliminar el curso.", e);
         }
@@ -64,7 +64,7 @@ public class CursoServicios implements ICursoServicios {
     public List<CursoDTO> consultarTodosLosCursos() throws NegocioException {
         try {
             List<CursoDTO> resultado = new ArrayList<>();
-            List<Curso> cursos = unidad.cursos().obtenerTodos();
+            List<Curso> cursos = fachada.obtenerTodosLosCursos();
 
             if (cursos != null) {
                 for (Curso curso : cursos) {

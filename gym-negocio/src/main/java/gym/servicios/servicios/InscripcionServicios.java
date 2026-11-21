@@ -8,7 +8,7 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.Inscripcion;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.uow.CursosUnitOfWork;
+import gym.persistencia.facade.IPersistenciaFachada;
 import gym.servicios.dto.InscripcionDTO;
 import gym.servicios.interfaces.IInscripcionServicios;
 import gym.servicios.mappers.Mappers;
@@ -21,10 +21,10 @@ import java.util.List;
  */
 public class InscripcionServicios implements IInscripcionServicios {
 
-    private final CursosUnitOfWork unidad;
+    private final IPersistenciaFachada fachada;
 
-    public InscripcionServicios(CursosUnitOfWork unidad) {
-        this.unidad = unidad;
+    public InscripcionServicios(IPersistenciaFachada fachada) {
+        this.fachada = fachada;
     }
 
     @Override
@@ -32,13 +32,13 @@ public class InscripcionServicios implements IInscripcionServicios {
         validarInscripcion(inscripcion);
 
         try {
-            Cliente cliente = unidad.clientes().obtenerPorId(inscripcion.getIdCliente());
+            Cliente cliente = fachada.obtenerClientePorId(inscripcion.getIdCliente());
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
 
-            unidad.inscripciones().guardar(Mappers.convertirAEntidad(inscripcion, cliente));
+            fachada.guardarInscripcion(Mappers.convertirAEntidad(inscripcion, cliente));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible registrar la inscripción.", e);
         }
@@ -50,13 +50,13 @@ public class InscripcionServicios implements IInscripcionServicios {
         validarId(inscripcion.getIdInscripcion());
 
         try {
-            Cliente cliente = unidad.clientes().obtenerPorId(inscripcion.getIdCliente());
+            Cliente cliente = fachada.obtenerClientePorId(inscripcion.getIdCliente());
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
 
-            unidad.inscripciones().actualizar(Mappers.convertirAEntidad(inscripcion, cliente));
+            fachada.actualizarInscripcion(Mappers.convertirAEntidad(inscripcion, cliente));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible actualizar la inscripción.", e);
         }
@@ -67,7 +67,7 @@ public class InscripcionServicios implements IInscripcionServicios {
         validarId(id);
 
         try {
-            unidad.inscripciones().eliminar(id);
+            fachada.eliminarInscripcion(id);
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible eliminar la inscripción.", e);
         }
@@ -77,7 +77,7 @@ public class InscripcionServicios implements IInscripcionServicios {
     public List<InscripcionDTO> consultarTodasLasInscripciones() throws NegocioException {
         try {
             List<InscripcionDTO> resultado = new ArrayList<>();
-            List<Inscripcion> inscripciones = unidad.inscripciones().obtenerTodos();
+            List<Inscripcion> inscripciones = fachada.obtenerTodasLasInscripciones();
 
             if (inscripciones != null) {
                 for (Inscripcion inscripcion : inscripciones) {

@@ -7,7 +7,7 @@ package gym.servicios.servicios;
 import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Producto;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.uow.VentasUnitOfWork;
+import gym.persistencia.facade.IPersistenciaFachada;
 import gym.servicios.dto.ProductoDTO;
 import gym.servicios.interfaces.IProductoServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,10 +20,10 @@ import java.util.List;
  */
 public class ProductoServicios implements IProductoServicios {
 
-    private final VentasUnitOfWork unidad;
+    private final IPersistenciaFachada fachada;
 
-    public ProductoServicios(VentasUnitOfWork unidad) {
-        this.unidad = unidad;
+    public ProductoServicios(IPersistenciaFachada fachada) {
+        this.fachada = fachada;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ProductoServicios implements IProductoServicios {
         validarProducto(producto);
 
         try {
-            unidad.productos().guardar(Mappers.convertirAEntidad(producto));
+            fachada.guardarProducto(Mappers.convertirAEntidad(producto));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible registrar el producto.", e);
         }
@@ -43,7 +43,7 @@ public class ProductoServicios implements IProductoServicios {
         validarId(producto.getIdProducto());
 
         try {
-            unidad.productos().actualizar(Mappers.convertirAEntidad(producto));
+            fachada.actualizarProducto(Mappers.convertirAEntidad(producto));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible actualizar el producto.", e);
         }
@@ -54,7 +54,7 @@ public class ProductoServicios implements IProductoServicios {
         validarId(id);
 
         try {
-            unidad.productos().eliminar(id);
+            fachada.eliminarProducto(id);
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible eliminar el producto.", e);
         }
@@ -64,7 +64,7 @@ public class ProductoServicios implements IProductoServicios {
     public List<ProductoDTO> consultarTodosLosProductos() throws NegocioException {
         try {
             List<ProductoDTO> resultado = new ArrayList<>();
-            List<Producto> productos = unidad.productos().obtenerTodos();
+            List<Producto> productos = fachada.obtenerTodosLosProductos();
 
             if (productos != null) {
                 for (Producto producto : productos) {

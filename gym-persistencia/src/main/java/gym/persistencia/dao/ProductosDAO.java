@@ -5,7 +5,6 @@
 package gym.persistencia.dao;
 
 import com.mongodb.MongoException;
-import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
@@ -22,20 +21,13 @@ import org.bson.types.ObjectId;
  */
 public class ProductosDAO extends BaseDAO implements IProductoDAO {
 
-    public ProductosDAO() {
-    }
-
-    public ProductosDAO(ClientSession sesion) {
-        super(sesion);
-    }
-
     private static final String NOMBRE_COLECCION = "productos";
 
     @Override
     public void guardar(Producto producto) throws PersistenciaException {
         try {
             MongoCollection<Producto> coleccion = obtenerColeccion(NOMBRE_COLECCION, Producto.class);
-            insertOne(coleccion, producto);
+            coleccion.insertOne(producto);
         } catch (MongoException e) {
             throw new PersistenciaException("Error al guardar el producto.");
         }
@@ -46,7 +38,7 @@ public class ProductosDAO extends BaseDAO implements IProductoDAO {
         try {
             MongoCollection<Producto> coleccion = obtenerColeccion(NOMBRE_COLECCION, Producto.class);
             ObjectId id = new ObjectId(producto.getIdProducto());
-            UpdateResult resultado = replaceOne(coleccion, Filters.eq("_id", id), producto);
+            UpdateResult resultado = coleccion.replaceOne(Filters.eq("_id", id), producto);
 
             if (resultado.getMatchedCount() == 0) {
                 throw new PersistenciaException("No se encontró el producto que se desea actualizar.");
@@ -60,7 +52,7 @@ public class ProductosDAO extends BaseDAO implements IProductoDAO {
     public void eliminar(String id) throws PersistenciaException {
         try {
             MongoCollection<Producto> coleccion = obtenerColeccion(NOMBRE_COLECCION, Producto.class);
-            deleteOne(coleccion, Filters.eq("_id", new ObjectId(id)));
+            coleccion.deleteOne(Filters.eq("_id", new ObjectId(id)));
         } catch (MongoException e) {
             throw new PersistenciaException("Error al eliminar el producto.");
         }
@@ -71,7 +63,7 @@ public class ProductosDAO extends BaseDAO implements IProductoDAO {
         try {
             MongoCollection<Producto> coleccion = obtenerColeccion("productos", Producto.class);
 
-            return find(coleccion, Filters.eq("_id", new ObjectId(id))).first();
+            return coleccion.find(Filters.eq("_id", new ObjectId(id))).first();
 
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener el producto.",e);
@@ -82,7 +74,7 @@ public class ProductosDAO extends BaseDAO implements IProductoDAO {
     public List<Producto> obtenerTodos() throws PersistenciaException {
         try {
             MongoCollection<Producto> coleccion = obtenerColeccion(NOMBRE_COLECCION, Producto.class);
-            return find(coleccion).into(new ArrayList<>());
+            return coleccion.find().into(new ArrayList<>());
         } catch (MongoException e) {
             throw new PersistenciaException("Error al obtener los productos.");
         }

@@ -8,7 +8,7 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.Notificacion;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.uow.NotificacionesUnitOfWork;
+import gym.persistencia.facade.IPersistenciaFachada;
 import gym.servicios.dto.NotificacionDTO;
 import gym.servicios.interfaces.INotificacionServicios;
 import gym.servicios.mappers.Mappers;
@@ -21,10 +21,10 @@ import java.util.List;
  */
 public class NotificacionServicios implements INotificacionServicios {
 
-    private final NotificacionesUnitOfWork unidad;
+    private final IPersistenciaFachada fachada;
 
-    public NotificacionServicios(NotificacionesUnitOfWork unidad) {
-        this.unidad = unidad;
+    public NotificacionServicios(IPersistenciaFachada fachada) {
+        this.fachada = fachada;
     }
 
     @Override
@@ -32,13 +32,13 @@ public class NotificacionServicios implements INotificacionServicios {
         validarNotificacion(notificacion);
 
         try {
-            Cliente cliente = unidad.clientes().obtenerPorId(notificacion.getIdCliente());
+            Cliente cliente = fachada.obtenerClientePorId(notificacion.getIdCliente());
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
 
-            unidad.notificaciones().guardar(Mappers.convertirAEntidad(notificacion, cliente));
+            fachada.guardarNotificacion(Mappers.convertirAEntidad(notificacion, cliente));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible registrar la notificación.", e);
         }
@@ -50,13 +50,13 @@ public class NotificacionServicios implements INotificacionServicios {
         validarId(notificacion.getIdNotificacion());
 
         try {
-            Cliente cliente = unidad.clientes().obtenerPorId(notificacion.getIdCliente());
+            Cliente cliente = fachada.obtenerClientePorId(notificacion.getIdCliente());
 
             if (cliente == null) {
                 throw new NegocioException("El cliente no existe.");
             }
 
-            unidad.notificaciones().actualizarNotificacion(Mappers.convertirAEntidad(notificacion, cliente));
+            fachada.actualizarNotificacion(Mappers.convertirAEntidad(notificacion, cliente));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible actualizar la notificación.", e);
         }
@@ -70,7 +70,7 @@ public class NotificacionServicios implements INotificacionServicios {
         try {
             List<NotificacionDTO> resultado = new ArrayList<>();
             List<Notificacion> notificaciones =
-                unidad.notificaciones().obtenerPorCliente(idCliente);
+                fachada.obtenerNotificacionesPorCliente(idCliente);
 
             if (notificaciones != null) {
                 for (Notificacion notificacion : notificaciones) {
@@ -90,7 +90,7 @@ public class NotificacionServicios implements INotificacionServicios {
     public List<NotificacionDTO> consultarTodasLasNotificaciones() throws NegocioException {
         try {
             List<NotificacionDTO> resultado = new ArrayList<>();
-            List<Notificacion> notificaciones = unidad.notificaciones().obtenerTodas();
+            List<Notificacion> notificaciones = fachada.obtenerTodasLasNotificaciones();
 
             if (notificaciones != null) {
                 for (Notificacion notificacion : notificaciones) {

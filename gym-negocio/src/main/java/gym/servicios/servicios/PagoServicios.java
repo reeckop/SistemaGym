@@ -7,7 +7,7 @@ package gym.servicios.servicios;
 import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Pago;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.uow.VentasUnitOfWork;
+import gym.persistencia.facade.IPersistenciaFachada;
 import gym.servicios.dto.PagoDTO;
 import gym.servicios.interfaces.IPagoServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,10 +20,10 @@ import java.util.List;
  */
 public class PagoServicios implements IPagoServicios {
 
-    private final VentasUnitOfWork unidad;
+    private final IPersistenciaFachada fachada;
 
-    public PagoServicios(VentasUnitOfWork unidad) {
-        this.unidad = unidad;
+    public PagoServicios(IPersistenciaFachada fachada) {
+        this.fachada = fachada;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class PagoServicios implements IPagoServicios {
         validarPago(pago);
 
         try {
-            unidad.pagos().guardar(Mappers.convertirAEntidad(pago));
+            fachada.guardarPago(Mappers.convertirAEntidad(pago));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible registrar el pago.", e);
         }
@@ -43,11 +43,11 @@ public class PagoServicios implements IPagoServicios {
         validarId(pago.getIdPago());
 
         try {
-            if (unidad.pagos().obtenerPorId(pago.getIdPago()) == null) {
+            if (fachada.obtenerPagoPorId(pago.getIdPago()) == null) {
                 throw new NegocioException("El pago no existe.");
             }
 
-            unidad.pagos().actualizar(Mappers.convertirAEntidad(pago));
+            fachada.actualizarPago(Mappers.convertirAEntidad(pago));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible actualizar el pago.", e);
         }
@@ -58,7 +58,7 @@ public class PagoServicios implements IPagoServicios {
         validarId(id);
 
         try {
-            Pago pago = unidad.pagos().obtenerPorId(id);
+            Pago pago = fachada.obtenerPagoPorId(id);
 
             if (pago == null) {
                 throw new NegocioException("El pago no existe.");
@@ -74,7 +74,7 @@ public class PagoServicios implements IPagoServicios {
     public List<PagoDTO> consultarTodosLosPagos() throws NegocioException {
         try {
             List<PagoDTO> resultado = new ArrayList<>();
-            List<Pago> pagos = unidad.pagos().obtenerTodos();
+            List<Pago> pagos = fachada.obtenerTodosLosPagos();
 
             if (pagos != null) {
                 for (Pago pago : pagos) {

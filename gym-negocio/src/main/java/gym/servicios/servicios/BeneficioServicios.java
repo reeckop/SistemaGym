@@ -7,7 +7,7 @@ package gym.servicios.servicios;
 import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Beneficio;
 import gym.persistencia.excepciones.PersistenciaException;
-import gym.persistencia.uow.SociosUnitOfWork;
+import gym.persistencia.facade.IPersistenciaFachada;
 import gym.servicios.dto.BeneficioDTO;
 import gym.servicios.interfaces.IBeneficioServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,17 +20,17 @@ import java.util.List;
  */
 public class BeneficioServicios implements IBeneficioServicios {
 
-    private final SociosUnitOfWork unidad;
+    private final IPersistenciaFachada fachada;
 
-    public BeneficioServicios(SociosUnitOfWork unidad) {
-        this.unidad = unidad;
+    public BeneficioServicios(IPersistenciaFachada fachada) {
+        this.fachada = fachada;
     }
 
     @Override
     public void registrarBeneficio(BeneficioDTO beneficio) throws NegocioException {
         validarBeneficio(beneficio);
         try {
-            unidad.beneficios().guardar(Mappers.convertirAEntidad(beneficio));
+            fachada.guardarBeneficio(Mappers.convertirAEntidad(beneficio));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible registrar el beneficio.", e);
         }
@@ -41,11 +41,11 @@ public class BeneficioServicios implements IBeneficioServicios {
         validarBeneficio(beneficio);
         validarId(beneficio.getIdBeneficio());
         try {
-            if (unidad.beneficios().obtenerPorId(beneficio.getIdBeneficio()) == null) {
+            if (fachada.obtenerBeneficioPorId(beneficio.getIdBeneficio()) == null) {
                 throw new NegocioException("El beneficio no existe.");
             }
 
-            unidad.beneficios().actualizar(Mappers.convertirAEntidad(beneficio));
+            fachada.actualizarBeneficio(Mappers.convertirAEntidad(beneficio));
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible actualizar el beneficio.", e);
         }
@@ -55,11 +55,11 @@ public class BeneficioServicios implements IBeneficioServicios {
     public void eliminarBeneficio(String id) throws NegocioException {
         validarId(id);
         try {
-            if (unidad.beneficios().obtenerPorId(id) == null) {
+            if (fachada.obtenerBeneficioPorId(id) == null) {
                 throw new NegocioException("El beneficio no existe.");
             }
 
-            unidad.beneficios().eliminar(id);
+            fachada.eliminarBeneficio(id);
         } catch (PersistenciaException e) {
             throw new NegocioException("No fue posible eliminar el beneficio.", e);
         }
@@ -69,7 +69,7 @@ public class BeneficioServicios implements IBeneficioServicios {
     public BeneficioDTO consultarBeneficio(String id) throws NegocioException {
         validarId(id);
         try {
-            Beneficio beneficio = unidad.beneficios().obtenerPorId(id);
+            Beneficio beneficio = fachada.obtenerBeneficioPorId(id);
 
             if (beneficio == null) {
                 throw new NegocioException("El beneficio no existe.");
@@ -85,7 +85,7 @@ public class BeneficioServicios implements IBeneficioServicios {
     public List<BeneficioDTO> consultarTodosLosBeneficios() throws NegocioException {
         try {
             List<BeneficioDTO> resultado = new ArrayList<>();
-            List<Beneficio> beneficios = unidad.beneficios().obtenerTodos();
+            List<Beneficio> beneficios = fachada.obtenerTodosLosBeneficios();
 
             if (beneficios != null) {
                 for (Beneficio beneficio : beneficios) {

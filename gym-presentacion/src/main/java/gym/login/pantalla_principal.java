@@ -4,9 +4,13 @@
  */
 package gym.login;
 
+import gym.control_aceeso.pantalla_control_acceso;
 import gym.membresias.pantalla_membresias;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IMembresiaServicios;
+import gym.registro_cliente.pantalla_registro_cliente;
+import gym.servicios.interfaces.IClienteServicios;
+import gym.servicios.interfaces.IRegistroIngresoServicios;
 
 /**
  *
@@ -17,14 +21,18 @@ public class pantalla_principal extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_principal.class.getName());
     
     private final IMembresiaServicios membresiaServicios;
+    private final IClienteServicios clienteServicios;
+    private final IRegistroIngresoServicios registroIngresoServicios;
 
     /**
      * Creates new form pantalla_principal
      */
-    public pantalla_principal(EmpleadoDTO empleado, IMembresiaServicios membresiaServicios) {
+    public pantalla_principal(EmpleadoDTO empleado, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios) {
         initComponents();
 
         this.membresiaServicios = membresiaServicios;
+        this.clienteServicios = clienteServicios;
+        this.registroIngresoServicios = registroIngresoServicios;
 
         setLocationRelativeTo(null);
 
@@ -60,20 +68,21 @@ public class pantalla_principal extends javax.swing.JFrame {
         jSeparator1.setBackground(new java.awt.Color(255, 0, 0));
         jSeparator1.setForeground(new java.awt.Color(255, 0, 51));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Bienvenido :");
 
-        nombre_empleado.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        nombre_empleado.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         nombre_empleado.setForeground(new java.awt.Color(255, 255, 255));
         nombre_empleado.setText("__________");
         nombre_empleado.setToolTipText("");
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Bienvenidos a Fit Life Gym");
 
         btn_registro_cliente.setBackground(new java.awt.Color(51, 51, 51));
+        btn_registro_cliente.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_registro_cliente.setForeground(new java.awt.Color(255, 255, 255));
         btn_registro_cliente.setText("Registrar Cliente");
         btn_registro_cliente.addActionListener(new java.awt.event.ActionListener() {
@@ -83,6 +92,7 @@ public class pantalla_principal extends javax.swing.JFrame {
         });
 
         btn_membresias.setBackground(new java.awt.Color(51, 51, 51));
+        btn_membresias.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_membresias.setForeground(new java.awt.Color(255, 255, 255));
         btn_membresias.setText("Membresias");
         btn_membresias.addActionListener(new java.awt.event.ActionListener() {
@@ -92,6 +102,7 @@ public class pantalla_principal extends javax.swing.JFrame {
         });
 
         btn_cursos.setBackground(new java.awt.Color(51, 51, 51));
+        btn_cursos.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_cursos.setForeground(new java.awt.Color(255, 255, 255));
         btn_cursos.setText("Cursos");
         btn_cursos.addActionListener(new java.awt.event.ActionListener() {
@@ -101,6 +112,7 @@ public class pantalla_principal extends javax.swing.JFrame {
         });
 
         btn_ventas.setBackground(new java.awt.Color(51, 51, 51));
+        btn_ventas.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_ventas.setForeground(new java.awt.Color(255, 255, 255));
         btn_ventas.setText("Ventas");
         btn_ventas.addActionListener(new java.awt.event.ActionListener() {
@@ -110,6 +122,7 @@ public class pantalla_principal extends javax.swing.JFrame {
         });
 
         btn_reportes.setBackground(new java.awt.Color(51, 51, 51));
+        btn_reportes.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_reportes.setForeground(new java.awt.Color(255, 255, 255));
         btn_reportes.setText("Reportes");
         btn_reportes.addActionListener(new java.awt.event.ActionListener() {
@@ -119,6 +132,7 @@ public class pantalla_principal extends javax.swing.JFrame {
         });
 
         btn_notificaciones.setBackground(new java.awt.Color(255, 0, 0));
+        btn_notificaciones.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_notificaciones.setForeground(new java.awt.Color(255, 255, 255));
         btn_notificaciones.setText("Notificaciones");
         btn_notificaciones.setToolTipText("");
@@ -129,6 +143,7 @@ public class pantalla_principal extends javax.swing.JFrame {
         });
 
         btn_control_acceso.setBackground(new java.awt.Color(0, 204, 255));
+        btn_control_acceso.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_control_acceso.setForeground(new java.awt.Color(255, 255, 255));
         btn_control_acceso.setText("Control de acceso");
         btn_control_acceso.addActionListener(new java.awt.event.ActionListener() {
@@ -143,34 +158,36 @@ public class pantalla_principal extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_notificaciones)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(btn_registro_cliente)
-                .addGap(46, 46, 46)
-                .addComponent(btn_membresias)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
-                .addComponent(btn_cursos, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43)
-                .addComponent(btn_ventas, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
-                .addComponent(btn_reportes, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(53, 53, 53))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btn_notificaciones))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(jLabel1)
-                        .addGap(72, 72, 72)
-                        .addComponent(nombre_empleado))
+                        .addGap(17, 17, 17)
+                        .addComponent(btn_registro_cliente)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_membresias, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_cursos, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_ventas, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_reportes, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btn_control_acceso)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(btn_control_acceso))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(51, 51, 51)
+                                .addComponent(jLabel1)
+                                .addGap(72, 72, 72)
+                                .addComponent(nombre_empleado, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -186,14 +203,13 @@ public class pantalla_principal extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(btn_notificaciones))
                 .addGap(58, 58, 58)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_registro_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_cursos, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_ventas, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_reportes, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_membresias, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                    .addComponent(btn_membresias, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_cursos, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_ventas, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_reportes, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addComponent(btn_control_acceso)
                 .addContainerGap())
         );
@@ -213,7 +229,10 @@ public class pantalla_principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_registro_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_registro_clienteActionPerformed
-        // TODO add your handling code here:
+        pantalla_registro_cliente pantalla = new pantalla_registro_cliente(clienteServicios, this);
+
+        pantalla.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btn_registro_clienteActionPerformed
 
     private void btn_membresiasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_membresiasActionPerformed
@@ -237,7 +256,11 @@ public class pantalla_principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_reportesActionPerformed
 
     private void btn_control_accesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_control_accesoActionPerformed
-        // TODO add your handling code here:
+        pantalla_control_acceso pantalla = new pantalla_control_acceso(this, registroIngresoServicios);
+
+        pantalla.setVisible(true);
+
+        this.setVisible(false);
     }//GEN-LAST:event_btn_control_accesoActionPerformed
 
     private void btn_notificacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_notificacionesActionPerformed

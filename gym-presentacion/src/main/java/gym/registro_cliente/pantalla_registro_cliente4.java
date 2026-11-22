@@ -4,6 +4,15 @@
  */
 package gym.registro_cliente;
 
+import gym.login.pantalla_principal;
+import gym.servicios.dto.ClienteDTO;
+import gym.servicios.dto.MembresiaDTO;
+import gym.servicios.interfaces.IClienteServicios;
+import gym.servicios.servicios.ClienteServicios;
+import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
+
+
 /**
  *
  * @author drago
@@ -11,12 +20,49 @@ package gym.registro_cliente;
 public class pantalla_registro_cliente4 extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_registro_cliente4.class.getName());
+    
+    private final ClienteDTO cliente;
+    private final MembresiaDTO membresia;
+    private final pantalla_membresias_Cliente pantallaAnterior;
+    private final pantalla_principal pantallaPrincipal;
+    private final IClienteServicios clienteServicios;
 
-    /**
-     * Creates new form pantalla_registro_cliente4
-     */
-    public pantalla_registro_cliente4() {
+    public pantalla_registro_cliente4(ClienteDTO cliente, MembresiaDTO membresia, pantalla_membresias_Cliente pantallaAnterior, pantalla_principal pantallaPrincipal) {
         initComponents();
+
+        this.cliente = cliente;
+        this.membresia = membresia;
+        this.pantallaAnterior = pantallaAnterior;
+        this.pantallaPrincipal = pantallaPrincipal;
+
+        this.clienteServicios = new ClienteServicios();
+
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    }
+    
+    private void confirmarPago(String metodoPago) {
+        int respuesta = JOptionPane.showConfirmDialog(this, "Membresía: " + membresia.getNombre() + "\nPrecio: $" + membresia.getPrecio() + "\nMétodo de pago: " + metodoPago + "\n\n¿Deseas confirmar el pago?", "Confirmar pago", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            try {
+                // Asignar la membresía al cliente
+                cliente.setIdMembresia(membresia.getIdMembresia());
+
+                // Actualizar el cliente en MongoDB
+                clienteServicios.actualizarCliente(cliente);
+
+                JOptionPane.showMessageDialog(this,"¡Pago realizado correctamente!\n" + "La membresía ha sido asignada al cliente.", "Pago exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+                // Regresar a la pantalla principal
+                pantallaPrincipal.setVisible(true);
+
+                this.dispose();
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al procesar el pago: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     /**
@@ -46,15 +92,34 @@ public class pantalla_registro_cliente4 extends javax.swing.JFrame {
         jSeparator1.setForeground(new java.awt.Color(255, 0, 0));
 
         btn_efectivo.setBackground(new java.awt.Color(102, 102, 102));
+        btn_efectivo.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_efectivo.setForeground(new java.awt.Color(255, 255, 255));
         btn_efectivo.setText("Efectivo");
+        btn_efectivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_efectivoActionPerformed(evt);
+            }
+        });
 
         btn_tarjeta.setBackground(new java.awt.Color(102, 102, 102));
+        btn_tarjeta.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_tarjeta.setForeground(new java.awt.Color(255, 255, 255));
         btn_tarjeta.setText("Tarjeta");
+        btn_tarjeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_tarjetaActionPerformed(evt);
+            }
+        });
 
         btn_volver4.setBackground(new java.awt.Color(255, 0, 51));
+        btn_volver4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_volver4.setForeground(new java.awt.Color(255, 255, 255));
         btn_volver4.setText("Volver");
+        btn_volver4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_volver4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -106,30 +171,20 @@ public class pantalla_registro_cliente4 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btn_efectivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_efectivoActionPerformed
+        confirmarPago("Efectivo");
+    }//GEN-LAST:event_btn_efectivoActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new pantalla_registro_cliente4().setVisible(true));
-    }
+    private void btn_tarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_tarjetaActionPerformed
+        confirmarPago("Tarjeta");
+    }//GEN-LAST:event_btn_tarjetaActionPerformed
+
+    private void btn_volver4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver4ActionPerformed
+       pantallaPrincipal.setVisible(true);
+       this.dispose();
+    }//GEN-LAST:event_btn_volver4ActionPerformed
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_efectivo;

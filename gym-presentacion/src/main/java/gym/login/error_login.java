@@ -4,7 +4,11 @@
  */
 package gym.login;
 
+import gym.servicios.dto.EmpleadoDTO;
+import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
+import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.interfaces.IRegistroIngresoServicios;
 
 /**
  *
@@ -15,12 +19,20 @@ public class error_login extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(error_login.class.getName());
     
     private final IEmpleadoServicios empleadoServicios;
+    private final IMembresiaServicios membresiaServicios;
+    private final IClienteServicios clienteServicios;
+    private final IRegistroIngresoServicios registroIngresoServicios;
+    private final EmpleadoDTO empleado;
 
     /**
      * Creates new form error_login
      */
-    public error_login(IEmpleadoServicios empleadoServicios) {
+    public error_login(IEmpleadoServicios empleadoServicios, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios, EmpleadoDTO empleado) {
         this.empleadoServicios = empleadoServicios;
+        this.membresiaServicios = membresiaServicios;
+        this.clienteServicios = clienteServicios;
+        this.registroIngresoServicios = registroIngresoServicios;
+        this.empleado = empleado;
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -49,7 +61,7 @@ public class error_login extends javax.swing.JFrame {
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gym/login/X.png"))); // NOI18N
         jLabel2.setText("jLabel2");
 
-        titulo_error.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        titulo_error.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         titulo_error.setForeground(new java.awt.Color(255, 255, 255));
         titulo_error.setText("Datos Incorrectos");
 
@@ -84,7 +96,7 @@ public class error_login extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(164, 164, 164)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(108, Short.MAX_VALUE))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -117,7 +129,7 @@ public class error_login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_volverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volverActionPerformed
-        iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios);
+        iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
         pantalla.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_volverActionPerformed

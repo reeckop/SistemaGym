@@ -5,8 +5,15 @@
 package gym.main;
 
 import gym.login.iniciar_sesion;
+import gym.servicios.dto.EmpleadoDTO;
+import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
+import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.interfaces.IRegistroIngresoServicios;
+import gym.servicios.servicios.ClienteServicios;
 import gym.servicios.servicios.EmpleadoServicios;
+import gym.servicios.servicios.MembresiaServicios;
+import gym.servicios.servicios.RegistroIngresoServicios;
 
 /**
  *
@@ -19,10 +26,13 @@ public class Main {
      */
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(() -> {
-
             IEmpleadoServicios empleadoServicios = new EmpleadoServicios();
+            IClienteServicios clienteServicios = new ClienteServicios();
+            IMembresiaServicios membresiaServicios = new MembresiaServicios();
+            IRegistroIngresoServicios registroIngresoServicios = new RegistroIngresoServicios();
+            EmpleadoDTO empleado = new EmpleadoDTO();
 
-            iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios);
+            iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
 
             pantalla.setVisible(true);
 

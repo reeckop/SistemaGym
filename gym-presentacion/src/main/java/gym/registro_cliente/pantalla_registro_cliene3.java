@@ -4,6 +4,16 @@
  */
 package gym.registro_cliente;
 
+import gym.login.pantalla_principal;
+import gym.servicios.dto.ClienteDTO;
+import gym.servicios.dto.MembresiaDTO;
+import gym.servicios.dto.BeneficioDTO;
+import java.awt.event.ActionEvent;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+
 /**
  *
  * @author drago
@@ -11,13 +21,92 @@ package gym.registro_cliente;
 public class pantalla_registro_cliene3 extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_registro_cliene3.class.getName());
+    private final ClienteDTO cliente;
+    private final MembresiaDTO membresia;
+    private final pantalla_membresias_Cliente pantallaAnterior;
+    private final pantalla_principal pantallaPrincipal;
 
-    /**
-     * Creates new form pantalla_registro_cliene3
-     */
-    public pantalla_registro_cliene3() {
+    public pantalla_registro_cliene3(ClienteDTO cliente, MembresiaDTO membresia, pantalla_membresias_Cliente pantallaAnterior, pantalla_principal pantallaPrincipal) {
         initComponents();
+
+        this.cliente = cliente;
+        this.membresia = membresia;
+        this.pantallaAnterior = pantallaAnterior;
+        this.pantallaPrincipal = pantallaPrincipal;
+
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        cargarDatos();
     }
+
+    private void cargarDatos() {
+        // Datos del cliente
+        campo_txt_nombre_cliente.setText(cliente.getNombre() + " " + cliente.getApellido());
+
+        // Datos de la membresía
+        campo_txt_membresia.setText(membresia.getNombre());
+
+        campo_txt_precio.setText("$" + membresia.getPrecio());
+
+        // Evitar que se puedan modificar los datos
+        campo_txt_nombre_cliente.setEditable(false);
+        campo_txt_membresia.setEditable(false);
+        campo_txt_precio.setEditable(false);
+
+        // Cargar beneficios
+        cargarBeneficios();
+    }
+
+    private void cargarBeneficios() {
+        JTextField[] nombres = {
+            txtBeneficio1,
+            txtBeneficio2,
+            txtBeneficio3,
+            txtbeneficio4
+        };
+
+        JTextField[] valores = {
+            campo_txt_descuento,
+            campo_txt_sesiones_gratis,
+            campo_txt_invitaciones_mensuales,
+            campo_txt_nombre_cliente1
+        };
+
+        // Limpiar los campos
+        for (int i = 0; i < 4; i++) {
+            nombres[i].setText("");
+            valores[i].setText("");
+
+            nombres[i].setEditable(false);
+            valores[i].setEditable(false);
+        }
+
+        List<BeneficioDTO> beneficios = membresia.getBeneficios();
+
+        if (beneficios == null) {
+            return;
+        }
+
+        java.text.DecimalFormat formato = new java.text.DecimalFormat("0.##");
+
+        for (int i = 0; i < beneficios.size() && i < 4; i++) {
+
+            BeneficioDTO beneficio = beneficios.get(i);
+
+            // Nombre del beneficio
+            nombres[i].setText(beneficio.getNombre() + ":");
+
+            // Valor numérico
+            String valor = formato.format(beneficio.getValor());
+
+            // Unidad del beneficio
+            String unidad = beneficio.getUnidad() == null ? "" : beneficio.getUnidad();
+
+            valores[i].setText(valor + " " + unidad);
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -42,33 +131,38 @@ public class pantalla_registro_cliene3 extends javax.swing.JFrame {
         campo_txt_membresia = new javax.swing.JTextField();
         campo_txt_precio = new javax.swing.JTextField();
         btn_acepar_registro3 = new javax.swing.JButton();
-        btn_volver_registro3 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
+        campo_txt_nombre_cliente1 = new javax.swing.JTextField();
+        campo_txt_nombre_cliente2 = new javax.swing.JTextField();
+        txtBeneficio1 = new javax.swing.JTextField();
+        txtBeneficio2 = new javax.swing.JTextField();
+        txtBeneficio3 = new javax.swing.JTextField();
+        txtbeneficio4 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("MEMBRESIAS");
         jLabel1.setToolTipText("");
 
         jSeparator1.setForeground(new java.awt.Color(255, 0, 0));
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Cliente:");
 
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Membresia seleccionada:");
 
-        jLabel4.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Precio:");
 
-        jLabel5.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Beneficios:");
 
@@ -107,26 +201,74 @@ public class pantalla_registro_cliene3 extends javax.swing.JFrame {
         campo_txt_precio.setBorder(null);
 
         btn_acepar_registro3.setBackground(new java.awt.Color(255, 0, 51));
+        btn_acepar_registro3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_acepar_registro3.setForeground(new java.awt.Color(255, 255, 255));
         btn_acepar_registro3.setText("+ Aceptar");
+        btn_acepar_registro3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_acepar_registro3ActionPerformed(evt);
+            }
+        });
 
-        btn_volver_registro3.setBackground(new java.awt.Color(255, 0, 51));
-        btn_volver_registro3.setForeground(new java.awt.Color(255, 255, 255));
-        btn_volver_registro3.setText("Volver");
+        campo_txt_nombre_cliente1.setBackground(new java.awt.Color(0, 0, 0));
+        campo_txt_nombre_cliente1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        campo_txt_nombre_cliente1.setForeground(new java.awt.Color(255, 255, 255));
+        campo_txt_nombre_cliente1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        campo_txt_nombre_cliente1.setBorder(null);
+
+        campo_txt_nombre_cliente2.setBackground(new java.awt.Color(0, 0, 0));
+        campo_txt_nombre_cliente2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        campo_txt_nombre_cliente2.setForeground(new java.awt.Color(255, 255, 255));
+        campo_txt_nombre_cliente2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        campo_txt_nombre_cliente2.setBorder(null);
+
+        txtBeneficio1.setBackground(new java.awt.Color(0, 0, 0));
+        txtBeneficio1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtBeneficio1.setForeground(new java.awt.Color(255, 255, 255));
+        txtBeneficio1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        txtBeneficio1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBeneficio1ActionPerformed(evt);
+            }
+        });
+
+        txtBeneficio2.setBackground(new java.awt.Color(0, 0, 0));
+        txtBeneficio2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtBeneficio2.setForeground(new java.awt.Color(255, 255, 255));
+        txtBeneficio2.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        txtBeneficio2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBeneficio2ActionPerformed(evt);
+            }
+        });
+
+        txtBeneficio3.setBackground(new java.awt.Color(0, 0, 0));
+        txtBeneficio3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtBeneficio3.setForeground(new java.awt.Color(255, 255, 255));
+        txtBeneficio3.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        txtBeneficio3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBeneficio3ActionPerformed(evt);
+            }
+        });
+
+        txtbeneficio4.setBackground(new java.awt.Color(0, 0, 0));
+        txtbeneficio4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        txtbeneficio4.setForeground(new java.awt.Color(255, 255, 255));
+        txtbeneficio4.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        txtbeneficio4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtbeneficio4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(257, 257, 257)
-                        .addComponent(btn_acepar_registro3, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 175, Short.MAX_VALUE)
-                        .addComponent(btn_volver_registro3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -135,11 +277,7 @@ public class pantalla_registro_cliene3 extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(23, 23, 23)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jLabel5)
-                                        .addComponent(campo_txt_descuento)
-                                        .addComponent(campo_txt_sesiones_gratis)
-                                        .addComponent(campo_txt_invitaciones_mensuales, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE))
+                                    .addComponent(jLabel5)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                             .addComponent(jLabel3)
@@ -149,9 +287,37 @@ public class pantalla_registro_cliene3 extends javax.swing.JFrame {
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addComponent(campo_txt_nombre_cliente)
                                             .addComponent(campo_txt_membresia)
-                                            .addComponent(campo_txt_precio, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE))))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                            .addComponent(campo_txt_precio, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)))
+                                    .addComponent(txtBeneficio1, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(txtbeneficio4, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtBeneficio3, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                                            .addComponent(txtBeneficio2))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(campo_txt_descuento)
+                                            .addComponent(campo_txt_sesiones_gratis)
+                                            .addComponent(campo_txt_invitaciones_mensuales))))))
+                        .addGap(0, 139, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jSeparator2)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btn_acepar_registro3, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(243, 243, 243))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(254, 254, 254)
+                    .addComponent(campo_txt_nombre_cliente1)
+                    .addGap(156, 156, 156)))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(254, 254, 254)
+                    .addComponent(campo_txt_nombre_cliente2)
+                    .addGap(156, 156, 156)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,9 +327,11 @@ public class pantalla_registro_cliene3 extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2)
-                    .addComponent(campo_txt_nombre_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(campo_txt_nombre_cliente)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -174,19 +342,35 @@ public class pantalla_registro_cliene3 extends javax.swing.JFrame {
                     .addComponent(campo_txt_precio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34)
                 .addComponent(jLabel5)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtBeneficio1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
                 .addComponent(campo_txt_descuento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(campo_txt_sesiones_gratis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(campo_txt_invitaciones_mensuales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_acepar_registro3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_volver_registro3))
+                    .addComponent(campo_txt_sesiones_gratis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtBeneficio2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(campo_txt_invitaciones_mensuales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtBeneficio3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addComponent(txtbeneficio4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
+                .addComponent(btn_acepar_registro3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(96, 96, 96)
+                    .addComponent(campo_txt_nombre_cliente1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(437, Short.MAX_VALUE)))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(96, 96, 96)
+                    .addComponent(campo_txt_nombre_cliente2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(437, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -205,38 +389,39 @@ public class pantalla_registro_cliene3 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btn_acepar_registro3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_acepar_registro3ActionPerformed
+        pantalla_registro_cliente4 pantalla = new pantalla_registro_cliente4(cliente, membresia, pantallaAnterior, pantallaPrincipal);
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new pantalla_registro_cliene3().setVisible(true));
-    }
+        pantalla.setVisible(true);
+        this.setVisible(false);;
+    }//GEN-LAST:event_btn_acepar_registro3ActionPerformed
+
+    private void txtBeneficio1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBeneficio1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBeneficio1ActionPerformed
+
+    private void txtBeneficio2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBeneficio2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBeneficio2ActionPerformed
+
+    private void txtBeneficio3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBeneficio3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBeneficio3ActionPerformed
+
+    private void txtbeneficio4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbeneficio4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtbeneficio4ActionPerformed
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_acepar_registro3;
-    private javax.swing.JButton btn_volver_registro3;
     private javax.swing.JTextField campo_txt_descuento;
     private javax.swing.JTextField campo_txt_invitaciones_mensuales;
     private javax.swing.JTextField campo_txt_membresia;
     private javax.swing.JTextField campo_txt_nombre_cliente;
+    private javax.swing.JTextField campo_txt_nombre_cliente1;
+    private javax.swing.JTextField campo_txt_nombre_cliente2;
     private javax.swing.JTextField campo_txt_precio;
     private javax.swing.JTextField campo_txt_sesiones_gratis;
     private javax.swing.JLabel jLabel1;
@@ -247,5 +432,9 @@ public class pantalla_registro_cliene3 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JTextField txtBeneficio1;
+    private javax.swing.JTextField txtBeneficio2;
+    private javax.swing.JTextField txtBeneficio3;
+    private javax.swing.JTextField txtbeneficio4;
     // End of variables declaration//GEN-END:variables
 }

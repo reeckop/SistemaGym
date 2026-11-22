@@ -7,8 +7,10 @@ package gym.login;
 import gym.excepciones.NegocioException;
 import gym.registrar_empleado.pantalla_registro_empleado;
 import gym.servicios.dto.EmpleadoDTO;
+import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
 import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.interfaces.IRegistroIngresoServicios;
 import gym.servicios.servicios.MembresiaServicios;
 import javax.swing.JOptionPane;
 
@@ -21,12 +23,20 @@ public class iniciar_sesion extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(iniciar_sesion.class.getName());
     
     private final IEmpleadoServicios empleadoServicios;
+    private final IMembresiaServicios membresiaServicios;
+    private final IClienteServicios clienteServicios;
+    private final IRegistroIngresoServicios registroIngresoServicios;
+    private final EmpleadoDTO empleado;
 
     /**
      * Creates new form iniciar_sesion
      */
-    public iniciar_sesion(IEmpleadoServicios empleadoServicios) {
+    public iniciar_sesion(IEmpleadoServicios empleadoServicios, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios, EmpleadoDTO empleado) {
         this.empleadoServicios = empleadoServicios;
+        this.membresiaServicios = membresiaServicios;
+        this.clienteServicios = clienteServicios;
+        this.registroIngresoServicios = registroIngresoServicios;
+        this.empleado = empleado;
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -85,7 +95,7 @@ public class iniciar_sesion extends javax.swing.JFrame {
 
         jSeparator1.setForeground(new java.awt.Color(255, 0, 51));
 
-        titulo_nip.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        titulo_nip.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         titulo_nip.setForeground(new java.awt.Color(255, 255, 255));
         titulo_nip.setText("NIP");
 
@@ -202,7 +212,7 @@ public class iniciar_sesion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_registrar_empleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_registrar_empleadoActionPerformed
-        pantalla_registro_empleado pantalla = new pantalla_registro_empleado(empleadoServicios);
+        pantalla_registro_empleado pantalla = new pantalla_registro_empleado(empleadoServicios, empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
         pantalla.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_registrar_empleadoActionPerformed
@@ -226,16 +236,16 @@ public class iniciar_sesion extends javax.swing.JFrame {
         try {
             EmpleadoDTO empleado = empleadoServicios.iniciarSesion(nip, contrasena);
 
-            IMembresiaServicios membresiaServicios = new MembresiaServicios();
+             
 
-            pantalla_principal pantalla = new pantalla_principal(empleado, membresiaServicios);
+            pantalla_principal pantalla = new pantalla_principal(empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
 
             pantalla.setVisible(true);
 
             this.dispose();
 
         } catch (NegocioException e) {
-            error_login pantalla = new error_login(empleadoServicios);
+            error_login pantalla = new error_login(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
             pantalla.setVisible(true);
             this.dispose();
         }

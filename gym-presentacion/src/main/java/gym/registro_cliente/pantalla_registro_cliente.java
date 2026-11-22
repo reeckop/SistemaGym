@@ -4,6 +4,15 @@
  */
 package gym.registro_cliente;
 
+import gym.login.pantalla_principal;
+import gym.servicios.dto.ClienteDTO;
+import gym.servicios.interfaces.IClienteServicios;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
+import org.bson.types.ObjectId;
 /**
  *
  * @author drago
@@ -11,12 +20,80 @@ package gym.registro_cliente;
 public class pantalla_registro_cliente extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_registro_cliente.class.getName());
+    
+    private final IClienteServicios clienteServicios;
+    private final pantalla_principal pantallaPrincipal;
 
-    /**
-     * Creates new form pantalla_registro_cliente
-     */
-    public pantalla_registro_cliente() {
+    public pantalla_registro_cliente(IClienteServicios servicios, pantalla_principal pantallaPrincipal) {
         initComponents();
+
+        this.clienteServicios = servicios;
+        this.pantallaPrincipal = pantallaPrincipal;
+
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        jTextField4.setText("El día de Hoy");
+        jTextField4.setEditable(false);
+    }
+    
+    
+    private void registrarCliente() {
+        String nombre = campo_txt_nombre_registroN.getText().trim();
+        String apellido = campo_txy_apellido_registroN.getText().trim();
+        String telefono = campo_txt_telefono_registroN.getText().trim();
+
+        // Validar campos vacíos
+        if (nombre.isEmpty() || apellido.isEmpty() || telefono.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Completa todos los campos.");
+            return;
+        }
+
+        // Validar nombre y apellido
+        if (!Pattern.matches("[\\p{L} '-]+", nombre) || !Pattern.matches("[\\p{L} '-]+", apellido)) {
+            JOptionPane.showMessageDialog(this, "El nombre y apellido solo deben contener letras.");
+            return;
+        }
+
+        // Validar teléfono
+        if (!Pattern.matches("\\d{10}", telefono)) {
+            JOptionPane.showMessageDialog(this, "El telefono debe contener exactamente 10 digitos.");
+            return;
+        }
+
+        try {
+            ClienteDTO cliente = new ClienteDTO();
+
+            cliente.setIdCliente(new ObjectId().toHexString());
+            cliente.setNombre(nombre);
+            cliente.setApellido(apellido);
+            cliente.setTelefono(telefono);
+            cliente.setFechaIngreso(LocalDate.now());
+            cliente.setIdMembresia(null);
+
+            // Registrar cliente en MongoDB
+            clienteServicios.registrarCliente(cliente);
+
+            // Obtener fecha y hora del registro
+            LocalDateTime fechaHora = LocalDateTime.now();
+
+            // Abrir pantalla de confirmación
+            pantalla_registro_cliente2 pantalla = new pantalla_registro_cliente2(cliente, fechaHora, this, pantallaPrincipal);
+
+            pantalla.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al registrar el cliente: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void volver() {
+        if (pantallaPrincipal != null) {
+            pantallaPrincipal.setVisible(true);
+        }
+
+        this.dispose();
     }
 
     /**
@@ -47,45 +124,45 @@ public class pantalla_registro_cliente extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("REGISTRO CLIENTE ");
 
         jSeparator1.setForeground(new java.awt.Color(255, 0, 51));
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Nombre:");
 
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Apellido:");
 
-        jLabel4.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Telefono:");
 
-        jLabel5.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Fecha de ingreso:");
 
         campo_txt_nombre_registroN.setBackground(new java.awt.Color(51, 51, 51));
-        campo_txt_nombre_registroN.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        campo_txt_nombre_registroN.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         campo_txt_nombre_registroN.setForeground(new java.awt.Color(255, 255, 255));
         campo_txt_nombre_registroN.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         campo_txy_apellido_registroN.setBackground(new java.awt.Color(51, 51, 51));
-        campo_txy_apellido_registroN.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        campo_txy_apellido_registroN.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         campo_txy_apellido_registroN.setForeground(new java.awt.Color(255, 255, 255));
         campo_txy_apellido_registroN.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         campo_txt_telefono_registroN.setBackground(new java.awt.Color(51, 51, 51));
-        campo_txt_telefono_registroN.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        campo_txt_telefono_registroN.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         campo_txt_telefono_registroN.setForeground(new java.awt.Color(255, 255, 255));
         campo_txt_telefono_registroN.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jTextField4.setBackground(new java.awt.Color(0, 0, 0));
-        jTextField4.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jTextField4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jTextField4.setForeground(new java.awt.Color(255, 255, 255));
         jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField4.setBorder(null);
@@ -93,10 +170,21 @@ public class pantalla_registro_cliente extends javax.swing.JFrame {
         btn_aceptar_registroN.setBackground(new java.awt.Color(255, 0, 51));
         btn_aceptar_registroN.setForeground(new java.awt.Color(255, 255, 255));
         btn_aceptar_registroN.setText("+ Aceptar");
+        btn_aceptar_registroN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_aceptar_registroNActionPerformed(evt);
+            }
+        });
 
         btn_volver_registroN.setBackground(new java.awt.Color(255, 0, 0));
+        btn_volver_registroN.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_volver_registroN.setForeground(new java.awt.Color(255, 255, 255));
         btn_volver_registroN.setText("Volver");
+        btn_volver_registroN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_volver_registroNActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -106,32 +194,29 @@ public class pantalla_registro_cliente extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(141, 141, 141)
-                                .addComponent(jLabel1))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(33, 33, 33)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(campo_txt_nombre_registroN)
-                                    .addComponent(campo_txy_apellido_registroN)
-                                    .addComponent(campo_txt_telefono_registroN)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(220, 220, 220)
-                                .addComponent(btn_aceptar_registroN)))
-                        .addGap(0, 134, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btn_volver_registroN)))
-                .addContainerGap())
+                        .addGap(141, 141, 141)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(campo_txt_nombre_registroN)
+                            .addComponent(campo_txy_apellido_registroN)
+                            .addComponent(campo_txt_telefono_registroN)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(220, 220, 220)
+                        .addComponent(btn_aceptar_registroN)))
+                .addContainerGap(135, Short.MAX_VALUE))
             .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btn_volver_registroN, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,30 +264,16 @@ public class pantalla_registro_cliente extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btn_aceptar_registroNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_aceptar_registroNActionPerformed
+        registrarCliente();
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new pantalla_registro_cliente().setVisible(true));
-    }
+    }//GEN-LAST:event_btn_aceptar_registroNActionPerformed
+
+    private void btn_volver_registroNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_registroNActionPerformed
+        volver();
+    }//GEN-LAST:event_btn_volver_registroNActionPerformed
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_aceptar_registroN;

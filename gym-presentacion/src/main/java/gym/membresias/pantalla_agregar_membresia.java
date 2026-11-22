@@ -8,7 +8,6 @@ import gym.servicios.dto.BeneficioDTO;
 import gym.servicios.dto.MembresiaDTO;
 import gym.servicios.enums.EstadoMembresia;
 import gym.servicios.interfaces.IMembresiaServicios;
-import gym.servicios.servicios.MembresiaServicios;
 import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -44,10 +43,6 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
     private final pantalla_membresias pantallaAnterior;
 
     private File imagenSeleccionada;
-
-    public pantalla_agregar_membresia() {
-        this(new MembresiaServicios(), null);
-    }
     
     public void membresiaAgregada() {
         if (pantallaAnterior != null) {
@@ -179,7 +174,11 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
     private void seleccionarImagen() {
         JFileChooser selector = new JFileChooser();
 
-        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imagenes JPG, JPEG y PNG","jpg", "jpeg", "png");
+        // Permitir navegar por todas las carpetas
+        selector.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        // Mostrar unicamente imágenes JPG, JPEG y PNG
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imágenes (JPG, JPEG, PNG)", "jpg", "jpeg", "png");
 
         selector.setFileFilter(filtro);
 
@@ -190,11 +189,9 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
 
             ImageIcon imagen = new ImageIcon(imagenSeleccionada.getAbsolutePath());
 
-            // Tamaño disponible para la imagen
             int ancho = jPanel2.getWidth() - 20;
             int alto = jPanel2.getHeight() - 20;
 
-            // Mantener proporciones originales
             Image imagenOriginal = imagen.getImage();
 
             int anchoOriginal = imagen.getIconWidth();

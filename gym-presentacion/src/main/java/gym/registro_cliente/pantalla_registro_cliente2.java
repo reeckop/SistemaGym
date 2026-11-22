@@ -3,6 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package gym.registro_cliente;
+import gym.login.pantalla_principal;
+import gym.servicios.dto.ClienteDTO;
+import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.servicios.MembresiaServicios;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -11,13 +17,39 @@ package gym.registro_cliente;
 public class pantalla_registro_cliente2 extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_registro_cliente2.class.getName());
+    
+    private final ClienteDTO cliente;
+    private final pantalla_registro_cliente pantallaAnterior;
+    private final pantalla_principal pantallaPrincipal;
 
     /**
      * Creates new form pantalla_registro_cliente2
      */
-    public pantalla_registro_cliente2() {
+    public pantalla_registro_cliente2(ClienteDTO cliente, LocalDateTime fechaHora, pantalla_registro_cliente pantallaAnterior, pantalla_principal pantallaPrincipal) {
         initComponents();
+
+        this.cliente = cliente;
+        this.pantallaAnterior = pantallaAnterior;
+        this.pantallaPrincipal = pantallaPrincipal;
+
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        // Mostrar informacion del cliente
+        campo_txt_num_clienteN.setText(cliente.getIdCliente());
+        campo_txt_nombre_clienteN.setText(cliente.getNombre() + " " + cliente.getApellido());
+
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a");
+
+        campo_txt_fecha_hora_clienteN.setText(fechaHora.format(formato));
+
+        // Bloquear campos
+        campo_txt_num_clienteN.setEditable(false);
+        campo_txt_nombre_clienteN.setEditable(false);
+        campo_txt_fecha_hora_clienteN.setEditable(false);
+        
     }
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -39,33 +71,32 @@ public class pantalla_registro_cliente2 extends javax.swing.JFrame {
         campo_txt_nombre_clienteN = new javax.swing.JTextField();
         campo_txt_fecha_hora_clienteN = new javax.swing.JTextField();
         btn_registro2 = new javax.swing.JButton();
-        btn_volver2 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("REGISTRO CLIENTE");
 
         jSeparator1.setForeground(new java.awt.Color(255, 0, 51));
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Registro Exitoso");
 
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("No. Usuario:");
         jLabel3.setToolTipText("");
 
-        jLabel4.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Nombre:");
 
-        jLabel5.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Fecha y Hora de registro:");
 
@@ -85,12 +116,14 @@ public class pantalla_registro_cliente2 extends javax.swing.JFrame {
         campo_txt_fecha_hora_clienteN.setBorder(null);
 
         btn_registro2.setBackground(new java.awt.Color(255, 0, 51));
+        btn_registro2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_registro2.setForeground(new java.awt.Color(255, 255, 255));
         btn_registro2.setText("+ Aceptar");
-
-        btn_volver2.setBackground(new java.awt.Color(255, 0, 51));
-        btn_volver2.setForeground(new java.awt.Color(255, 255, 255));
-        btn_volver2.setText("Volver");
+        btn_registro2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_registro2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -101,28 +134,22 @@ public class pantalla_registro_cliente2 extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(129, 129, 129)
-                                .addComponent(jLabel1))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel2))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(campo_txt_num_clienteN)
-                                    .addComponent(campo_txt_nombre_clienteN)
-                                    .addComponent(campo_txt_fecha_hora_clienteN, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
-                                    .addComponent(btn_registro2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 130, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btn_volver2, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addGap(129, 129, 129)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(campo_txt_num_clienteN)
+                            .addComponent(campo_txt_nombre_clienteN)
+                            .addComponent(campo_txt_fecha_hora_clienteN, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+                            .addComponent(btn_registro2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(120, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,11 +172,9 @@ public class pantalla_registro_cliente2 extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(campo_txt_fecha_hora_clienteN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
                 .addComponent(btn_registro2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_volver2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(35, 35, 35)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
         );
@@ -168,34 +193,18 @@ public class pantalla_registro_cliente2 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btn_registro2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_registro2ActionPerformed
+        IMembresiaServicios membresiaServicios = new MembresiaServicios();
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new pantalla_registro_cliente2().setVisible(true));
-    }
+        pantalla_membresias_Cliente pantalla = new pantalla_membresias_Cliente(membresiaServicios, cliente, this, pantallaPrincipal);
+
+        pantalla.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btn_registro2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_registro2;
-    private javax.swing.JButton btn_volver2;
     private javax.swing.JTextField campo_txt_fecha_hora_clienteN;
     private javax.swing.JTextField campo_txt_nombre_clienteN;
     private javax.swing.JTextField campo_txt_num_clienteN;

@@ -4,6 +4,17 @@
  */
 package gym.control_aceeso;
 
+import gym.login.pantalla_principal;
+import gym.servicios.dto.ClienteDTO;
+import gym.servicios.dto.MembresiaDTO;
+import gym.servicios.interfaces.IClienteServicios;
+import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.interfaces.IRegistroIngresoServicios;
+import gym.servicios.servicios.ClienteServicios;
+import gym.servicios.servicios.MembresiaServicios;
+import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
+
 /**
  *
  * @author drago
@@ -11,12 +22,57 @@ package gym.control_aceeso;
 public class pantalla_control_acceso extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_control_acceso.class.getName());
+    
+    private final IClienteServicios clienteServicios;
+    private final IMembresiaServicios membresiaServicios;
+    private final pantalla_principal pantallaPrincipal;
+    private final IRegistroIngresoServicios registroIngresoServicios;
 
     /**
      * Creates new form pantalla_control_acceso
      */
-    public pantalla_control_acceso() {
+    public pantalla_control_acceso(pantalla_principal pantallaPrincipal, IRegistroIngresoServicios registroIngresoServicios) {
         initComponents();
+
+        this.pantallaPrincipal = pantallaPrincipal;
+        this.registroIngresoServicios = registroIngresoServicios;
+        this.clienteServicios = new ClienteServicios();
+        this.membresiaServicios = new MembresiaServicios();
+
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    }
+    
+    private void buscarCliente() {
+        String id = jTextField1.getText().trim();
+
+        if (id.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingresa el numero de usuario del cliente.");
+            return;
+        }
+
+        try {
+            ClienteDTO cliente = clienteServicios.consultarCliente(id);
+
+            MembresiaDTO membresia = null;
+
+            // Buscar la membresia asignada al cliente
+            if (cliente.getIdMembresia() != null) {
+                for (MembresiaDTO m : membresiaServicios.consultarTodasLasMembresias()) {
+                    if (m.getIdMembresia().equals(cliente.getIdMembresia())) {
+                        membresia = m;
+                        break;
+                    }
+                }
+            }
+
+            pantalla_control_acceso2 pantalla = new pantalla_control_acceso2(cliente, membresia, this, pantallaPrincipal, registroIngresoServicios);
+
+            pantalla.setVisible(true);
+            this.setVisible(false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "No se encontro el cliente o ocurrio un error: " + e.getMessage(), "Control de acceso", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -33,32 +89,48 @@ public class pantalla_control_acceso extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnAceptar = new javax.swing.JButton();
+        btnVolver = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("CONTROL DE ACCESO");
 
         jSeparator1.setForeground(new java.awt.Color(255, 0, 0));
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Numero de usuario de cliente: ");
 
         jTextField1.setBackground(new java.awt.Color(51, 51, 51));
+        jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
         jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 0));
-        jButton1.setText("+ Acepar");
+        btnAceptar.setBackground(new java.awt.Color(255, 0, 0));
+        btnAceptar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAceptar.setForeground(new java.awt.Color(255, 255, 255));
+        btnAceptar.setText("+ Aceptar");
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setBackground(new java.awt.Color(255, 0, 0));
-        jButton2.setText("Volver");
+        btnVolver.setBackground(new java.awt.Color(255, 0, 0));
+        btnVolver.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnVolver.setForeground(new java.awt.Color(255, 255, 255));
+        btnVolver.setText("Volver");
+        btnVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVolverActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -80,11 +152,11 @@ public class pantalla_control_acceso extends javax.swing.JFrame {
                                     .addComponent(jTextField1)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(158, 158, 158)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 77, Short.MAX_VALUE))
+                                .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 56, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -99,9 +171,9 @@ public class pantalla_control_acceso extends javax.swing.JFrame {
                 .addGap(38, 38, 38)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
@@ -121,34 +193,23 @@ public class pantalla_control_acceso extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        buscarCliente();
+    }//GEN-LAST:event_btnAceptarActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new pantalla_control_acceso().setVisible(true));
-    }
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+        if (pantallaPrincipal != null) {
+            pantallaPrincipal.setVisible(true);
+        }
+
+        this.dispose();
+    }//GEN-LAST:event_btnVolverActionPerformed
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnAceptar;
+    private javax.swing.JButton btnVolver;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

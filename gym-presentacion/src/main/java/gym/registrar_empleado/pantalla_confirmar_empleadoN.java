@@ -7,7 +7,10 @@ package gym.registrar_empleado;
 import gym.excepciones.NegocioException;
 import gym.login.iniciar_sesion;
 import gym.servicios.dto.EmpleadoDTO;
+import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
+import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.interfaces.IRegistroIngresoServicios;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,10 +23,16 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
     
     private final IEmpleadoServicios empleadoServicios;
     private final EmpleadoDTO empleado;
+    private final IMembresiaServicios membresiaServicios;
+    private final IClienteServicios clienteServicios;
+    private final IRegistroIngresoServicios registroIngresoServicios;
 
-    public pantalla_confirmar_empleadoN(IEmpleadoServicios empleadoServicios, EmpleadoDTO empleado) {
+    public pantalla_confirmar_empleadoN(IEmpleadoServicios empleadoServicios, EmpleadoDTO empleado, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios) {
         this.empleadoServicios = empleadoServicios;
         this.empleado = empleado;
+        this.membresiaServicios = membresiaServicios;
+        this.clienteServicios = clienteServicios;
+        this.registroIngresoServicios = registroIngresoServicios;
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -132,7 +141,7 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, "Empleado registrado correctamente.");
 
-            iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios);
+            iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
             pantalla.setVisible(true);
 
             this.dispose();
@@ -143,7 +152,7 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_aceptar_empleadoN2ActionPerformed
 
     private void btn_volver_empleadoN2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_empleadoN2ActionPerformed
-        pantalla_registro_empleado pantalla = new pantalla_registro_empleado(empleadoServicios, empleado);
+        pantalla_registro_empleado pantalla = new pantalla_registro_empleado(empleadoServicios, empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
         pantalla.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_volver_empleadoN2ActionPerformed

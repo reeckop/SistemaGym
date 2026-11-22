@@ -6,7 +6,10 @@ package gym.registrar_empleado;
 
 import gym.login.iniciar_sesion;
 import gym.servicios.dto.EmpleadoDTO;
+import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
+import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.interfaces.IRegistroIngresoServicios;
 import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JOptionPane;
@@ -20,13 +23,17 @@ public class pantalla_registro_empleado extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_registro_empleado.class.getName());
 
     private final IEmpleadoServicios empleadoServicios;
-
-    public pantalla_registro_empleado(IEmpleadoServicios empleadoServicios) {
-        this(empleadoServicios, new EmpleadoDTO());
-    }
+    private final IMembresiaServicios membresiaServicios;
+    private final IClienteServicios clienteServicios;
+    private final IRegistroIngresoServicios registroIngresoServicios;
+    private final EmpleadoDTO empleado;
     
-    public pantalla_registro_empleado(IEmpleadoServicios empleadoServicios, EmpleadoDTO empleado) {
+    public pantalla_registro_empleado(IEmpleadoServicios empleadoServicios, EmpleadoDTO empleado, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios) {
         this.empleadoServicios = empleadoServicios;
+        this.membresiaServicios = membresiaServicios;
+        this.clienteServicios = clienteServicios;
+        this.registroIngresoServicios = registroIngresoServicios;
+        this.empleado = empleado;
 
         initComponents();
         setLocationRelativeTo(null);
@@ -311,14 +318,14 @@ public class pantalla_registro_empleado extends javax.swing.JFrame {
         empleado.setFechaIngreso(campo_fecha_ingreso_empleadoN.getText());
         empleado.setPuesto(campo_txt_puesto_empleadoN.getText());
 
-        pantalla_confirmar_empleadoN confirmacion = new pantalla_confirmar_empleadoN(empleadoServicios, empleado);
+        pantalla_confirmar_empleadoN confirmacion = new pantalla_confirmar_empleadoN(empleadoServicios, empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
 
         confirmacion.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_aceptar_empleadoNActionPerformed
 
     private void btn_volver_empleadoNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_empleadoNActionPerformed
-        iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios);
+        iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
         pantalla.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_volver_empleadoNActionPerformed

@@ -4,6 +4,34 @@
  */
 package gym.membresias;
 
+import gym.servicios.dto.BeneficioDTO;
+import gym.servicios.dto.MembresiaDTO;
+import gym.servicios.enums.EstadoMembresia;
+import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.servicios.MembresiaServicios;
+import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.bson.types.ObjectId;
+
 /**
  *
  * @author drago
@@ -12,12 +40,309 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_agregar_membresia.class.getName());
 
-    /**
-     * Creates new form pantalla_agregar_membresia
-     */
+    private final IMembresiaServicios membresiaServicios;
+    private final pantalla_membresias pantallaAnterior;
+
+    private File imagenSeleccionada;
+
     public pantalla_agregar_membresia() {
-        initComponents();
+        this(new MembresiaServicios(), null);
     }
+    
+    public void membresiaAgregada() {
+        if (pantallaAnterior != null) {
+            pantallaAnterior.cargarMembresias();
+            pantallaAnterior.setVisible(true);
+        }
+
+        this.dispose();
+    }
+    
+
+    public pantalla_agregar_membresia(IMembresiaServicios servicios, pantalla_membresias pantallaAnterior) {
+        initComponents();
+
+        this.membresiaServicios = servicios;
+        this.pantallaAnterior = pantallaAnterior;
+
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        configurarBeneficios();
+        configurarApariencia();
+
+        btn_seleccionar_Imagen_membreciaN.addActionListener(e -> seleccionarImagen());
+        btn_aceptar_agregar_membresia.addActionListener(e -> guardarMembresia());
+    }
+    
+    private void configurarBeneficios() {
+        campo_txt_descuentos_productos.setEnabled(false);
+        campo_texto_sesiones_gratis.setEnabled(false);
+        campo_texto_descuento_cursos.setEnabled(false);
+        campo_texto_invitaciones_mensuales.setEnabled(false);
+
+        checkB_descuentos_productos.addItemListener(e ->
+                campo_txt_descuentos_productos.setEnabled(
+                        checkB_descuentos_productos.isSelected()
+                )
+        );
+
+        checkB_sesiones_gratis.addItemListener(e ->
+                campo_texto_sesiones_gratis.setEnabled(
+                        checkB_sesiones_gratis.isSelected()
+                )
+        );
+
+        checkB_descuento_cursos.addItemListener(e ->
+                campo_texto_descuento_cursos.setEnabled(
+                        checkB_descuento_cursos.isSelected()
+                )
+        );
+
+        checkB_invitaciones_mensuales.addItemListener(e ->
+                campo_texto_invitaciones_mensuales.setEnabled(
+                        checkB_invitaciones_mensuales.isSelected()
+                )
+        );
+    }
+
+    private void validarBeneficios() {
+        if (checkB_descuentos_productos.isSelected()) {
+            validarValor(campo_txt_descuentos_productos, 100, "Descuento en productos");
+        }
+
+        if (checkB_sesiones_gratis.isSelected()) {
+            validarValor(campo_texto_sesiones_gratis, Double.MAX_VALUE, "Sesiones gratuitas");
+        }
+
+        if (checkB_descuento_cursos.isSelected()) {
+            validarValor(campo_texto_descuento_cursos, 100, "Descuento en cursos");
+        }
+
+        if (checkB_invitaciones_mensuales.isSelected()) {
+            validarValor(campo_texto_invitaciones_mensuales, Double.MAX_VALUE, "Invitaciones mensuales");
+        }
+    }
+
+    private void validarValor(JTextField campo, double maximo, String nombre) {
+        if (campo.getText().trim().isEmpty()) {
+            throw new NumberFormatException("Ingresa el valor de " + nombre);
+        }
+
+        double valor = Double.parseDouble(campo.getText().trim());
+
+        if (valor <= 0 || valor > maximo) {
+            throw new NumberFormatException(nombre + " tiene un valor inválido.");
+        }
+
+        if (maximo == Double.MAX_VALUE && valor != Math.floor(valor)) {
+            throw new NumberFormatException(nombre + " debe ser un número entero.");
+        }
+    }
+
+    private List<BeneficioDTO> obtenerBeneficios() {
+        List<BeneficioDTO> beneficios = new ArrayList<>();
+
+        if (checkB_descuentos_productos.isSelected()) {
+            double valor = Double.parseDouble(campo_txt_descuentos_productos.getText().trim());
+
+            beneficios.add(new BeneficioDTO(new ObjectId().toHexString(), "Descuento en productos", valor, "%"));
+        }
+
+        if (checkB_sesiones_gratis.isSelected()) {
+            double valor = Double.parseDouble(
+                    campo_texto_sesiones_gratis.getText().trim()
+            );
+
+            beneficios.add(new BeneficioDTO(new ObjectId().toHexString(), "Sesiones gratuitas", valor, "sesiones"));
+        }
+
+        if (checkB_descuento_cursos.isSelected()) {
+            double valor = Double.parseDouble(
+                    campo_texto_descuento_cursos.getText().trim()
+            );
+
+            beneficios.add(new BeneficioDTO(new ObjectId().toHexString(), "Descuento en cursos", valor, "%"));
+        }
+
+        if (checkB_invitaciones_mensuales.isSelected()) {
+            double valor = Double.parseDouble(
+                    campo_texto_invitaciones_mensuales.getText().trim()
+            );
+
+            beneficios.add(new BeneficioDTO(new ObjectId().toHexString(), "Invitaciones mensuales", valor, "invitaciones"));
+        }
+
+        return beneficios;
+    }
+    
+    private void seleccionarImagen() {
+        JFileChooser selector = new JFileChooser();
+
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imagenes JPG, JPEG y PNG","jpg", "jpeg", "png");
+
+        selector.setFileFilter(filtro);
+
+        int resultado = selector.showOpenDialog(this);
+
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            imagenSeleccionada = selector.getSelectedFile();
+
+            ImageIcon imagen = new ImageIcon(imagenSeleccionada.getAbsolutePath());
+
+            // Tamaño disponible para la imagen
+            int ancho = jPanel2.getWidth() - 20;
+            int alto = jPanel2.getHeight() - 20;
+
+            // Mantener proporciones originales
+            Image imagenOriginal = imagen.getImage();
+
+            int anchoOriginal = imagen.getIconWidth();
+            int altoOriginal = imagen.getIconHeight();
+
+            double escala = Math.min((double) ancho / anchoOriginal, (double) alto / altoOriginal);
+
+            int nuevoAncho = (int) (anchoOriginal * escala);
+            int nuevoAlto = (int) (altoOriginal * escala);
+
+            Image imagenEscalada = imagenOriginal.getScaledInstance(nuevoAncho, nuevoAlto, Image.SCALE_SMOOTH);
+
+            txt_img_membresiaN.setText("");
+            txt_img_membresiaN.setIcon(new ImageIcon(imagenEscalada));
+        }
+    }
+    
+    private String guardarImagen() throws IOException {
+        if (imagenSeleccionada == null) {
+            return null;
+        }
+
+        Path carpeta = Paths.get("imagenes", "membresias");
+
+        Files.createDirectories(carpeta);
+
+        String nombre = imagenSeleccionada.getName();
+
+        String extension = nombre.substring(nombre.lastIndexOf("."));
+
+        String nuevoNombre = UUID.randomUUID() + extension;
+
+        Path destino = carpeta.resolve(nuevoNombre);
+
+        Files.copy(imagenSeleccionada.toPath(), destino, StandardCopyOption.REPLACE_EXISTING);
+
+        return destino.toString().replace("\\", "/");
+    }
+    
+    private void guardarMembresia() {
+        try {
+            String nombre = campo_txt_nombre_membresiaN.getText().trim();
+
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingresa el nombre de la membresía.");
+                return;
+            }
+
+            if (campo_txt_precio_membresiaN.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingresa el precio de la membresía.");
+                return;
+            }
+
+            double precio = Double.parseDouble(campo_txt_precio_membresiaN.getText().trim());
+
+            if (precio <= 0) {
+                JOptionPane.showMessageDialog(this, "El precio debe ser mayor que cero.");
+                return;
+            }
+
+            validarBeneficios();
+
+            String rutaImagen = guardarImagen();
+
+            MembresiaDTO membresia = new MembresiaDTO(
+                    new ObjectId().toHexString(),
+                    nombre,
+                    precio,
+                    rutaImagen,
+                    EstadoMembresia.ACTIVA,
+                    null,
+                    null,
+                    obtenerBeneficios()
+            );
+
+            membresiaServicios.registrarMembresia(membresia);
+
+            JOptionPane.showMessageDialog(this, "Membresía registrada correctamente.");
+
+            if (pantallaAnterior != null) {
+                pantallaAnterior.cargarMembresias();
+                pantallaAnterior.setVisible(true);
+            }
+
+            dispose();
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Verifica los valores numéricos: " + e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "No se pudo registrar la membresía: " + e.getMessage());
+        }
+    }
+    
+    private void configurarApariencia() {
+        // Fondo transparente de los checkbox
+        checkB_descuentos_productos.setOpaque(false);
+        checkB_sesiones_gratis.setOpaque(false);
+        checkB_descuento_cursos.setOpaque(false);
+        checkB_invitaciones_mensuales.setOpaque(false);
+
+        // Texto blanco de los checkbox
+        checkB_descuentos_productos.setForeground(Color.WHITE);
+        checkB_sesiones_gratis.setForeground(Color.WHITE);
+        checkB_descuento_cursos.setForeground(Color.WHITE);
+        checkB_invitaciones_mensuales.setForeground(Color.WHITE);
+
+        // Configurar campos de texto
+        JTextField[] campos = {
+            campo_txt_nombre_membresiaN,
+            campo_txt_precio_membresiaN,
+            campo_txt_descuentos_productos,
+            campo_texto_sesiones_gratis,
+            campo_texto_descuento_cursos,
+            campo_texto_invitaciones_mensuales
+        };
+
+        for (JTextField campo : campos) {
+            campo.setBackground(new Color(51, 51, 51));
+            campo.setForeground(Color.WHITE);
+            campo.setCaretColor(Color.WHITE);
+            campo.setSelectionColor(new Color(255, 0, 51));
+        }
+
+        // Habilitar el campo del precio
+        campo_txt_precio_membresiaN.setEnabled(true);
+        campo_txt_precio_membresiaN.setEditable(true);
+        campo_txt_precio_membresiaN.setFocusable(true);
+
+        // Configurar panel de vista previa
+        jPanel2.removeAll();
+
+        jPanel2.setLayout(new BorderLayout());
+        jPanel2.setPreferredSize(new Dimension(250, 180));
+        jPanel2.setBackground(new Color(51, 51, 51));
+
+        // Centrar imagen y texto
+        txt_img_membresiaN.setHorizontalAlignment(SwingConstants.CENTER);
+
+        txt_img_membresiaN.setVerticalAlignment(SwingConstants.CENTER);
+
+        txt_img_membresiaN.setText("Vista Previa");
+        txt_img_membresiaN.setIcon(null);
+
+        jPanel2.add(txt_img_membresiaN, BorderLayout.CENTER);
+    }
+    
+    
+   
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -169,12 +494,18 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
         campo_texto_invitaciones_mensuales.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         btn_aceptar_agregar_membresia.setBackground(new java.awt.Color(255, 0, 51));
+        btn_aceptar_agregar_membresia.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_aceptar_agregar_membresia.setForeground(new java.awt.Color(255, 255, 255));
         btn_aceptar_agregar_membresia.setText("Aceptar");
 
         btn_volver_agregar_membresia.setBackground(new java.awt.Color(255, 0, 51));
         btn_volver_agregar_membresia.setForeground(new java.awt.Color(255, 255, 255));
         btn_volver_agregar_membresia.setText("Volver");
+        btn_volver_agregar_membresia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_volver_agregar_membresiaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -316,30 +647,13 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_checkB_sesiones_gratisActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
+    private void btn_volver_agregar_membresiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_agregar_membresiaActionPerformed
+        if (pantallaAnterior != null) {
+            pantallaAnterior.setVisible(true);
         }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new pantalla_agregar_membresia().setVisible(true));
-    }
+        dispose();
+    }//GEN-LAST:event_btn_volver_agregar_membresiaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_aceptar_agregar_membresia;

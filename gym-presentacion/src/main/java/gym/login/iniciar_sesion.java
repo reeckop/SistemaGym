@@ -8,6 +8,8 @@ import gym.excepciones.NegocioException;
 import gym.registrar_empleado.pantalla_registro_empleado;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IEmpleadoServicios;
+import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.servicios.MembresiaServicios;
 import javax.swing.JOptionPane;
 
 /**
@@ -224,7 +226,10 @@ public class iniciar_sesion extends javax.swing.JFrame {
         try {
             EmpleadoDTO empleado = empleadoServicios.iniciarSesion(nip, contrasena);
 
-            pantalla_principal pantalla = new pantalla_principal(empleado);
+            IMembresiaServicios membresiaServicios = new MembresiaServicios();
+
+            pantalla_principal pantalla = new pantalla_principal(empleado, membresiaServicios);
+
             pantalla.setVisible(true);
 
             this.dispose();

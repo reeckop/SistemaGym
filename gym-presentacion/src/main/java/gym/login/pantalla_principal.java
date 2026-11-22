@@ -4,7 +4,9 @@
  */
 package gym.login;
 
+import gym.membresias.pantalla_membresias;
 import gym.servicios.dto.EmpleadoDTO;
+import gym.servicios.interfaces.IMembresiaServicios;
 
 /**
  *
@@ -13,17 +15,20 @@ import gym.servicios.dto.EmpleadoDTO;
 public class pantalla_principal extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_principal.class.getName());
+    
+    private final IMembresiaServicios membresiaServicios;
 
     /**
      * Creates new form pantalla_principal
      */
-    public pantalla_principal(EmpleadoDTO empleado) {
+    public pantalla_principal(EmpleadoDTO empleado, IMembresiaServicios membresiaServicios) {
         initComponents();
+
+        this.membresiaServicios = membresiaServicios;
+
         setLocationRelativeTo(null);
 
-        nombre_empleado.setText(
-            empleado.getNombre() + " " + empleado.getApellido()
-        );
+        nombre_empleado.setText(empleado.getNombre() + " " + empleado.getApellido());
     }
 
     /**
@@ -212,7 +217,11 @@ public class pantalla_principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_registro_clienteActionPerformed
 
     private void btn_membresiasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_membresiasActionPerformed
-        // TODO add your handling code here:
+        pantalla_membresias pantalla = new pantalla_membresias(membresiaServicios, this);
+
+        pantalla.setVisible(true);
+
+        this.setVisible(false);
     }//GEN-LAST:event_btn_membresiasActionPerformed
 
     private void btn_cursosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cursosActionPerformed

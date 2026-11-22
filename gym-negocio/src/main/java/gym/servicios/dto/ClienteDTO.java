@@ -17,6 +17,8 @@ public class ClienteDTO {
     private String telefono;
     private LocalDate fechaIngreso;
     private String idMembresia;
+    private LocalDate fechaInicioMembresia;
+    private LocalDate fechaFinMembresia;
 
     public ClienteDTO() {
     }
@@ -76,5 +78,21 @@ public class ClienteDTO {
 
     public void setIdMembresia(String idMembresia) {
         this.idMembresia = idMembresia;
+    }
+
+    public LocalDate getFechaInicioMembresia() {
+        return fechaInicioMembresia;
+    }
+
+    public void setFechaInicioMembresia(LocalDate fechaInicioMembresia) {
+        this.fechaInicioMembresia = fechaInicioMembresia;
+    }
+
+    public LocalDate getFechaFinMembresia() {
+        return fechaFinMembresia;
+    }
+
+    public void setFechaFinMembresia(LocalDate fechaFinMembresia) {
+        this.fechaFinMembresia = fechaFinMembresia;
     }
 }

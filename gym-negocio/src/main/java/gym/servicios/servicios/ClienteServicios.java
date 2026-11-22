@@ -15,6 +15,8 @@ import gym.servicios.mappers.Mappers;
 import java.util.ArrayList;
 import java.util.List;
 import gym.servicios.interfaces.IClienteServicios;
+import java.time.LocalDate;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -39,6 +41,11 @@ public class ClienteServicios implements IClienteServicios {
             Membresia membresia = obtenerMembresia(unitOfWork, cliente.getIdMembresia());
 
             Cliente entidad = Mappers.convertirAEntidad(cliente, membresia);
+            
+            if (membresia != null) {
+                entidad.setFechaInicioMembresia(java.time.LocalDate.now());
+                entidad.setFechaFinMembresia(entidad.getFechaInicioMembresia().plusMonths(1));
+            }
 
             unitOfWork.clienteDAO().guardar(entidad);
 
@@ -71,6 +78,21 @@ public class ClienteServicios implements IClienteServicios {
 
             Cliente entidad = Mappers.convertirAEntidad(cliente, membresia);
 
+            String idMembresiaAnterior = existente.getMembresia() == null ? null : existente.getMembresia().getIdMembresia();
+
+            String idMembresiaNueva = membresia == null ? null : membresia.getIdMembresia();
+
+            if (Objects.equals(idMembresiaAnterior, idMembresiaNueva)) {
+                entidad.setFechaInicioMembresia(existente.getFechaInicioMembresia());
+                entidad.setFechaFinMembresia(existente.getFechaFinMembresia());
+            } else if (membresia != null) {
+                entidad.setFechaInicioMembresia(LocalDate.now());
+                entidad.setFechaFinMembresia(entidad.getFechaInicioMembresia().plusMonths(1));
+            } else {
+                entidad.setFechaInicioMembresia(null);
+                entidad.setFechaFinMembresia(null);
+            }
+
             unitOfWork.clienteDAO().actualizar(entidad);
 
             unitOfWork.commit();
@@ -78,7 +100,6 @@ public class ClienteServicios implements IClienteServicios {
         } catch (NegocioException e) {
             unitOfWork.rollback();
             throw e;
-
         } catch (PersistenciaException e) {
             unitOfWork.rollback();
             throw new NegocioException("Error al actualizar el cliente.", e);

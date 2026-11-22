@@ -51,6 +51,8 @@ public class Mappers {
         entidad.setTelefono(dto.getTelefono());
         entidad.setFechaIngreso(dto.getFechaIngreso());
         entidad.setMembresia(membresia);
+        entidad.setFechaInicioMembresia(dto.getFechaInicioMembresia());
+        entidad.setFechaFinMembresia(dto.getFechaFinMembresia());
 
         return entidad;
     }
@@ -64,6 +66,8 @@ public class Mappers {
         dto.setApellido(entidad.getApellido());
         dto.setTelefono(entidad.getTelefono());
         dto.setFechaIngreso(entidad.getFechaIngreso());
+        dto.setFechaInicioMembresia(entidad.getFechaInicioMembresia());
+        dto.setFechaFinMembresia(entidad.getFechaFinMembresia());
 
         if (entidad.getMembresia() != null) {
             dto.setIdMembresia(entidad.getMembresia().getIdMembresia());

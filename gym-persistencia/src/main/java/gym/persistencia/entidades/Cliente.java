@@ -23,6 +23,8 @@ public class Cliente {
     private String telefono;
     private LocalDate fechaIngreso;
     private Membresia membresia;
+    private LocalDate fechaInicioMembresia;
+    private LocalDate fechaFinMembresia;
 
     public Cliente() {
     }
@@ -42,6 +44,17 @@ public class Cliente {
         this.telefono = telefono;
         this.fechaIngreso = fechaIngreso;
         this.membresia = membresia;
+    }
+
+    public Cliente(String idCliente, String nombre, String apellido, String telefono, LocalDate fechaIngreso, Membresia membresia, LocalDate fechaInicioMembresia, LocalDate fechaFinMembresia) {
+        this.idCliente = idCliente;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.fechaIngreso = fechaIngreso;
+        this.membresia = membresia;
+        this.fechaInicioMembresia = fechaInicioMembresia;
+        this.fechaFinMembresia = fechaFinMembresia;
     }
 
     public String getIdCliente() {
@@ -90,6 +103,22 @@ public class Cliente {
 
     public void setMembresia(Membresia membresia) {
         this.membresia = membresia;
+    }
+
+    public LocalDate getFechaInicioMembresia() {
+        return fechaInicioMembresia;
+    }
+
+    public void setFechaInicioMembresia(LocalDate fechaInicioMembresia) {
+        this.fechaInicioMembresia = fechaInicioMembresia;
+    }
+
+    public LocalDate getFechaFinMembresia() {
+        return fechaFinMembresia;
+    }
+
+    public void setFechaFinMembresia(LocalDate fechaFinMembresia) {
+        this.fechaFinMembresia = fechaFinMembresia;
     }
 
     @Override

@@ -4,6 +4,10 @@
  */
 package gym.membresias;
 
+import gym.servicios.dto.MembresiaDTO;
+import gym.servicios.interfaces.IMembresiaServicios;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author drago
@@ -11,12 +15,20 @@ package gym.membresias;
 public class pantalla_confirmacion_membresia extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_confirmacion_membresia.class.getName());
+    
+    private final IMembresiaServicios membresiaServicios;
+    private final MembresiaDTO membresia;
+    private final pantalla_agregar_membresia pantallaAnterior;
 
-    /**
-     * Creates new form pantalla_confirmacion_membresia
-     */
-    public pantalla_confirmacion_membresia() {
+    public pantalla_confirmacion_membresia(IMembresiaServicios servicios, MembresiaDTO membresia,pantalla_agregar_membresia pantallaAnterior) {
         initComponents();
+
+        this.membresiaServicios = servicios;
+        this.membresia = membresia;
+        this.pantallaAnterior = pantallaAnterior;
+
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -53,10 +65,20 @@ public class pantalla_confirmacion_membresia extends javax.swing.JFrame {
         btn_aceptar_confirmacion.setBackground(new java.awt.Color(255, 0, 51));
         btn_aceptar_confirmacion.setForeground(new java.awt.Color(255, 255, 255));
         btn_aceptar_confirmacion.setText("Aceptar");
+        btn_aceptar_confirmacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_aceptar_confirmacionActionPerformed(evt);
+            }
+        });
 
         btn_volver_confirmacion.setBackground(new java.awt.Color(255, 0, 51));
         btn_volver_confirmacion.setForeground(new java.awt.Color(255, 255, 255));
         btn_volver_confirmacion.setText("Volver");
+        btn_volver_confirmacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_volver_confirmacionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -108,30 +130,28 @@ public class pantalla_confirmacion_membresia extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    private void btn_aceptar_confirmacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_aceptar_confirmacionActionPerformed
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+            membresiaServicios.registrarMembresia(membresia);
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new pantalla_confirmacion_membresia().setVisible(true));
-    }
+            JOptionPane.showMessageDialog(this, "La membresía se agregó correctamente.");
+
+            pantallaAnterior.membresiaAgregada();
+
+            this.dispose();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,"Error al agregar la membresía: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btn_aceptar_confirmacionActionPerformed
+
+    private void btn_volver_confirmacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_confirmacionActionPerformed
+        pantallaAnterior.setVisible(true);
+
+        this.dispose();
+    }//GEN-LAST:event_btn_volver_confirmacionActionPerformed
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_aceptar_confirmacion;

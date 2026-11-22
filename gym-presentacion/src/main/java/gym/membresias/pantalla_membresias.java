@@ -4,6 +4,26 @@
  */
 package gym.membresias;
 
+import gym.login.pantalla_principal;
+import gym.servicios.dto.MembresiaDTO;
+import gym.servicios.interfaces.IMembresiaServicios;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.io.File;
+import java.util.List;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
+
 /**
  *
  * @author drago
@@ -11,12 +31,149 @@ package gym.membresias;
 public class pantalla_membresias extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(pantalla_membresias.class.getName());
+    
+    private final IMembresiaServicios membresiaServicios;
+    private final pantalla_principal pantallaPrincipal;
 
-    /**
-     * Creates new form pantalla_membresias
-     */
-    public pantalla_membresias() {
+    private JPanel panel_membresias;
+
+    public pantalla_membresias(IMembresiaServicios servicios, pantalla_principal pantallaPrincipal) {
         initComponents();
+
+        this.membresiaServicios = servicios;
+        this.pantallaPrincipal = pantallaPrincipal;
+
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        panel_membresias = new JPanel();
+
+        panel_membresias.setBackground(new Color(17, 17, 17));
+        panel_membresias.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 30));
+
+        jscrollpaneMembresias.setViewportView(panel_membresias);
+
+        jscrollpaneMembresias.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        jscrollpaneMembresias.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        cargarMembresias();
+    }
+    
+    public void cargarMembresias() {
+        panel_membresias.removeAll();
+
+        try {
+            List<MembresiaDTO> membresias = membresiaServicios.consultarTodasLasMembresias();
+
+            if (membresias != null && !membresias.isEmpty()) {
+                for (MembresiaDTO membresia : membresias) {
+                    JPanel tarjeta = crearTarjeta(membresia);
+                    panel_membresias.add(tarjeta);
+                }
+
+            } else {
+                JLabel mensaje = new JLabel("No hay membresías registradas");
+
+                mensaje.setForeground(Color.WHITE);
+
+                panel_membresias.add(mensaje);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar las membresías: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        panel_membresias.revalidate();
+        panel_membresias.repaint();
+    }
+    
+    private JPanel crearTarjeta(MembresiaDTO membresia) {
+        JPanel tarjeta = new JPanel();
+
+        tarjeta.setPreferredSize(new Dimension(95, 127));
+        tarjeta.setBackground(new Color(45, 45, 45));
+
+        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
+
+        // Imagen de la membresía
+        JLabel imagen = new JLabel();
+
+        imagen.setPreferredSize(new Dimension(85, 65));
+        imagen.setMaximumSize(new Dimension(85, 65));
+        imagen.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        imagen.setHorizontalAlignment(JLabel.CENTER);
+
+        if (membresia.getImagen() != null && !membresia.getImagen().isEmpty()) {
+            File archivo = new File(membresia.getImagen());
+
+            if (archivo.exists()) {
+                ImageIcon icono = new ImageIcon(archivo.getAbsolutePath());
+
+                Image imagenOriginal = icono.getImage();
+
+                int anchoOriginal = icono.getIconWidth();
+                int altoOriginal = icono.getIconHeight();
+
+                double escala = Math.min(65.0 / anchoOriginal, 60.0 / altoOriginal);
+
+                int nuevoAncho = (int) (anchoOriginal * escala);
+                int nuevoAlto = (int) (altoOriginal * escala);
+
+                Image imagenEscalada = imagenOriginal.getScaledInstance(nuevoAncho, nuevoAlto, Image.SCALE_SMOOTH);
+
+                imagen.setIcon(new ImageIcon(imagenEscalada));
+
+            } else {
+                imagen.setText("Sin imagen");
+            }
+        } else {
+            imagen.setText("Sin imagen");
+        }
+
+        // Nombre
+        JLabel nombre = new JLabel(membresia.getNombre());
+
+        nombre.setForeground(Color.WHITE);
+        nombre.setFont(new Font("Arial", Font.BOLD, 12));
+        nombre.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        // Precio
+        JLabel precio = new JLabel("$" + membresia.getPrecio());
+
+        precio.setForeground(Color.WHITE);
+        precio.setFont(new Font("Arial", Font.BOLD, 13));
+        precio.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        // Botón editar
+        JButton editar = new JButton("Editar");
+
+        editar.setBackground(new Color(255, 0, 51));
+        editar.setForeground(Color.WHITE);
+        editar.setFont(new Font("Arial", Font.BOLD, 10));
+        editar.setFocusPainted(false);
+        editar.setBorderPainted(false);
+        editar.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+
+        editar.setPreferredSize(new Dimension(75, 17));
+        editar.setMaximumSize(new Dimension(75, 17));
+        
+        editar.addActionListener(e -> {
+            EditarMembresia pantalla = new EditarMembresia(membresiaServicios, this, membresia);
+            pantalla.setVisible(true);
+            this.setVisible(false);
+        });
+
+        // Agregar componentes
+        tarjeta.add(Box.createVerticalStrut(4));
+        tarjeta.add(imagen);
+        tarjeta.add(Box.createVerticalStrut(2));
+        tarjeta.add(nombre);
+        tarjeta.add(precio);
+        tarjeta.add(Box.createVerticalStrut(3));
+        tarjeta.add(editar);
+
+        return tarjeta;
     }
 
     /**
@@ -31,26 +188,10 @@ public class pantalla_membresias extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        txt_nombre_bronce = new javax.swing.JLabel();
-        txt_costo_bronce = new javax.swing.JLabel();
-        btn_editar_bronce = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        txt_nombre_plata = new javax.swing.JLabel();
-        txt_costo_plata = new javax.swing.JLabel();
-        btn_editar_plata = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        txt_nombre_oro = new javax.swing.JLabel();
-        txt_costo_oro = new javax.swing.JLabel();
-        btn_editar_oro = new javax.swing.JButton();
         btn_agregar_membresia = new javax.swing.JButton();
         btn_volver_membresia = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
+        jscrollpaneMembresias = new javax.swing.JScrollPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,181 +204,27 @@ public class pantalla_membresias extends javax.swing.JFrame {
         jSeparator1.setBackground(new java.awt.Color(255, 0, 51));
         jSeparator1.setForeground(new java.awt.Color(255, 0, 51));
 
-        jPanel2.setBackground(new java.awt.Color(102, 102, 102));
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gym/membresias/bronce.png"))); // NOI18N
-
-        txt_nombre_bronce.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        txt_nombre_bronce.setForeground(new java.awt.Color(255, 255, 255));
-        txt_nombre_bronce.setText("BRONCE");
-
-        txt_costo_bronce.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        txt_costo_bronce.setForeground(new java.awt.Color(255, 255, 255));
-        txt_costo_bronce.setText("350$");
-
-        btn_editar_bronce.setBackground(new java.awt.Color(255, 0, 51));
-        btn_editar_bronce.setForeground(new java.awt.Color(255, 255, 255));
-        btn_editar_bronce.setText("Editar");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(txt_nombre_bronce))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btn_editar_bronce)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(txt_costo_bronce)
-                                .addComponent(jLabel2)))))
-                .addContainerGap(19, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addComponent(txt_nombre_bronce, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txt_costo_bronce)
-                .addGap(18, 18, 18)
-                .addComponent(btn_editar_bronce)
-                .addContainerGap(43, Short.MAX_VALUE))
-        );
-
-        jPanel3.setBackground(new java.awt.Color(102, 102, 102));
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gym/membresias/plata.png"))); // NOI18N
-
-        txt_nombre_plata.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        txt_nombre_plata.setForeground(new java.awt.Color(255, 255, 255));
-        txt_nombre_plata.setText("PLATA");
-
-        txt_costo_plata.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        txt_costo_plata.setForeground(new java.awt.Color(255, 255, 255));
-        txt_costo_plata.setText("650$");
-
-        btn_editar_plata.setBackground(new java.awt.Color(255, 0, 51));
-        btn_editar_plata.setForeground(new java.awt.Color(255, 255, 255));
-        btn_editar_plata.setText("Editar");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(19, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btn_editar_plata)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel3)
-                        .addComponent(txt_costo_plata)
-                        .addComponent(txt_nombre_plata)))
-                .addGap(29, 29, 29))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(7, 7, 7)
-                .addComponent(txt_nombre_plata)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txt_costo_plata)
-                .addGap(18, 18, 18)
-                .addComponent(btn_editar_plata)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jPanel6.setBackground(new java.awt.Color(102, 102, 102));
-
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gym/membresias/oro.png"))); // NOI18N
-
-        txt_nombre_oro.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        txt_nombre_oro.setForeground(new java.awt.Color(255, 255, 255));
-        txt_nombre_oro.setText("ORO");
-
-        txt_costo_oro.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        txt_costo_oro.setForeground(new java.awt.Color(255, 255, 255));
-        txt_costo_oro.setText("950$");
-
-        btn_editar_oro.setBackground(new java.awt.Color(255, 0, 51));
-        btn_editar_oro.setForeground(new java.awt.Color(255, 255, 255));
-        btn_editar_oro.setText("Editar");
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addContainerGap(27, Short.MAX_VALUE)
-                        .addComponent(btn_editar_oro))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(txt_costo_oro))
-                            .addComponent(jLabel4))
-                        .addGap(6, 6, 6)))
-                .addGap(25, 25, 25))
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addComponent(txt_nombre_oro)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txt_nombre_oro)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txt_costo_oro)
-                .addGap(18, 18, 18)
-                .addComponent(btn_editar_oro)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         btn_agregar_membresia.setBackground(new java.awt.Color(255, 0, 51));
-        btn_agregar_membresia.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        btn_agregar_membresia.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         btn_agregar_membresia.setForeground(new java.awt.Color(255, 255, 255));
-        btn_agregar_membresia.setText("Agregar");
+        btn_agregar_membresia.setText("+ AGREGAR");
+        btn_agregar_membresia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_agregar_membresiaActionPerformed(evt);
+            }
+        });
 
         btn_volver_membresia.setBackground(new java.awt.Color(255, 0, 51));
+        btn_volver_membresia.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         btn_volver_membresia.setForeground(new java.awt.Color(255, 255, 255));
-        btn_volver_membresia.setText("Volver");
+        btn_volver_membresia.setText("VOLVER");
+        btn_volver_membresia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_volver_membresiaActionPerformed(evt);
+            }
+        });
+
+        jscrollpaneMembresias.setBackground(new java.awt.Color(0, 0, 0));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -250,28 +237,16 @@ public class pantalla_membresias extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(23, 23, 23))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 169, Short.MAX_VALUE)
                         .addComponent(btn_agregar_membresia)
-                        .addGap(111, 111, 111)
-                        .addComponent(btn_volver_membresia, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(83, 83, 83)
+                        .addComponent(btn_volver_membresia, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jscrollpaneMembresias)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,16 +255,9 @@ public class pantalla_membresias extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jscrollpaneMembresias, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(32, 32, 32)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_agregar_membresia)
                     .addComponent(btn_volver_membresia, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -312,54 +280,31 @@ public class pantalla_membresias extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btn_agregar_membresiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_agregar_membresiaActionPerformed
+        pantalla_agregar_membresia pantalla = new pantalla_agregar_membresia(membresiaServicios, this);
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new pantalla_membresias().setVisible(true));
-    }
+        pantalla.setVisible(true);
+
+        this.setVisible(false);
+    }//GEN-LAST:event_btn_agregar_membresiaActionPerformed
+
+    private void btn_volver_membresiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_membresiaActionPerformed
+        if (pantallaPrincipal != null) {
+            pantallaPrincipal.setVisible(true);
+        }
+
+        this.dispose();
+    }//GEN-LAST:event_btn_volver_membresiaActionPerformed
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_agregar_membresia;
-    private javax.swing.JButton btn_editar_bronce;
-    private javax.swing.JButton btn_editar_oro;
-    private javax.swing.JButton btn_editar_plata;
     private javax.swing.JButton btn_volver_membresia;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JLabel txt_costo_bronce;
-    private javax.swing.JLabel txt_costo_oro;
-    private javax.swing.JLabel txt_costo_plata;
-    private javax.swing.JLabel txt_nombre_bronce;
-    private javax.swing.JLabel txt_nombre_oro;
-    private javax.swing.JLabel txt_nombre_plata;
+    private javax.swing.JScrollPane jscrollpaneMembresias;
     // End of variables declaration//GEN-END:variables
 }

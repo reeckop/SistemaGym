@@ -10,6 +10,7 @@ import gym.servicios.dto.MembresiaDTO;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
 import gym.persistencia.unitofwork.UnitOfWork;
+import gym.servicios.enums.EstadoMembresia;
 import gym.servicios.mappers.Mappers;
 import gym.servicios.interfaces.IMembresiaServicios;
 import java.util.ArrayList;
@@ -29,6 +30,10 @@ public class MembresiaServicios implements IMembresiaServicios {
         IUnitOfWork unitOfWork = new UnitOfWork();
 
         try {
+            membresia.setEstado(EstadoMembresia.ACTIVA);
+            membresia.setFechaInicio(null);
+            membresia.setFechaFin(null);
+
             Membresia entidad = Mappers.convertirAEntidad(membresia);
 
             unitOfWork.membresiaDAO().guardar(entidad);
@@ -106,29 +111,18 @@ public class MembresiaServicios implements IMembresiaServicios {
         }
     }
 
-    private void validarMembresia(MembresiaDTO membresia) throws NegocioException {
+    private void validarMembresia(MembresiaDTO membresia)throws NegocioException {
         if (membresia == null) {
-            throw new NegocioException("Los datos de la membresia son obligatorios.");
+            throw new NegocioException("Los datos de la membresía son obligatorios.");
         }
 
-        if (membresia.getNombre() == null || membresia.getNombre().isBlank()) {
-            throw new NegocioException("El nombre de la membresia es obligatorio.");
+        if (membresia.getNombre() == null
+                || membresia.getNombre().isBlank()) {
+            throw new NegocioException("El nombre es obligatorio.");
         }
 
-        if (membresia.getPrecio() < 0) {
-            throw new NegocioException("El precio no puede ser negativo.");
-        }
-
-        if (membresia.getEstado() == null) {
-            throw new NegocioException("El estado de la membresia es obligatorio.");
-        }
-
-        if (membresia.getFechaInicio() == null || membresia.getFechaFin() == null) {
-            throw new NegocioException("Las fechas de la membresia son obligatorias.");
-        }
-
-        if (membresia.getFechaFin().isBefore(membresia.getFechaInicio())) {
-            throw new NegocioException("La fecha fin no puede ser anterior a la fecha inicio.");
+        if (membresia.getPrecio() <= 0) {
+            throw new NegocioException("El precio debe ser mayor que cero.");
         }
     }
 

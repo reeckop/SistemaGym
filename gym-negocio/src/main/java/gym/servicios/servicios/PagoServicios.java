@@ -8,7 +8,8 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Pago;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.PagoDTO;
 import gym.servicios.interfaces.IPagoServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,12 +21,21 @@ import java.util.List;
  * @author PC GAMER MASTER RACE
  */
 public class PagoServicios implements IPagoServicios {
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public PagoServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public PagoServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
 
     @Override
     public void registrarPago(PagoDTO pago) throws NegocioException {
         validarPago(pago);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             unitOfWork.pagoDAO().guardar(Mappers.convertirAEntidad(pago));
@@ -42,7 +52,7 @@ public class PagoServicios implements IPagoServicios {
         validarPago(pago);
         validarId(pago.getIdPago());
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             if (unitOfWork.pagoDAO().obtenerPorId(pago.getIdPago()) == null) {
@@ -62,7 +72,7 @@ public class PagoServicios implements IPagoServicios {
     public PagoDTO consultarPago(String id) throws NegocioException {
         validarId(id);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Pago pago = unitOfWork.pagoDAO().obtenerPorId(id);
@@ -84,7 +94,7 @@ public class PagoServicios implements IPagoServicios {
 
     @Override
     public List<PagoDTO> consultarTodosLosPagos() throws NegocioException {
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<PagoDTO> resultado = new ArrayList<>();

@@ -9,7 +9,8 @@ import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.Membresia;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.ClienteDTO;
 import gym.servicios.mappers.Mappers;
 import java.util.ArrayList;
@@ -24,12 +25,21 @@ import java.util.regex.Pattern;
  * @author PC GAMER MASTER RACE
  */
 public class ClienteServicios implements IClienteServicios {
-    
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public ClienteServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public ClienteServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
+
     @Override
     public void registrarCliente(ClienteDTO cliente) throws NegocioException {
         validarCliente(cliente);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Cliente existente = unitOfWork.clienteDAO().obtenerPorId(cliente.getIdCliente());
@@ -65,7 +75,7 @@ public class ClienteServicios implements IClienteServicios {
     public void actualizarCliente(ClienteDTO cliente) throws NegocioException {
         validarCliente(cliente);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Cliente existente = unitOfWork.clienteDAO().obtenerPorId(cliente.getIdCliente());
@@ -113,7 +123,7 @@ public class ClienteServicios implements IClienteServicios {
             throw new NegocioException("El ID del cliente es obligatorio.");
         }
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(id);
@@ -141,7 +151,7 @@ public class ClienteServicios implements IClienteServicios {
     @Override
     public List<ClienteDTO> consultarTodosLosClientes() throws NegocioException {
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<Cliente> clientes = unitOfWork.clienteDAO().obtenerTodos();

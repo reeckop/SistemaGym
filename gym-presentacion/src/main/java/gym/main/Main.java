@@ -14,6 +14,7 @@ import gym.servicios.servicios.ClienteServicios;
 import gym.servicios.servicios.EmpleadoServicios;
 import gym.servicios.servicios.MembresiaServicios;
 import gym.servicios.servicios.RegistroIngresoServicios;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 
 /**
  *
@@ -26,10 +27,11 @@ public class Main {
      */
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(() -> {
-            IEmpleadoServicios empleadoServicios = new EmpleadoServicios();
-            IClienteServicios clienteServicios = new ClienteServicios();
-            IMembresiaServicios membresiaServicios = new MembresiaServicios();
-            IRegistroIngresoServicios registroIngresoServicios = new RegistroIngresoServicios();
+            UnitOfWorkFactory unidadDeTrabajoFactory = UnitOfWorkFactory.obtenerInstancia();
+            IEmpleadoServicios empleadoServicios = new EmpleadoServicios(unidadDeTrabajoFactory);
+            IClienteServicios clienteServicios = new ClienteServicios(unidadDeTrabajoFactory);
+            IMembresiaServicios membresiaServicios = new MembresiaServicios(unidadDeTrabajoFactory);
+            IRegistroIngresoServicios registroIngresoServicios = new RegistroIngresoServicios(unidadDeTrabajoFactory);
             EmpleadoDTO empleado = new EmpleadoDTO();
 
             iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);

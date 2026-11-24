@@ -8,7 +8,8 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Empleado;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IEmpleadoServicios;
 import gym.servicios.mappers.Mappers;
@@ -22,12 +23,21 @@ import java.util.UUID;
  * @author PC GAMER MASTER RACE
  */
 public class EmpleadoServicios implements IEmpleadoServicios {
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public EmpleadoServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public EmpleadoServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
 
     @Override
     public void registrarEmpleado(EmpleadoDTO empleado) throws NegocioException {
         validarEmpleado(empleado);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             if (unitOfWork.empleadoDAO().obtenerPorNip(empleado.getNip()) != null) {
@@ -66,7 +76,7 @@ public class EmpleadoServicios implements IEmpleadoServicios {
             throw new NegocioException("La contraseña es obligatoria.");
         }
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Empleado empleado = unitOfWork.empleadoDAO().obtenerPorNip(nip);
@@ -97,7 +107,7 @@ public class EmpleadoServicios implements IEmpleadoServicios {
             throw new NegocioException("El ID del empleado es obligatorio.");
         }
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Empleado existente = unitOfWork.empleadoDAO()
@@ -125,7 +135,7 @@ public class EmpleadoServicios implements IEmpleadoServicios {
             throw new NegocioException("El ID del empleado es obligatorio.");
         }
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             if (unitOfWork.empleadoDAO().obtenerPorId(id) == null) {
@@ -146,7 +156,7 @@ public class EmpleadoServicios implements IEmpleadoServicios {
 
     @Override
     public List<EmpleadoDTO> consultarTodosLosEmpleados() throws NegocioException {
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<EmpleadoDTO> resultado = new ArrayList<>();

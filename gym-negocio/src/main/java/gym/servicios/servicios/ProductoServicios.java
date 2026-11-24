@@ -8,7 +8,8 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Producto;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.ProductoDTO;
 import gym.servicios.interfaces.IProductoServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,12 +21,21 @@ import java.util.List;
  * @author PC GAMER MASTER RACE
  */
 public class ProductoServicios implements IProductoServicios {
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public ProductoServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public ProductoServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
 
     @Override
     public void registrarProducto(ProductoDTO producto) throws NegocioException {
         validarProducto(producto);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             unitOfWork.productoDAO().guardar(Mappers.convertirAEntidad(producto));
@@ -42,7 +52,7 @@ public class ProductoServicios implements IProductoServicios {
         validarProducto(producto);
         validarId(producto.getIdProducto());
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             unitOfWork.productoDAO().actualizar(Mappers.convertirAEntidad(producto));
@@ -58,7 +68,7 @@ public class ProductoServicios implements IProductoServicios {
     public void eliminarProducto(String id) throws NegocioException {
         validarId(id);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             unitOfWork.productoDAO().eliminar(id);
@@ -72,7 +82,7 @@ public class ProductoServicios implements IProductoServicios {
 
     @Override
     public List<ProductoDTO> consultarTodosLosProductos() throws NegocioException {
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<ProductoDTO> resultado = new ArrayList<>();

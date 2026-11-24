@@ -9,7 +9,8 @@ import gym.persistencia.entidades.Membresia;
 import gym.servicios.dto.MembresiaDTO;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.enums.EstadoMembresia;
 import gym.servicios.mappers.Mappers;
 import gym.servicios.interfaces.IMembresiaServicios;
@@ -22,12 +23,21 @@ import java.util.List;
  */
 
 public class MembresiaServicios implements IMembresiaServicios {
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public MembresiaServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public MembresiaServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
 
     @Override
     public void registrarMembresia(MembresiaDTO membresia) throws NegocioException {
         validarMembresia(membresia);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             membresia.setEstado(EstadoMembresia.ACTIVA);
@@ -51,7 +61,7 @@ public class MembresiaServicios implements IMembresiaServicios {
         validarMembresia(membresia);
         validarId(membresia.getIdMembresia());
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Membresia entidad = Mappers.convertirAEntidad(membresia);
@@ -70,7 +80,7 @@ public class MembresiaServicios implements IMembresiaServicios {
     public void eliminarMembresia(String id) throws NegocioException {
         validarId(id);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             unitOfWork.membresiaDAO().eliminar(id);
@@ -86,7 +96,7 @@ public class MembresiaServicios implements IMembresiaServicios {
     @Override
     public List<MembresiaDTO> consultarTodasLasMembresias() throws NegocioException {
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<MembresiaDTO> resultado = new ArrayList<>();

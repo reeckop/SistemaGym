@@ -9,7 +9,8 @@ import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.Notificacion;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.NotificacionDTO;
 import gym.servicios.interfaces.INotificacionServicios;
 import gym.servicios.mappers.Mappers;
@@ -21,12 +22,21 @@ import java.util.List;
  * @author PC GAMER MASTER RACE
  */
 public class NotificacionServicios implements INotificacionServicios {
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public NotificacionServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public NotificacionServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
 
     @Override
     public void registrarNotificacion(NotificacionDTO notificacion) throws NegocioException {
         validarNotificacion(notificacion);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(notificacion.getIdCliente());
@@ -49,7 +59,7 @@ public class NotificacionServicios implements INotificacionServicios {
         validarNotificacion(notificacion);
         validarId(notificacion.getIdNotificacion());
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(notificacion.getIdCliente());
@@ -72,7 +82,7 @@ public class NotificacionServicios implements INotificacionServicios {
 
         validarId(idCliente);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<NotificacionDTO> resultado = new ArrayList<>();
@@ -97,7 +107,7 @@ public class NotificacionServicios implements INotificacionServicios {
 
     @Override
     public List<NotificacionDTO> consultarTodasLasNotificaciones() throws NegocioException {
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<NotificacionDTO> resultado = new ArrayList<>();

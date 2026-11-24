@@ -8,7 +8,8 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Curso;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.CursoDTO;
 import gym.servicios.interfaces.ICursoServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,12 +21,21 @@ import java.util.List;
  * @author PC GAMER MASTER RACE
  */
 public class CursoServicios implements ICursoServicios {
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public CursoServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public CursoServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
 
     @Override
     public void registrarCurso(CursoDTO curso) throws NegocioException {
         validarCurso(curso);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             unitOfWork.cursoDAO().guardar(Mappers.convertirAEntidad(curso));
@@ -41,7 +51,7 @@ public class CursoServicios implements ICursoServicios {
         validarCurso(curso);
         validarId(curso.getIdCurso());
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             unitOfWork.cursoDAO().actualizar(Mappers.convertirAEntidad(curso));
@@ -56,7 +66,7 @@ public class CursoServicios implements ICursoServicios {
     public void eliminarCurso(String id) throws NegocioException {
         validarId(id);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             unitOfWork.cursoDAO().eliminar(id);
@@ -69,7 +79,7 @@ public class CursoServicios implements ICursoServicios {
 
     @Override
     public List<CursoDTO> consultarTodosLosCursos() throws NegocioException {
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<CursoDTO> resultado = new ArrayList<>();

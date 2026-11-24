@@ -12,7 +12,8 @@ import gym.persistencia.entidades.Producto;
 import gym.persistencia.entidades.Venta;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.PagoDTO;
 import gym.servicios.dto.VentaDTO;
 import gym.servicios.interfaces.IVentaServicios;
@@ -25,6 +26,15 @@ import java.util.List;
  * @author PC GAMER MASTER RACE
  */
 public class VentaServicios implements IVentaServicios {
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public VentaServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public VentaServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
 
     @Override
     public void agregarProducto(String idVenta, String idProducto, int cantidad) throws NegocioException {
@@ -32,7 +42,7 @@ public class VentaServicios implements IVentaServicios {
         validarIdProducto(idProducto);
         validarCantidad(cantidad);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Venta venta = obtenerVenta(unitOfWork, idVenta);
@@ -71,7 +81,7 @@ public class VentaServicios implements IVentaServicios {
     public double calcularTotal(String idVenta) throws NegocioException {
         validarId(idVenta);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Venta venta = obtenerVenta(unitOfWork, idVenta);
@@ -94,7 +104,7 @@ public class VentaServicios implements IVentaServicios {
         validarId(idVenta);
         validarIdCliente(idCliente);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Venta venta = obtenerVenta(unitOfWork, idVenta);
@@ -121,7 +131,7 @@ public class VentaServicios implements IVentaServicios {
     public void confirmarVenta(String idVenta) throws NegocioException {
         validarId(idVenta);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Venta venta = obtenerVenta(unitOfWork, idVenta);
@@ -158,7 +168,7 @@ public class VentaServicios implements IVentaServicios {
         validarId(idVenta);
         validarPago(pago);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Venta venta = obtenerVenta(unitOfWork, idVenta);
@@ -182,7 +192,7 @@ public class VentaServicios implements IVentaServicios {
 
     @Override
     public List<VentaDTO> consultarVentas() throws NegocioException {
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<VentaDTO> ventasDTO = new ArrayList<>();

@@ -9,7 +9,8 @@ import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.RegistroIngreso;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.RegistroIngresoDTO;
 import gym.servicios.interfaces.IRegistroIngresoServicios;
 import gym.servicios.mappers.Mappers;
@@ -21,12 +22,21 @@ import java.util.List;
  * @author PC GAMER MASTER RACE
  */
 public class RegistroIngresoServicios implements IRegistroIngresoServicios {
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public RegistroIngresoServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public RegistroIngresoServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
 
     @Override
     public void registrarIngreso(RegistroIngresoDTO registro) throws NegocioException {
         validarRegistro(registro);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(registro.getIdCliente());
@@ -48,7 +58,7 @@ public class RegistroIngresoServicios implements IRegistroIngresoServicios {
     public List<RegistroIngresoDTO> consultarIngresosPorCliente(String idCliente) throws NegocioException {
         validarId(idCliente);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<RegistroIngresoDTO> resultado = new ArrayList<>();
@@ -74,7 +84,7 @@ public class RegistroIngresoServicios implements IRegistroIngresoServicios {
 
     @Override
     public List<RegistroIngresoDTO> consultarTodosLosIngresos() throws NegocioException {
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<RegistroIngresoDTO> resultado = new ArrayList<>();

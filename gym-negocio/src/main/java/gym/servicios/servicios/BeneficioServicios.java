@@ -8,7 +8,8 @@ import gym.excepciones.NegocioException;
 import gym.persistencia.entidades.Beneficio;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.BeneficioDTO;
 import gym.servicios.interfaces.IBeneficioServicios;
 import gym.servicios.mappers.Mappers;
@@ -20,12 +21,21 @@ import java.util.List;
  * @author PC GAMER MASTER RACE
  */
 public class BeneficioServicios implements IBeneficioServicios {
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public BeneficioServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public BeneficioServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
 
     @Override
     public void registrarBeneficio(BeneficioDTO beneficio) throws NegocioException {
         validarBeneficio(beneficio);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             unitOfWork.beneficioDAO().guardar(Mappers.convertirAEntidad(beneficio));
@@ -41,7 +51,7 @@ public class BeneficioServicios implements IBeneficioServicios {
         validarBeneficio(beneficio);
         validarId(beneficio.getIdBeneficio());
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             if (unitOfWork.beneficioDAO().obtenerPorId(beneficio.getIdBeneficio()) == null) {
@@ -61,7 +71,7 @@ public class BeneficioServicios implements IBeneficioServicios {
     public void eliminarBeneficio(String id) throws NegocioException {
         validarId(id);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             if (unitOfWork.beneficioDAO().obtenerPorId(id) == null) {
@@ -81,7 +91,7 @@ public class BeneficioServicios implements IBeneficioServicios {
     public BeneficioDTO consultarBeneficio(String id) throws NegocioException {
         validarId(id);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Beneficio beneficio = unitOfWork.beneficioDAO().obtenerPorId(id);
@@ -103,7 +113,7 @@ public class BeneficioServicios implements IBeneficioServicios {
 
     @Override
     public List<BeneficioDTO> consultarTodosLosBeneficios() throws NegocioException {
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<BeneficioDTO> resultado = new ArrayList<>();

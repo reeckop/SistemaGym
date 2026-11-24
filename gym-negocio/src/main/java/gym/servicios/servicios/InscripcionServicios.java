@@ -9,7 +9,8 @@ import gym.persistencia.entidades.Cliente;
 import gym.persistencia.entidades.Inscripcion;
 import gym.persistencia.excepciones.PersistenciaException;
 import gym.persistencia.unitofwork.IUnitOfWork;
-import gym.persistencia.unitofwork.UnitOfWork;
+import gym.persistencia.unitofwork.IUnitOfWorkFactory;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.InscripcionDTO;
 import gym.servicios.interfaces.IInscripcionServicios;
 import gym.servicios.mappers.Mappers;
@@ -21,12 +22,21 @@ import java.util.List;
  * @author PC GAMER MASTER RACE
  */
 public class InscripcionServicios implements IInscripcionServicios {
+    private final IUnitOfWorkFactory unidadDeTrabajoFactory;
+
+    public InscripcionServicios() {
+        this(UnitOfWorkFactory.obtenerInstancia());
+    }
+
+    public InscripcionServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
+        this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
 
     @Override
     public void registrarInscripcion(InscripcionDTO inscripcion) throws NegocioException {
         validarInscripcion(inscripcion);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(inscripcion.getIdCliente());
@@ -49,7 +59,7 @@ public class InscripcionServicios implements IInscripcionServicios {
         validarInscripcion(inscripcion);
         validarId(inscripcion.getIdInscripcion());
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             Cliente cliente = unitOfWork.clienteDAO().obtenerPorId(inscripcion.getIdCliente());
@@ -71,7 +81,7 @@ public class InscripcionServicios implements IInscripcionServicios {
     public void eliminarInscripcion(String id) throws NegocioException {
         validarId(id);
 
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             unitOfWork.inscripcionDAO().eliminar(id);
@@ -85,7 +95,7 @@ public class InscripcionServicios implements IInscripcionServicios {
 
     @Override
     public List<InscripcionDTO> consultarTodasLasInscripciones() throws NegocioException {
-        IUnitOfWork unitOfWork = new UnitOfWork();
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
             List<InscripcionDTO> resultado = new ArrayList<>();

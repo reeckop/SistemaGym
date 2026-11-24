@@ -17,6 +17,7 @@ import gym.persistencia.interfaces.IProductoDAO;
 import gym.persistencia.interfaces.IVentaDAO;
 
 /**
+ * Expone los DAO y el control transaccional de una unidad de trabajo.
  *
  * @author PC GAMER MASTER RACE
  */

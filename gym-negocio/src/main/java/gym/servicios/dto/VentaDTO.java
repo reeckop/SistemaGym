@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
+ * Transporta los datos de venta entre las capas del sistema.
  *
  * @author PC GAMER MASTER RACE
  */

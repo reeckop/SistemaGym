@@ -17,6 +17,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 
 /**
+ * Implementa las operaciones de persistencia para productos.
  *
  * @author PC GAMER MASTER RACE
  */

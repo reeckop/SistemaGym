@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Gestiona las reglas de negocio de inscripción.
  *
  * @author PC GAMER MASTER RACE
  */
@@ -45,13 +46,57 @@ public class InscripcionServicios implements IInscripcionServicios {
                 throw new NegocioException("El cliente no existe.");
             }
 
+            validarDisponibilidad(unitOfWork, inscripcion);
+
             unitOfWork.inscripcionDAO().guardar(Mappers.convertirAEntidad(inscripcion, cliente));
             unitOfWork.commit();
 
+        } catch (NegocioException e) {
+            unitOfWork.rollback();
+            throw e;
         } catch (PersistenciaException e) {
             unitOfWork.rollback();
             throw new NegocioException("No fue posible registrar la inscripcion.", e);
         }
+    }
+
+    private void validarDisponibilidad(IUnitOfWork unitOfWork, InscripcionDTO nueva) throws PersistenciaException, NegocioException {
+        if (nueva.getHorario() == null || nueva.getHorario().getIdHorario() == null || nueva.getHorario().getFecha() == null
+                || nueva.getHorario().getHoraInicio() == null || nueva.getHorario().getHoraFin() == null
+                || !nueva.getHorario().getHoraInicio().isBefore(nueva.getHorario().getHoraFin())
+                || nueva.getHorario().getFecha().isBefore(java.time.LocalDate.now())) {
+            throw new NegocioException("Selecciona un horario válido con hora de inicio anterior a la hora de fin.");
+        }
+        List<Inscripcion> existentes = unitOfWork.inscripcionDAO().obtenerTodos();
+        int inscritosHorario = 0;
+        if (existentes != null) {
+            for (Inscripcion actual : existentes) {
+                if (actual == null || actual.getEstado() != gym.persistencia.enums.EstadoInscripcion.ACTIVA) continue;
+                if (actual.getCliente() != null && nueva.getIdCliente().equals(actual.getCliente().getIdCliente())) {
+                    throw new NegocioException("El cliente ya tiene una inscripción activa. Debe cancelarla antes de elegir otro curso.");
+                }
+                if (actual.getHorario() != null && nueva.getHorario().getIdHorario().equals(actual.getHorario().getIdHorario())) inscritosHorario++;
+                if (actual.getHorario() != null && actual.getCliente() != null
+                        && nueva.getIdCliente().equals(actual.getCliente().getIdCliente())
+                        && actual.getHorario().getFecha() != null && actual.getHorario().getFecha().equals(nueva.getHorario().getFecha())
+                        && actual.getHorario().getHoraInicio() != null && actual.getHorario().getHoraFin() != null
+                        && nueva.getHorario().getHoraInicio().isBefore(actual.getHorario().getHoraFin())
+                        && actual.getHorario().getHoraInicio().isBefore(nueva.getHorario().getHoraFin())) {
+                    throw new NegocioException("El horario se cruza con otra actividad del cliente.");
+                }
+            }
+        }
+        List<gym.persistencia.entidades.Curso> cursos = unitOfWork.cursoDAO().obtenerTodos();
+        boolean horarioExiste = false;
+        if (cursos != null) for (gym.persistencia.entidades.Curso curso : cursos) {
+            if (curso == null || curso.getHorarios() == null) continue;
+            boolean horarioPertenece = curso.getHorarios().stream().anyMatch(h -> h != null && nueva.getHorario().getIdHorario().equals(h.getIdHorario()));
+            if (horarioPertenece) {
+                horarioExiste = true;
+                if (inscritosHorario >= curso.getCupo()) throw new NegocioException("El curso ya no tiene cupo en ese horario.");
+            }
+        }
+        if (!horarioExiste) throw new NegocioException("El horario seleccionado ya no está disponible.");
     }
 
     @Override

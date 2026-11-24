@@ -5,6 +5,8 @@ import java.util.Objects;
 
 /**
  * Entidad que modela una línea de detalle en una venta de productos.
+ *
+ * @author PC GAMER MASTER RACE
  */
 public class DetalleVenta {
 

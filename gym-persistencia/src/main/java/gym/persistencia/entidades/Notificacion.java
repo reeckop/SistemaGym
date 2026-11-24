@@ -10,6 +10,8 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que modela una notificación generada para un cliente del gimnasio.
+ *
+ * @author PC GAMER MASTER RACE
  */
 public class Notificacion {
 

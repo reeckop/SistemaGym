@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
+ * Prueba las operaciones de persistencia de los accesos.
  *
  * @author PC GAMER MASTER RACE
  */

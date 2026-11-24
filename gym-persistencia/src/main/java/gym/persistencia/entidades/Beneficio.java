@@ -6,6 +6,8 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que representa un beneficio otorgado por una membresía.
+ *
+ * @author PC GAMER MASTER RACE
  */
 public class Beneficio {
    

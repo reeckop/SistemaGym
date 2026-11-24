@@ -4,6 +4,8 @@
  */
 package gym.control_aceeso;
 
+
+import gym.navegacion.ControlNavegacion;
 import gym.login.pantalla_principal;
 import gym.servicios.dto.ClienteDTO;
 import gym.servicios.dto.MembresiaDTO;
@@ -21,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 /**
+ * Muestra la información complementaria del control de acceso.
  *
  * @author drago
  */
@@ -141,8 +144,7 @@ public class pantalla_control_acceso2 extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "¡Entrada registrada correctamente!\n\n" + "Cliente: " + cliente.getNombre() + " " + cliente.getApellido() + "\nMembresía: " + membresia.getNombre(), "Acceso permitido", JOptionPane.INFORMATION_MESSAGE);
 
             // Regresar a la pantalla de búsqueda
-            pantallaAnterior.setVisible(true);
-            this.dispose();
+            ControlNavegacion.obtenerInstancia().regresar(this, pantallaAnterior);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al registrar la entrada: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -380,8 +382,7 @@ public class pantalla_control_acceso2 extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_registrar_entradaActionPerformed
 
     private void btn_volver_control_accesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_control_accesoActionPerformed
-        pantallaAnterior.setVisible(true);
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().regresar(this, pantallaAnterior);
     }//GEN-LAST:event_btn_volver_control_accesoActionPerformed
 
     

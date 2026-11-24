@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Implementa las operaciones de persistencia para empleado.
  *
  * @author PC GAMER MASTER RACE
  */

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
+ * Transporta los datos de horario entre las capas del sistema.
  *
  * @author PC GAMER MASTER RACE
  */

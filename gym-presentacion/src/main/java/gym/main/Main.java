@@ -17,6 +17,7 @@ import gym.servicios.servicios.RegistroIngresoServicios;
 import gym.persistencia.unitofwork.UnitOfWorkFactory;
 
 /**
+ * Inicia el sistema de gestión del gimnasio.
  *
  * @author PC GAMER MASTER RACE
  */
@@ -26,18 +27,24 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        java.awt.EventQueue.invokeLater(() -> {
-            UnitOfWorkFactory unidadDeTrabajoFactory = UnitOfWorkFactory.obtenerInstancia();
-            IEmpleadoServicios empleadoServicios = new EmpleadoServicios(unidadDeTrabajoFactory);
-            IClienteServicios clienteServicios = new ClienteServicios(unidadDeTrabajoFactory);
-            IMembresiaServicios membresiaServicios = new MembresiaServicios(unidadDeTrabajoFactory);
-            IRegistroIngresoServicios registroIngresoServicios = new RegistroIngresoServicios(unidadDeTrabajoFactory);
-            EmpleadoDTO empleado = new EmpleadoDTO();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                UnitOfWorkFactory unidadDeTrabajoFactory = UnitOfWorkFactory.obtenerInstancia();
+                IEmpleadoServicios empleadoServicios = new EmpleadoServicios(unidadDeTrabajoFactory);
+                IClienteServicios clienteServicios = new ClienteServicios(unidadDeTrabajoFactory);
+                IMembresiaServicios membresiaServicios = new MembresiaServicios(unidadDeTrabajoFactory);
+                IRegistroIngresoServicios registroIngresoServicios = new RegistroIngresoServicios(unidadDeTrabajoFactory);
+                EmpleadoDTO empleado = new EmpleadoDTO();
 
-            iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
-
-            pantalla.setVisible(true);
-
+                iniciar_sesion pantalla = new iniciar_sesion(
+                        empleadoServicios,
+                        membresiaServicios,
+                        clienteServicios,
+                        registroIngresoServicios,
+                        empleado);
+                pantalla.setVisible(true);
+            }
         });
     }
 }

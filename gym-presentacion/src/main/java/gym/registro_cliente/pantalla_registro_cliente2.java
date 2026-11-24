@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package gym.registro_cliente;
+
+import gym.navegacion.ControlNavegacion;
 import gym.login.pantalla_principal;
 import gym.servicios.dto.ClienteDTO;
 import gym.servicios.interfaces.IMembresiaServicios;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
+ * Permite asignar una membresía al cliente registrado.
  *
  * @author drago
  */
@@ -198,8 +201,7 @@ public class pantalla_registro_cliente2 extends javax.swing.JFrame {
 
         pantalla_membresias_Cliente pantalla = new pantalla_membresias_Cliente(membresiaServicios, cliente, this, pantallaPrincipal);
 
-        pantalla.setVisible(true);
-        this.setVisible(false);
+        ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_registro2ActionPerformed
 
 

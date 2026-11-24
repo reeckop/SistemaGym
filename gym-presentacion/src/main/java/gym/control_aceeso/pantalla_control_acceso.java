@@ -4,18 +4,19 @@
  */
 package gym.control_aceeso;
 
+
+import gym.navegacion.ControlNavegacion;
 import gym.login.pantalla_principal;
 import gym.servicios.dto.ClienteDTO;
 import gym.servicios.dto.MembresiaDTO;
 import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.interfaces.IMembresiaServicios;
 import gym.servicios.interfaces.IRegistroIngresoServicios;
-import gym.servicios.servicios.ClienteServicios;
-import gym.servicios.servicios.MembresiaServicios;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 /**
+ * Registra y consulta las entradas y salidas de los clientes.
  *
  * @author drago
  */
@@ -31,13 +32,14 @@ public class pantalla_control_acceso extends javax.swing.JFrame {
     /**
      * Creates new form pantalla_control_acceso
      */
-    public pantalla_control_acceso(pantalla_principal pantallaPrincipal, IRegistroIngresoServicios registroIngresoServicios) {
+    public pantalla_control_acceso(pantalla_principal pantallaPrincipal, IClienteServicios clienteServicios,
+            IMembresiaServicios membresiaServicios, IRegistroIngresoServicios registroIngresoServicios) {
         initComponents();
 
         this.pantallaPrincipal = pantallaPrincipal;
         this.registroIngresoServicios = registroIngresoServicios;
-        this.clienteServicios = new ClienteServicios();
-        this.membresiaServicios = new MembresiaServicios();
+        this.clienteServicios = clienteServicios;
+        this.membresiaServicios = membresiaServicios;
 
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -68,8 +70,7 @@ public class pantalla_control_acceso extends javax.swing.JFrame {
 
             pantalla_control_acceso2 pantalla = new pantalla_control_acceso2(cliente, membresia, this, pantallaPrincipal, registroIngresoServicios);
 
-            pantalla.setVisible(true);
-            this.setVisible(false);
+            ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "No se encontro el cliente o ocurrio un error: " + e.getMessage(), "Control de acceso", JOptionPane.ERROR_MESSAGE);
         }
@@ -153,7 +154,7 @@ public class pantalla_control_acceso extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(158, 158, 158)
                                 .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 56, Short.MAX_VALUE))
+                        .addGap(0, 66, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -172,7 +173,7 @@ public class pantalla_control_acceso extends javax.swing.JFrame {
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35)
                 .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                 .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -198,11 +199,7 @@ public class pantalla_control_acceso extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        if (pantallaPrincipal != null) {
-            pantallaPrincipal.setVisible(true);
-        }
-
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().regresar(this, pantallaPrincipal);
     }//GEN-LAST:event_btnVolverActionPerformed
 
     

@@ -5,6 +5,7 @@
 package gym.servicios.enums;
 
 /**
+ * Define los estados disponibles para membresía.
  *
  * @author PC GAMER MASTER RACE
  */

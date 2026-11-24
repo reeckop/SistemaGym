@@ -8,6 +8,7 @@ import gym.servicios.enums.EstadoPago;
 import java.time.LocalDateTime;
 
 /**
+ * Transporta los datos de pago entre las capas del sistema.
  *
  * @author PC GAMER MASTER RACE
  */

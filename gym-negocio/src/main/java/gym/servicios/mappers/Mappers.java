@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Convierte los objetos de persistencia en DTO y viceversa.
  *
  * @author PC GAMER MASTER RACE
  */

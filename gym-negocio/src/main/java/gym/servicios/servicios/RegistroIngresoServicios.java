@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Gestiona las reglas de negocio de registro ingreso.
  *
  * @author PC GAMER MASTER RACE
  */

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * Gestiona las reglas de negocio de empleado.
  *
  * @author PC GAMER MASTER RACE
  */

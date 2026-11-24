@@ -15,13 +15,16 @@ import gym.persistencia.unitofwork.IUnitOfWork;
 import gym.persistencia.unitofwork.IUnitOfWorkFactory;
 import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.dto.PagoDTO;
+import gym.servicios.dto.DetalleVentaDTO;
 import gym.servicios.dto.VentaDTO;
 import gym.servicios.interfaces.IVentaServicios;
 import gym.servicios.mappers.Mappers;
 import java.util.ArrayList;
 import java.util.List;
+import org.bson.types.ObjectId;
 
 /**
+ * Gestiona las reglas de negocio de venta.
  *
  * @author PC GAMER MASTER RACE
  */
@@ -34,6 +37,67 @@ public class VentaServicios implements IVentaServicios {
 
     public VentaServicios(IUnitOfWorkFactory unidadDeTrabajoFactory) {
         this.unidadDeTrabajoFactory = java.util.Objects.requireNonNull(unidadDeTrabajoFactory);
+    }
+
+    @Override
+    public String procesarVenta(String idCliente, List<DetalleVentaDTO> detalles, PagoDTO pago) throws NegocioException {
+        if (idCliente != null && !idCliente.isBlank() && !ObjectId.isValid(idCliente)) {
+            throw new NegocioException("El identificador del cliente no es válido.");
+        }
+        if (detalles == null || detalles.isEmpty()) {
+            throw new NegocioException("Agrega al menos un producto al carrito.");
+        }
+        validarPago(pago);
+
+        IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
+        try {
+            Cliente cliente = null;
+            if (idCliente != null && !idCliente.isBlank()) {
+                cliente = unitOfWork.clienteDAO().obtenerPorId(idCliente);
+                if (cliente == null) throw new NegocioException("No se encontró el cliente indicado.");
+            }
+
+            String idVenta = new ObjectId().toHexString();
+            Venta venta = new Venta(idVenta, cliente);
+            List<DetalleVenta> detallesEntidad = new ArrayList<>();
+            double subtotal = 0;
+            for (DetalleVentaDTO detalleDTO : detalles) {
+                if (detalleDTO == null || detalleDTO.getProducto() == null
+                        || detalleDTO.getProducto().getIdProducto() == null
+                        || detalleDTO.getCantidad() <= 0) {
+                    throw new NegocioException("Hay un producto o una cantidad no válida en el carrito.");
+                }
+                Producto producto = unitOfWork.productoDAO().obtenerPorId(detalleDTO.getProducto().getIdProducto());
+                if (producto == null) throw new NegocioException("Uno de los productos ya no está disponible.");
+                if (producto.getStock() < detalleDTO.getCantidad()) {
+                    throw new NegocioException("Stock insuficiente para " + producto.getNombre() + ".");
+                }
+                double precioUnitario = producto.getPrecio();
+                double importe = precioUnitario * detalleDTO.getCantidad();
+                detallesEntidad.add(new DetalleVenta(producto, detalleDTO.getCantidad(), precioUnitario, importe));
+                subtotal += importe;
+                producto.setStock(producto.getStock() - detalleDTO.getCantidad());
+                unitOfWork.productoDAO().actualizar(producto);
+            }
+
+            venta.setDetalles(detallesEntidad);
+            venta.setSubtotal(subtotal);
+            venta.setDescuento(0);
+            venta.setTotal(subtotal);
+            if (pago.getMonto() < subtotal) {
+                throw new NegocioException("El monto del pago es insuficiente.");
+            }
+            venta.setPago(Mappers.convertirAEntidad(pago));
+            unitOfWork.ventaDAO().guardar(venta);
+            unitOfWork.commit();
+            return idVenta;
+        } catch (NegocioException e) {
+            unitOfWork.rollback();
+            throw e;
+        } catch (PersistenciaException e) {
+            unitOfWork.rollback();
+            throw new NegocioException("No fue posible procesar la venta.", e);
+        }
     }
 
     @Override

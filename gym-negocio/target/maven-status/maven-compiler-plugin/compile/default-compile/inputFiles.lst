@@ -1,4 +1,5 @@
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\excepciones\NegocioException.java
+C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\catalogos\MembresiasPredeterminadas.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\dto\BeneficioDTO.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\dto\ClienteDTO.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\dto\CursoDTO.java
@@ -30,6 +31,8 @@ C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\j
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\interfaces\IRegistroIngresoServicios.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\interfaces\IVentaServicios.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\mappers\Mappers.java
+C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\pagos\ResultadoPago.java
+C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\pagos\StripeSimulado.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\servicios\BeneficioServicios.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\servicios\ClienteServicios.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-negocio\src\main\java\gym\servicios\servicios\CursoServicios.java

@@ -5,6 +5,7 @@
 package gym.reportes;
 
 /**
+ * Presenta los reportes disponibles del gimnasio.
  *
  * @author drago
  */
@@ -388,7 +389,12 @@ public class pantalla_reportes extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new pantalla_reportes().setVisible(true));
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new pantalla_reportes().setVisible(true);
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

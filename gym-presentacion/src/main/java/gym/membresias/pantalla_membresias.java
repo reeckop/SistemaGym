@@ -4,6 +4,8 @@
  */
 package gym.membresias;
 
+
+import gym.navegacion.ControlNavegacion;
 import gym.login.pantalla_principal;
 import gym.servicios.dto.MembresiaDTO;
 import gym.servicios.interfaces.IMembresiaServicios;
@@ -11,8 +13,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
-import java.io.File;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 /**
+ * Muestra y administra las membresías disponibles.
  *
  * @author drago
  */
@@ -90,7 +91,7 @@ public class pantalla_membresias extends javax.swing.JFrame {
     private JPanel crearTarjeta(MembresiaDTO membresia) {
         JPanel tarjeta = new JPanel();
 
-        tarjeta.setPreferredSize(new Dimension(95, 127));
+        tarjeta.setPreferredSize(new Dimension(190, 245));
         tarjeta.setBackground(new Color(45, 45, 45));
 
         tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
@@ -98,38 +99,15 @@ public class pantalla_membresias extends javax.swing.JFrame {
         // Imagen de la membresía
         JLabel imagen = new JLabel();
 
-        imagen.setPreferredSize(new Dimension(85, 65));
-        imagen.setMaximumSize(new Dimension(85, 65));
+        imagen.setPreferredSize(new Dimension(150, 145));
+        imagen.setMaximumSize(new Dimension(150, 145));
         imagen.setAlignmentX(JPanel.CENTER_ALIGNMENT);
 
         imagen.setHorizontalAlignment(JLabel.CENTER);
 
-        if (membresia.getImagen() != null && !membresia.getImagen().isEmpty()) {
-            File archivo = new File(membresia.getImagen());
-
-            if (archivo.exists()) {
-                ImageIcon icono = new ImageIcon(archivo.getAbsolutePath());
-
-                Image imagenOriginal = icono.getImage();
-
-                int anchoOriginal = icono.getIconWidth();
-                int altoOriginal = icono.getIconHeight();
-
-                double escala = Math.min(65.0 / anchoOriginal, 60.0 / altoOriginal);
-
-                int nuevoAncho = (int) (anchoOriginal * escala);
-                int nuevoAlto = (int) (altoOriginal * escala);
-
-                Image imagenEscalada = imagenOriginal.getScaledInstance(nuevoAncho, nuevoAlto, Image.SCALE_SMOOTH);
-
-                imagen.setIcon(new ImageIcon(imagenEscalada));
-
-            } else {
-                imagen.setText("Sin imagen");
-            }
-        } else {
-            imagen.setText("Sin imagen");
-        }
+        ImageIcon icono = ImagenMembresia.cargar(membresia.getImagen(), 140, 140);
+        if (icono != null) imagen.setIcon(icono);
+        else imagen.setText("Sin imagen");
 
         // Nombre
         JLabel nombre = new JLabel(membresia.getNombre());
@@ -158,10 +136,13 @@ public class pantalla_membresias extends javax.swing.JFrame {
         editar.setPreferredSize(new Dimension(75, 17));
         editar.setMaximumSize(new Dimension(75, 17));
         
-        editar.addActionListener(e -> {
-            EditarMembresia pantalla = new EditarMembresia(membresiaServicios, this, membresia);
-            pantalla.setVisible(true);
-            this.setVisible(false);
+        editar.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evento) {
+                EditarMembresia pantalla = new EditarMembresia(
+                        membresiaServicios, pantalla_membresias.this, membresia);
+                ControlNavegacion.obtenerInstancia().abrir(pantalla_membresias.this, pantalla);
+            }
         });
 
         // Agregar componentes
@@ -197,7 +178,7 @@ public class pantalla_membresias extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("MEMBRESIAS");
 
@@ -233,20 +214,20 @@ public class pantalla_membresias extends javax.swing.JFrame {
             .addComponent(jSeparator1)
             .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(155, 155, 155)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 169, Short.MAX_VALUE)
+                        .addGap(0, 300, Short.MAX_VALUE)
                         .addComponent(btn_agregar_membresia)
-                        .addGap(83, 83, 83)
+                        .addGap(238, 238, 238)
                         .addComponent(btn_volver_membresia, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jscrollpaneMembresias)))
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(288, 288, 288)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -256,7 +237,7 @@ public class pantalla_membresias extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jscrollpaneMembresias, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addComponent(jscrollpaneMembresias, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_agregar_membresia)
@@ -283,17 +264,11 @@ public class pantalla_membresias extends javax.swing.JFrame {
     private void btn_agregar_membresiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_agregar_membresiaActionPerformed
         pantalla_agregar_membresia pantalla = new pantalla_agregar_membresia(membresiaServicios, this);
 
-        pantalla.setVisible(true);
-
-        this.setVisible(false);
+        ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_agregar_membresiaActionPerformed
 
     private void btn_volver_membresiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_membresiaActionPerformed
-        if (pantallaPrincipal != null) {
-            pantallaPrincipal.setVisible(true);
-        }
-
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().regresar(this, pantallaPrincipal);
     }//GEN-LAST:event_btn_volver_membresiaActionPerformed
 
     

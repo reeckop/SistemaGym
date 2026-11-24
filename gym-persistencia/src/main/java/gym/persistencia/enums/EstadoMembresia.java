@@ -5,6 +5,7 @@
 package gym.persistencia.enums;
 
 /**
+ * Define los estados disponibles para membresía.
  *
  * @author PC GAMER MASTER RACE
  */

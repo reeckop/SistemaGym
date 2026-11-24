@@ -5,6 +5,7 @@
 package gym.servicios.dto;
 
 /**
+ * Transporta los datos de un método de pago.
  *
  * @author PC GAMER MASTER RACE
  */

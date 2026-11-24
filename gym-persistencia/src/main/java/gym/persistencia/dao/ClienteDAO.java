@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bson.types.ObjectId;
 
+/**
+ * Implementa las operaciones de persistencia para cliente.
+ *
+ * @author PC GAMER MASTER RACE
+ */
 public class ClienteDAO extends BaseDAO implements IClienteDAO {
 
     private static final String NOMBRE_COLECCION = "clientes";

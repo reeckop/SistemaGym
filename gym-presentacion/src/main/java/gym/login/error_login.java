@@ -4,6 +4,7 @@
  */
 package gym.login;
 
+import gym.navegacion.ControlNavegacion;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
@@ -11,6 +12,7 @@ import gym.servicios.interfaces.IMembresiaServicios;
 import gym.servicios.interfaces.IRegistroIngresoServicios;
 
 /**
+ * Muestra un aviso cuando falla el inicio de sesión.
  *
  * @author drago
  */
@@ -130,8 +132,7 @@ public class error_login extends javax.swing.JFrame {
 
     private void btn_volverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volverActionPerformed
         iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
-        pantalla.setVisible(true);
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
     }//GEN-LAST:event_btn_volverActionPerformed
 
     

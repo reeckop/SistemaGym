@@ -10,6 +10,8 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que registra el control de acceso/asistencia de los socios al gimnasio.
+ *
+ * @author PC GAMER MASTER RACE
  */
 public class RegistroIngreso {
 

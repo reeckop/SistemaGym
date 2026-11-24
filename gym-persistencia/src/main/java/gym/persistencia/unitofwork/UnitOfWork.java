@@ -31,6 +31,7 @@ import gym.persistencia.interfaces.IProductoDAO;
 import gym.persistencia.interfaces.IVentaDAO;
 
 /**
+ * Agrupa los DAO y la sesión de MongoDB de una operación.
  *
  * @author PC GAMER MASTER RACE
  */

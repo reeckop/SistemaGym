@@ -8,6 +8,7 @@ import gym.servicios.enums.EstadoInscripcion;
 import java.time.LocalDate;
 
 /**
+ * Transporta los datos de inscripción entre las capas del sistema.
  *
  * @author PC GAMER MASTER RACE
  */

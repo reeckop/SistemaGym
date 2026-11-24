@@ -7,6 +7,7 @@ package gym.servicios.dto;
 import java.util.List;
 
 /**
+ * Transporta los datos de curso entre las capas del sistema.
  *
  * @author PC GAMER MASTER RACE
  */

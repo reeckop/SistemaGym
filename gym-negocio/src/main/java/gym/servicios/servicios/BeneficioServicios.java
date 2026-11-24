@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Gestiona las reglas de negocio de beneficio.
  *
  * @author PC GAMER MASTER RACE
  */

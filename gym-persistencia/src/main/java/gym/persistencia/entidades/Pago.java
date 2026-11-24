@@ -8,6 +8,8 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que modela un pago efectuado por una transacción o venta.
+ *
+ * @author PC GAMER MASTER RACE
  */
 public class Pago {
     

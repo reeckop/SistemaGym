@@ -4,11 +4,14 @@
  */
 package gym.membresias;
 
+
+import gym.navegacion.ControlNavegacion;
 import gym.servicios.dto.MembresiaDTO;
 import gym.servicios.interfaces.IMembresiaServicios;
 import javax.swing.JOptionPane;
 
 /**
+ * Confirma el resultado del registro de una membresía.
  *
  * @author drago
  */
@@ -51,18 +54,19 @@ public class pantalla_confirmacion_membresia extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Confirmacion");
 
         jSeparator1.setBackground(new java.awt.Color(255, 0, 51));
         jSeparator1.setForeground(new java.awt.Color(255, 0, 51));
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("¿Esta Seguro Que Quiere Agregar esa Membresia?");
 
         btn_aceptar_confirmacion.setBackground(new java.awt.Color(255, 0, 51));
+        btn_aceptar_confirmacion.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_aceptar_confirmacion.setForeground(new java.awt.Color(255, 255, 255));
         btn_aceptar_confirmacion.setText("Aceptar");
         btn_aceptar_confirmacion.addActionListener(new java.awt.event.ActionListener() {
@@ -72,6 +76,7 @@ public class pantalla_confirmacion_membresia extends javax.swing.JFrame {
         });
 
         btn_volver_confirmacion.setBackground(new java.awt.Color(255, 0, 51));
+        btn_volver_confirmacion.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_volver_confirmacion.setForeground(new java.awt.Color(255, 255, 255));
         btn_volver_confirmacion.setText("Volver");
         btn_volver_confirmacion.addActionListener(new java.awt.event.ActionListener() {
@@ -98,7 +103,7 @@ public class pantalla_confirmacion_membresia extends javax.swing.JFrame {
                         .addComponent(btn_aceptar_confirmacion, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(36, 36, 36)
                         .addComponent(btn_volver_confirmacion, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -146,9 +151,7 @@ public class pantalla_confirmacion_membresia extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_aceptar_confirmacionActionPerformed
 
     private void btn_volver_confirmacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_confirmacionActionPerformed
-        pantallaAnterior.setVisible(true);
-
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().regresar(this, pantallaAnterior);
     }//GEN-LAST:event_btn_volver_confirmacionActionPerformed
 
     

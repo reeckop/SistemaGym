@@ -7,6 +7,11 @@ import org.bson.BsonType;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
+/**
+ * Representa la entidad persistente de membresía.
+ *
+ * @author PC GAMER MASTER RACE
+ */
 public class Membresia {
     
     @BsonId

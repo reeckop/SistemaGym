@@ -9,6 +9,7 @@ import gym.servicios.dto.BeneficioDTO;
 import java.util.List;
 
 /**
+ * Define las operaciones de negocio relacionadas con beneficio.
  *
  * @author PC GAMER MASTER RACE
  */

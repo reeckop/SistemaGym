@@ -9,6 +9,7 @@ import gym.servicios.dto.PagoDTO;
 import java.util.List;
 
 /**
+ * Define las operaciones de negocio relacionadas con pago.
  *
  * @author PC GAMER MASTER RACE
  */

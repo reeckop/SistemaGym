@@ -9,6 +9,7 @@ import gym.servicios.dto.InscripcionDTO;
 import java.util.List;
 
 /**
+ * Define las operaciones de negocio relacionadas con inscripción.
  *
  * @author PC GAMER MASTER RACE
  */

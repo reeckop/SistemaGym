@@ -9,6 +9,7 @@ import gym.servicios.dto.EmpleadoDTO;
 import java.util.List;
 
 /**
+ * Define las operaciones de negocio relacionadas con empleado.
  *
  * @author PC GAMER MASTER RACE
  */

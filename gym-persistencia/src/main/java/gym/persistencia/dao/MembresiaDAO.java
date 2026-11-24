@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bson.types.ObjectId;
 
+/**
+ * Implementa las operaciones de persistencia para membresía.
+ *
+ * @author PC GAMER MASTER RACE
+ */
 public class MembresiaDAO extends BaseDAO implements IMembresiaDAO {
 
     private static final String NOMBRE_COLECCION = "membresias";

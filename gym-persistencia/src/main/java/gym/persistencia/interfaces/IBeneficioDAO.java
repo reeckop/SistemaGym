@@ -9,6 +9,7 @@ import gym.persistencia.excepciones.PersistenciaException;
 import java.util.List;
 
 /**
+ * Define las operaciones de persistencia relacionadas con beneficio.
  *
  * @author PC GAMER MASTER RACE
  */

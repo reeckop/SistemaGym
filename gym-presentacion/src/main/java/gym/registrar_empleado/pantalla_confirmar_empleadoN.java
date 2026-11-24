@@ -6,6 +6,7 @@ package gym.registrar_empleado;
 
 import gym.excepciones.NegocioException;
 import gym.login.iniciar_sesion;
+import gym.navegacion.ControlNavegacion;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
@@ -14,6 +15,7 @@ import gym.servicios.interfaces.IRegistroIngresoServicios;
 import javax.swing.JOptionPane;
 
 /**
+ * Confirma los datos capturados para registrar un empleado.
  *
  * @author drago
  */
@@ -142,9 +144,7 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Empleado registrado correctamente.");
 
             iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
-            pantalla.setVisible(true);
-
-            this.dispose();
+            ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
 
         } catch (NegocioException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error al registrar", JOptionPane.ERROR_MESSAGE);
@@ -153,8 +153,7 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
 
     private void btn_volver_empleadoN2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_empleadoN2ActionPerformed
         pantalla_registro_empleado pantalla = new pantalla_registro_empleado(empleadoServicios, empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
-        pantalla.setVisible(true);
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
     }//GEN-LAST:event_btn_volver_empleadoN2ActionPerformed
 
     

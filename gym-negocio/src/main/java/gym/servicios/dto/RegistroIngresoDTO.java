@@ -8,6 +8,7 @@ import gym.servicios.enums.EstadoRegistroIngreso;
 import java.time.LocalDateTime;
 
 /**
+ * Transporta los datos de un registro de ingreso.
  *
  * @author PC GAMER MASTER RACE
  */

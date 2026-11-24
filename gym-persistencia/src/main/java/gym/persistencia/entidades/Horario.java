@@ -12,6 +12,8 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que modela un horario específico para la impartición de cursos.
+ *
+ * @author PC GAMER MASTER RACE
  */
 public class Horario {
     

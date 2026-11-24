@@ -7,6 +7,7 @@ package gym.servicios.dto;
 import java.time.LocalDate;
 
 /**
+ * Transporta los datos de cliente entre las capas del sistema.
  *
  * @author PC GAMER MASTER RACE
  */

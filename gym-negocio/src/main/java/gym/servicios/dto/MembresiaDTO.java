@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
+ * Transporta los datos de membresía entre las capas del sistema.
  *
  * @author PC GAMER MASTER RACE
  */

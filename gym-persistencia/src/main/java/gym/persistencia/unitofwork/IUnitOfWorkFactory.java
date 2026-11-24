@@ -1,10 +1,10 @@
 package gym.persistencia.unitofwork;
+
 /**
+ * Define la creación de unidades de trabajo para las operaciones de persistencia.
  *
  * @author PC GAMER MASTER RACE
  */
-
-/** Crea una unidad de trabajo nueva para cada operación. */
 @FunctionalInterface
 public interface IUnitOfWorkFactory {
     IUnitOfWork crear();

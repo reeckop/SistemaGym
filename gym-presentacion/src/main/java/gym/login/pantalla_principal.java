@@ -4,6 +4,8 @@
  */
 package gym.login;
 
+
+import gym.navegacion.ControlNavegacion;
 import gym.control_aceeso.pantalla_control_acceso;
 import gym.membresias.pantalla_membresias;
 import gym.servicios.dto.EmpleadoDTO;
@@ -11,8 +13,18 @@ import gym.servicios.interfaces.IMembresiaServicios;
 import gym.registro_cliente.pantalla_registro_cliente;
 import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.interfaces.IRegistroIngresoServicios;
+import gym.servicios.interfaces.IProductoServicios;
+import gym.servicios.interfaces.IVentaServicios;
+import gym.servicios.servicios.ProductoServicios;
+import gym.servicios.servicios.VentaServicios;
+import gym.persistencia.unitofwork.UnitOfWorkFactory;
+import gym.ventas.pantalla_ventas_principal;
+import gym.cursos.pantalla_cursos_principal;
+import gym.servicios.servicios.CursoServicios;
+import gym.servicios.servicios.InscripcionServicios;
 
 /**
+ * Muestra las opciones principales del sistema del gimnasio.
  *
  * @author drago
  */
@@ -23,6 +35,8 @@ public class pantalla_principal extends javax.swing.JFrame {
     private final IMembresiaServicios membresiaServicios;
     private final IClienteServicios clienteServicios;
     private final IRegistroIngresoServicios registroIngresoServicios;
+    private final IProductoServicios productoServicios;
+    private final IVentaServicios ventaServicios;
 
     /**
      * Creates new form pantalla_principal
@@ -33,6 +47,9 @@ public class pantalla_principal extends javax.swing.JFrame {
         this.membresiaServicios = membresiaServicios;
         this.clienteServicios = clienteServicios;
         this.registroIngresoServicios = registroIngresoServicios;
+        UnitOfWorkFactory unidadDeTrabajoFactory = UnitOfWorkFactory.obtenerInstancia();
+        this.productoServicios = new ProductoServicios(unidadDeTrabajoFactory);
+        this.ventaServicios = new VentaServicios(unidadDeTrabajoFactory);
 
         setLocationRelativeTo(null);
 
@@ -231,40 +248,40 @@ public class pantalla_principal extends javax.swing.JFrame {
     private void btn_registro_clienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_registro_clienteActionPerformed
         pantalla_registro_cliente pantalla = new pantalla_registro_cliente(clienteServicios, this);
 
-        pantalla.setVisible(true);
-        this.setVisible(false);
+        ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_registro_clienteActionPerformed
 
     private void btn_membresiasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_membresiasActionPerformed
         pantalla_membresias pantalla = new pantalla_membresias(membresiaServicios, this);
 
-        pantalla.setVisible(true);
-
-        this.setVisible(false);
+        ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_membresiasActionPerformed
 
     private void btn_cursosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cursosActionPerformed
-        // TODO add your handling code here:
+        pantalla_cursos_principal pantalla = new pantalla_cursos_principal(
+                this,
+                new CursoServicios(UnitOfWorkFactory.obtenerInstancia()),
+                new InscripcionServicios(UnitOfWorkFactory.obtenerInstancia()),
+                clienteServicios);
+        ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_cursosActionPerformed
 
     private void btn_ventasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ventasActionPerformed
-        // TODO add your handling code here:
+        pantalla_ventas_principal pantalla = new pantalla_ventas_principal(
+                this, productoServicios, ventaServicios, clienteServicios);
+        ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_ventasActionPerformed
 
     private void btn_reportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_reportesActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btn_reportesActionPerformed
 
     private void btn_control_accesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_control_accesoActionPerformed
-        pantalla_control_acceso pantalla = new pantalla_control_acceso(this, registroIngresoServicios);
+        pantalla_control_acceso pantalla = new pantalla_control_acceso(this, clienteServicios, membresiaServicios, registroIngresoServicios);
 
-        pantalla.setVisible(true);
-
-        this.setVisible(false);
+        ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_control_accesoActionPerformed
 
     private void btn_notificacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_notificacionesActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btn_notificacionesActionPerformed
 
   

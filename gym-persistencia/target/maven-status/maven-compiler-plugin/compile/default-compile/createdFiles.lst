@@ -1,3 +1,4 @@
+gym\persistencia\unitofwork\UnitOfWorkFactory.class
 gym\persistencia\interfaces\IEmpleadoDAO.class
 gym\persistencia\unitofwork\UnitOfWork.class
 gym\persistencia\entidades\Venta.class
@@ -11,6 +12,7 @@ gym\persistencia\dao\NotificacionDAO.class
 gym\persistencia\unitofwork\IUnitOfWork.class
 gym\persistencia\enums\EstadoPago.class
 gym\persistencia\interfaces\IProductoDAO.class
+gym\persistencia\unitofwork\IUnitOfWorkFactory.class
 gym\persistencia\entidades\DetalleVenta.class
 gym\persistencia\entidades\Notificacion.class
 gym\persistencia\enums\EstadoNotificacion.class

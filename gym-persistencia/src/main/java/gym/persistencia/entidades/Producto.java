@@ -4,6 +4,11 @@ import org.bson.BsonType;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
+/**
+ * Representa la entidad persistente de producto.
+ *
+ * @author PC GAMER MASTER RACE
+ */
 public class Producto {
 
     @BsonId

@@ -4,6 +4,8 @@
  */
 package gym.registro_cliente;
 
+
+import gym.navegacion.ControlNavegacion;
 import gym.login.pantalla_principal;
 import gym.servicios.dto.ClienteDTO;
 import gym.servicios.dto.MembresiaDTO;
@@ -15,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 /**
+ * Muestra los beneficios de la membresía elegida por el cliente.
  *
  * @author drago
  */
@@ -392,24 +395,19 @@ public class pantalla_registro_cliene3 extends javax.swing.JFrame {
     private void btn_acepar_registro3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_acepar_registro3ActionPerformed
         pantalla_registro_cliente4 pantalla = new pantalla_registro_cliente4(cliente, membresia, pantallaAnterior, pantallaPrincipal);
 
-        pantalla.setVisible(true);
-        this.setVisible(false);;
+        ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_acepar_registro3ActionPerformed
 
     private void txtBeneficio1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBeneficio1ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtBeneficio1ActionPerformed
 
     private void txtBeneficio2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBeneficio2ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtBeneficio2ActionPerformed
 
     private void txtBeneficio3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBeneficio3ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtBeneficio3ActionPerformed
 
     private void txtbeneficio4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbeneficio4ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtbeneficio4ActionPerformed
 
     

@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
+ * Gestiona las reglas de negocio de cliente.
  *
  * @author PC GAMER MASTER RACE
  */

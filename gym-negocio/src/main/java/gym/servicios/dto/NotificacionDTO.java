@@ -8,6 +8,7 @@ import gym.servicios.enums.EstadoNotificacion;
 import java.time.LocalDateTime;
 
 /**
+ * Transporta los datos de notificación entre las capas del sistema.
  *
  * @author PC GAMER MASTER RACE
  */

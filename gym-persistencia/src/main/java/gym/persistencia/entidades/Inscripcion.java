@@ -9,6 +9,8 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que modela la inscripción de un cliente en un horario de curso.
+ *
+ * @author PC GAMER MASTER RACE
  */
 public class Inscripcion {
     

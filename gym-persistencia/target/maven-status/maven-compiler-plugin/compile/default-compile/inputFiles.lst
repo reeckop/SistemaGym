@@ -42,4 +42,6 @@ C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-persistencia\src\m
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-persistencia\src\main\java\gym\persistencia\interfaces\IProductoDAO.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-persistencia\src\main\java\gym\persistencia\interfaces\IVentaDAO.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-persistencia\src\main\java\gym\persistencia\unitofwork\IUnitOfWork.java
+C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-persistencia\src\main\java\gym\persistencia\unitofwork\IUnitOfWorkFactory.java
 C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-persistencia\src\main\java\gym\persistencia\unitofwork\UnitOfWork.java
+C:\Users\PC GAMER MASTER RACE\Documents\GitHub\SistemaGym\gym-persistencia\src\main\java\gym\persistencia\unitofwork\UnitOfWorkFactory.java

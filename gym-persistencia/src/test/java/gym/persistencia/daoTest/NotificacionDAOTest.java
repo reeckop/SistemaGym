@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
+ * Prueba las operaciones de persistencia de las notificaciones.
  *
  * @author PC GAMER MASTER RACE
  */

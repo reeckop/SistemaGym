@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
+ * Prueba las operaciones de persistencia de los productos.
  *
  * @author PC GAMER MASTER RACE
  */

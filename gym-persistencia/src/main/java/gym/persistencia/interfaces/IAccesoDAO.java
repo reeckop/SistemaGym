@@ -4,6 +4,11 @@ import gym.persistencia.entidades.RegistroIngreso;
 import gym.persistencia.excepciones.PersistenciaException;
 import java.util.List;
 
+/**
+ * Define las operaciones de persistencia relacionadas con acceso.
+ *
+ * @author PC GAMER MASTER RACE
+ */
 public interface IAccesoDAO {
     void guardar(RegistroIngreso registro) throws PersistenciaException;
     List<RegistroIngreso> obtenerPorCliente(String idCliente) throws PersistenciaException;

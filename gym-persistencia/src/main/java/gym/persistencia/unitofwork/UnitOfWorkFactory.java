@@ -1,6 +1,7 @@
 package gym.persistencia.unitofwork;
 
 /**
+ * Crea unidades de trabajo para las operaciones de persistencia.
  *
  * @author PC GAMER MASTER RACE
  */

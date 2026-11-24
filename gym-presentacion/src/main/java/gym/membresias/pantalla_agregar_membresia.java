@@ -8,6 +8,7 @@ import gym.servicios.dto.BeneficioDTO;
 import gym.servicios.dto.MembresiaDTO;
 import gym.servicios.enums.EstadoMembresia;
 import gym.servicios.interfaces.IMembresiaServicios;
+import gym.navegacion.ControlNavegacion;
 import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -32,6 +33,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.bson.types.ObjectId;
 
 /**
+ * Permite registrar una membresía con sus beneficios.
  *
  * @author drago
  */
@@ -47,10 +49,8 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
     public void membresiaAgregada() {
         if (pantallaAnterior != null) {
             pantallaAnterior.cargarMembresias();
-            pantallaAnterior.setVisible(true);
         }
-
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().regresar(this, pantallaAnterior);
     }
     
 
@@ -66,8 +66,18 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
         configurarBeneficios();
         configurarApariencia();
 
-        btn_seleccionar_Imagen_membreciaN.addActionListener(e -> seleccionarImagen());
-        btn_aceptar_agregar_membresia.addActionListener(e -> guardarMembresia());
+        btn_seleccionar_Imagen_membreciaN.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evento) {
+                seleccionarImagen();
+            }
+        });
+        btn_aceptar_agregar_membresia.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evento) {
+                guardarMembresia();
+            }
+        });
     }
     
     private void configurarBeneficios() {
@@ -76,29 +86,14 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
         campo_texto_descuento_cursos.setEnabled(false);
         campo_texto_invitaciones_mensuales.setEnabled(false);
 
-        checkB_descuentos_productos.addItemListener(e ->
-                campo_txt_descuentos_productos.setEnabled(
-                        checkB_descuentos_productos.isSelected()
-                )
-        );
-
-        checkB_sesiones_gratis.addItemListener(e ->
-                campo_texto_sesiones_gratis.setEnabled(
-                        checkB_sesiones_gratis.isSelected()
-                )
-        );
-
-        checkB_descuento_cursos.addItemListener(e ->
-                campo_texto_descuento_cursos.setEnabled(
-                        checkB_descuento_cursos.isSelected()
-                )
-        );
-
-        checkB_invitaciones_mensuales.addItemListener(e ->
-                campo_texto_invitaciones_mensuales.setEnabled(
-                        checkB_invitaciones_mensuales.isSelected()
-                )
-        );
+        checkB_descuentos_productos.addItemListener(
+                new ControlCampoBeneficio(checkB_descuentos_productos, campo_txt_descuentos_productos));
+        checkB_sesiones_gratis.addItemListener(
+                new ControlCampoBeneficio(checkB_sesiones_gratis, campo_texto_sesiones_gratis));
+        checkB_descuento_cursos.addItemListener(
+                new ControlCampoBeneficio(checkB_descuento_cursos, campo_texto_descuento_cursos));
+        checkB_invitaciones_mensuales.addItemListener(
+                new ControlCampoBeneficio(checkB_invitaciones_mensuales, campo_texto_invitaciones_mensuales));
     }
 
     private void validarBeneficios() {
@@ -273,10 +268,8 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
 
             if (pantallaAnterior != null) {
                 pantallaAnterior.cargarMembresias();
-                pantallaAnterior.setVisible(true);
             }
-
-            dispose();
+            ControlNavegacion.obtenerInstancia().regresar(this, pantallaAnterior);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Verifica los valores numéricos: " + e.getMessage());
         } catch (Exception e) {
@@ -391,6 +384,7 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
         txt_nombre_membreciaN.setText("Nombre de membresia: ");
 
         campo_txt_nombre_membresiaN.setBackground(new java.awt.Color(51, 51, 51));
+        campo_txt_nombre_membresiaN.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         campo_txt_nombre_membresiaN.setForeground(new java.awt.Color(255, 255, 255));
         campo_txt_nombre_membresiaN.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         campo_txt_nombre_membresiaN.setToolTipText("");
@@ -405,6 +399,7 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
         txt_precio_membresiaN.setText("Precio: ");
 
         campo_txt_precio_membresiaN.setBackground(new java.awt.Color(51, 51, 51));
+        campo_txt_precio_membresiaN.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         campo_txt_precio_membresiaN.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         txt_imagen_membresiaN.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
@@ -412,12 +407,13 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
         txt_imagen_membresiaN.setText("Imagen: ");
 
         btn_seleccionar_Imagen_membreciaN.setBackground(new java.awt.Color(51, 51, 51));
+        btn_seleccionar_Imagen_membreciaN.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_seleccionar_Imagen_membreciaN.setForeground(new java.awt.Color(255, 255, 255));
         btn_seleccionar_Imagen_membreciaN.setText("Seleccionar Imagen");
 
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
-        txt_img_membresiaN.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        txt_img_membresiaN.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         txt_img_membresiaN.setForeground(new java.awt.Color(255, 255, 255));
         txt_img_membresiaN.setText("Vista Previa");
 
@@ -438,7 +434,7 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
                 .addContainerGap(78, Short.MAX_VALUE))
         );
 
-        checkB_descuentos_productos.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        checkB_descuentos_productos.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         checkB_descuentos_productos.setForeground(new java.awt.Color(255, 255, 255));
         checkB_descuentos_productos.setText("Descuentos en productos: ");
         checkB_descuentos_productos.setToolTipText("");
@@ -448,18 +444,18 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Beneficios:");
 
         campo_txt_descuentos_productos.setBackground(new java.awt.Color(51, 51, 51));
-        campo_txt_descuentos_productos.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        campo_txt_descuentos_productos.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         campo_txt_descuentos_productos.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("%");
 
-        checkB_sesiones_gratis.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        checkB_sesiones_gratis.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         checkB_sesiones_gratis.setForeground(new java.awt.Color(255, 255, 255));
         checkB_sesiones_gratis.setText("Sesiones gratuitas: ");
         checkB_sesiones_gratis.addActionListener(new java.awt.event.ActionListener() {
@@ -469,33 +465,37 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
         });
 
         campo_texto_sesiones_gratis.setBackground(new java.awt.Color(51, 51, 51));
+        campo_texto_sesiones_gratis.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         campo_texto_sesiones_gratis.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        checkB_descuento_cursos.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        checkB_descuento_cursos.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         checkB_descuento_cursos.setForeground(new java.awt.Color(255, 255, 255));
         checkB_descuento_cursos.setText("Descuento en cursos: ");
 
         campo_texto_descuento_cursos.setBackground(new java.awt.Color(51, 51, 51));
+        campo_texto_descuento_cursos.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         campo_texto_descuento_cursos.setForeground(new java.awt.Color(255, 255, 255));
         campo_texto_descuento_cursos.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("%");
 
-        checkB_invitaciones_mensuales.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        checkB_invitaciones_mensuales.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         checkB_invitaciones_mensuales.setForeground(new java.awt.Color(255, 255, 255));
         checkB_invitaciones_mensuales.setText("Invitaciones mensuales:");
 
         campo_texto_invitaciones_mensuales.setBackground(new java.awt.Color(51, 51, 51));
+        campo_texto_invitaciones_mensuales.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         campo_texto_invitaciones_mensuales.setForeground(new java.awt.Color(255, 255, 255));
         campo_texto_invitaciones_mensuales.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         btn_aceptar_agregar_membresia.setBackground(new java.awt.Color(255, 0, 51));
-        btn_aceptar_agregar_membresia.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_aceptar_agregar_membresia.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_aceptar_agregar_membresia.setForeground(new java.awt.Color(255, 255, 255));
         btn_aceptar_agregar_membresia.setText("Aceptar");
 
         btn_volver_agregar_membresia.setBackground(new java.awt.Color(255, 0, 51));
+        btn_volver_agregar_membresia.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_volver_agregar_membresia.setForeground(new java.awt.Color(255, 255, 255));
         btn_volver_agregar_membresia.setText("Volver");
         btn_volver_agregar_membresia.addActionListener(new java.awt.event.ActionListener() {
@@ -633,23 +633,16 @@ public class pantalla_agregar_membresia extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void campo_txt_nombre_membresiaNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campo_txt_nombre_membresiaNActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_campo_txt_nombre_membresiaNActionPerformed
 
     private void checkB_descuentos_productosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkB_descuentos_productosActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_checkB_descuentos_productosActionPerformed
 
     private void checkB_sesiones_gratisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkB_sesiones_gratisActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_checkB_sesiones_gratisActionPerformed
 
     private void btn_volver_agregar_membresiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_agregar_membresiaActionPerformed
-        if (pantallaAnterior != null) {
-            pantallaAnterior.setVisible(true);
-        }
-
-        dispose();
+        ControlNavegacion.obtenerInstancia().regresar(this, pantallaAnterior);
     }//GEN-LAST:event_btn_volver_agregar_membresiaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

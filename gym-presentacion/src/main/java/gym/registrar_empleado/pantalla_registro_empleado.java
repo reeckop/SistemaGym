@@ -5,6 +5,7 @@
 package gym.registrar_empleado;
 
 import gym.login.iniciar_sesion;
+import gym.navegacion.ControlNavegacion;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
@@ -15,6 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JOptionPane;
 
 /**
+ * Captura los datos necesarios para registrar un empleado.
  *
  * @author drago
  */
@@ -320,14 +322,12 @@ public class pantalla_registro_empleado extends javax.swing.JFrame {
 
         pantalla_confirmar_empleadoN confirmacion = new pantalla_confirmar_empleadoN(empleadoServicios, empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
 
-        confirmacion.setVisible(true);
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().reemplazar(this, confirmacion);
     }//GEN-LAST:event_btn_aceptar_empleadoNActionPerformed
 
     private void btn_volver_empleadoNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_empleadoNActionPerformed
         iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
-        pantalla.setVisible(true);
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
     }//GEN-LAST:event_btn_volver_empleadoNActionPerformed
 
     private String generarNip() {

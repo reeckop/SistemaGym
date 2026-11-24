@@ -5,6 +5,7 @@
 package gym.servicios.dto;
 
 /**
+ * Transporta los datos de una línea de detalle de venta.
  *
  * @author PC GAMER MASTER RACE
  */

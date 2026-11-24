@@ -5,15 +5,19 @@
 package gym.registro_cliente;
 
 import gym.login.pantalla_principal;
+import gym.navegacion.ControlNavegacion;
 import gym.servicios.dto.ClienteDTO;
 import gym.servicios.dto.MembresiaDTO;
 import gym.servicios.interfaces.IClienteServicios;
 import gym.servicios.servicios.ClienteServicios;
+import gym.servicios.pagos.ResultadoPago;
+import gym.servicios.pagos.StripeSimulado;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 
 /**
+ * Confirma el resultado del registro del cliente.
  *
  * @author drago
  */
@@ -26,6 +30,7 @@ public class pantalla_registro_cliente4 extends javax.swing.JFrame {
     private final pantalla_membresias_Cliente pantallaAnterior;
     private final pantalla_principal pantallaPrincipal;
     private final IClienteServicios clienteServicios;
+    private final StripeSimulado pasarelaPago = new StripeSimulado();
 
     public pantalla_registro_cliente4(ClienteDTO cliente, MembresiaDTO membresia, pantalla_membresias_Cliente pantallaAnterior, pantalla_principal pantallaPrincipal) {
         initComponents();
@@ -42,22 +47,38 @@ public class pantalla_registro_cliente4 extends javax.swing.JFrame {
     }
     
     private void confirmarPago(String metodoPago) {
-        int respuesta = JOptionPane.showConfirmDialog(this, "Membresía: " + membresia.getNombre() + "\nPrecio: $" + membresia.getPrecio() + "\nMétodo de pago: " + metodoPago + "\n\n¿Deseas confirmar el pago?", "Confirmar pago", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int respuesta = JOptionPane.showConfirmDialog(this, "Membresía: " + membresia.getNombre() + "\nPrecio: $" + membresia.getPrecio() + "\nMétodo de pago: " + metodoPago + "\n\n¿Deseas continuar?", "Pago de prueba", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (respuesta == JOptionPane.YES_OPTION) {
             try {
+                boolean simularAprobacion = true;
+                if ("Tarjeta".equals(metodoPago)) {
+                    Object[] opciones = {"Simular aprobación", "Simular rechazo", "Cancelar"};
+                    int resultado = JOptionPane.showOptionDialog(this,
+                            "Stripe en modo simulado: elige el resultado para esta prueba.",
+                            "Simulación de tarjeta", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                            null, opciones, opciones[0]);
+                    if (resultado == 2 || resultado == JOptionPane.CLOSED_OPTION) return;
+                    simularAprobacion = resultado == 0;
+                }
+                ResultadoPago resultadoPago = pasarelaPago.procesar(membresia.getPrecio(), simularAprobacion);
+                if (resultadoPago == ResultadoPago.RECHAZADO) {
+                    JOptionPane.showMessageDialog(this,
+                            "Pago rechazado por Stripe (simulación). No se asignó la membresía; puedes intentar de nuevo.",
+                            "Pago rechazado", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
                 // Asignar la membresía al cliente
                 cliente.setIdMembresia(membresia.getIdMembresia());
 
                 // Actualizar el cliente en MongoDB
                 clienteServicios.actualizarCliente(cliente);
 
-                JOptionPane.showMessageDialog(this,"¡Pago realizado correctamente!\n" + "La membresía ha sido asignada al cliente.", "Pago exitoso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,"¡Pago simulado aprobado!\nLa membresía ha sido asignada al cliente.", "Pago exitoso", JOptionPane.INFORMATION_MESSAGE);
 
                 // Regresar a la pantalla principal
-                pantallaPrincipal.setVisible(true);
-
-                this.dispose();
+                ControlNavegacion.obtenerInstancia().regresar(this, pantallaPrincipal);
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Error al procesar el pago: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -104,7 +125,7 @@ public class pantalla_registro_cliente4 extends javax.swing.JFrame {
         btn_tarjeta.setBackground(new java.awt.Color(102, 102, 102));
         btn_tarjeta.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_tarjeta.setForeground(new java.awt.Color(255, 255, 255));
-        btn_tarjeta.setText("Tarjeta");
+        btn_tarjeta.setText("Tarjeta (prueba)");
         btn_tarjeta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_tarjetaActionPerformed(evt);
@@ -180,8 +201,7 @@ public class pantalla_registro_cliente4 extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_tarjetaActionPerformed
 
     private void btn_volver4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver4ActionPerformed
-       pantallaPrincipal.setVisible(true);
-       this.dispose();
+       ControlNavegacion.obtenerInstancia().regresar(this, pantallaPrincipal);
     }//GEN-LAST:event_btn_volver4ActionPerformed
 
     

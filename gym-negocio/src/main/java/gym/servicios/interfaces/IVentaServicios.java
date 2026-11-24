@@ -6,14 +6,17 @@ package gym.servicios.interfaces;
 
 import gym.excepciones.NegocioException;
 import gym.servicios.dto.PagoDTO;
+import gym.servicios.dto.DetalleVentaDTO;
 import gym.servicios.dto.VentaDTO;
 import java.util.List;
 
 /**
+ * Define las operaciones de negocio relacionadas con venta.
  *
  * @author PC GAMER MASTER RACE
  */
 public interface IVentaServicios {
+    String procesarVenta(String idCliente, List<DetalleVentaDTO> detalles, PagoDTO pago) throws NegocioException;
     void agregarProducto(String idVenta, String idProducto, int cantidad)throws NegocioException;
     double calcularTotal(String idVenta)throws NegocioException;
     double aplicarDescuento(String idVenta, String idCliente) throws NegocioException;

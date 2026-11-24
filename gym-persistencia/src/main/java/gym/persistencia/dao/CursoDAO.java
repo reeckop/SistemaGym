@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bson.types.ObjectId;
 
+/**
+ * Implementa las operaciones de persistencia para curso.
+ *
+ * @author PC GAMER MASTER RACE
+ */
 public class CursoDAO extends BaseDAO implements ICursoDAO {
 
     private static final String NOMBRE_COLECCION = "cursos";

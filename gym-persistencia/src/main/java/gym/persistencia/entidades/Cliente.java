@@ -11,6 +11,8 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que representa un cliente/socio registrado en el gimnasio.
+ *
+ * @author PC GAMER MASTER RACE
  */
 public class Cliente {
     

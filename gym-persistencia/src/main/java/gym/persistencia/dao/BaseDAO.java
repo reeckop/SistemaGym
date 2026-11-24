@@ -17,6 +17,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 /**
+ * Proporciona operaciones comunes para los DAO de MongoDB.
  *
  * @author PC GAMER MASTER RACE
  */

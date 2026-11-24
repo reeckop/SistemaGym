@@ -16,6 +16,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 
 /**
+ * Implementa las operaciones de persistencia para notificación.
  *
  * @author PC GAMER MASTER RACE
  */

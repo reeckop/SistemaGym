@@ -3,6 +3,7 @@ gym\servicios\servicios\EmpleadoServicios.class
 gym\servicios\servicios\MembresiaServicios.class
 gym\servicios\dto\ProductoDTO.class
 gym\servicios\enums\EstadoPago.class
+gym\servicios\pagos\ResultadoPago.class
 gym\servicios\dto\VentaDTO.class
 gym\servicios\dto\MetodoPagoDTO.class
 gym\servicios\enums\EstadoNotificacion.class
@@ -11,6 +12,7 @@ gym\excepciones\NegocioException.class
 gym\servicios\dto\DetalleVentaDTO.class
 gym\servicios\dto\HorarioDTO.class
 gym\servicios\dto\EmpleadoDTO.class
+gym\servicios\catalogos\MembresiasPredeterminadas.class
 gym\servicios\interfaces\IVentaServicios.class
 gym\servicios\dto\BeneficioDTO.class
 gym\servicios\servicios\RegistroIngresoServicios.class
@@ -22,6 +24,7 @@ gym\servicios\servicios\PagoServicios.class
 gym\servicios\dto\ClienteDTO.class
 gym\servicios\servicios\VentaServicios.class
 gym\servicios\mappers\Mappers.class
+gym\servicios\pagos\StripeSimulado.class
 gym\servicios\servicios\ClienteServicios.class
 gym\servicios\interfaces\ICursoServicios.class
 gym\servicios\dto\MembresiaDTO.class

@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
+ * Prueba las operaciones de persistencia de los clientes.
  *
  * @author PC GAMER MASTER RACE
  */

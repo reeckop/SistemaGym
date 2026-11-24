@@ -9,6 +9,7 @@ import gym.servicios.dto.NotificacionDTO;
 import java.util.List;
 
 /**
+ * Define las operaciones de negocio relacionadas con notificación.
  *
  * @author PC GAMER MASTER RACE
  */

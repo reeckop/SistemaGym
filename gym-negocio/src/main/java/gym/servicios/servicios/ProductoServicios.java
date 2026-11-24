@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Gestiona las reglas de negocio de producto.
  *
  * @author PC GAMER MASTER RACE
  */
@@ -85,6 +86,36 @@ public class ProductoServicios implements IProductoServicios {
         IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
+            List<Producto> existentes = unitOfWork.productoDAO().obtenerTodos();
+            java.util.Map<String, Producto> productosPorId = new java.util.HashMap<>();
+            java.util.Map<String, Producto> productosPorNombre = new java.util.HashMap<>();
+            if (existentes != null) {
+                for (Producto producto : existentes) {
+                    if (producto != null) {
+                        productosPorId.put(producto.getIdProducto(), producto);
+                        if (producto.getNombre() != null) {
+                            productosPorNombre.put(
+                                    producto.getNombre().trim().toLowerCase(java.util.Locale.ROOT),
+                                    producto);
+                        }
+                    }
+                }
+            }
+            // Catálogo inicial para que las tres categorías tengan inventario demostrable.
+            for (ProductoDTO inicial : productosIniciales()) {
+                Producto existente = productosPorId.get(inicial.getIdProducto());
+                if (existente == null) {
+                    String nombre = inicial.getNombre().trim().toLowerCase(java.util.Locale.ROOT);
+                    existente = productosPorNombre.get(nombre);
+                }
+
+                if (existente == null) {
+                    unitOfWork.productoDAO().guardar(Mappers.convertirAEntidad(inicial));
+                } else if (!inicial.getImagen().equals(existente.getImagen())) {
+                    existente.setImagen(inicial.getImagen());
+                    unitOfWork.productoDAO().actualizar(existente);
+                }
+            }
             List<ProductoDTO> resultado = new ArrayList<>();
             List<Producto> productos = unitOfWork.productoDAO().obtenerTodos();
 
@@ -103,6 +134,17 @@ public class ProductoServicios implements IProductoServicios {
             unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar los productos.", e);
         }
+    }
+
+    private List<ProductoDTO> productosIniciales() {
+        return List.of(
+                new ProductoDTO("671000000000000000000001", "Mancuernas ajustables", "Accesorios", 899, 12, "/gym/ventas/productos/mancuernas.png"),
+                new ProductoDTO("671000000000000000000002", "Cuerda para saltar", "Accesorios", 159, 25, "/gym/ventas/productos/cuerda.png"),
+                new ProductoDTO("671000000000000000000003", "Proteína whey", "Suplementos", 749, 15, "/gym/ventas/productos/whey.png"),
+                new ProductoDTO("671000000000000000000004", "Creatina monohidratada", "Suplementos", 429, 18, "/gym/ventas/productos/creatina.png"),
+                new ProductoDTO("671000000000000000000005", "Playera deportiva", "Ropa", 299, 20, "/gym/ventas/productos/playera.png"),
+                new ProductoDTO("671000000000000000000006", "Guantes de entrenamiento", "Ropa", 249, 14, "/gym/ventas/productos/guantes.png")
+        );
     }
 
     private void validarProducto(ProductoDTO producto) throws NegocioException {

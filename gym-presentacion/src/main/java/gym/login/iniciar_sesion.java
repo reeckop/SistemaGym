@@ -5,6 +5,7 @@
 package gym.login;
 
 import gym.excepciones.NegocioException;
+import gym.navegacion.ControlNavegacion;
 import gym.registrar_empleado.pantalla_registro_empleado;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IClienteServicios;
@@ -15,6 +16,7 @@ import gym.servicios.servicios.MembresiaServicios;
 import javax.swing.JOptionPane;
 
 /**
+ * Solicita las credenciales para acceder al sistema.
  *
  * @author drago
  */
@@ -100,6 +102,7 @@ public class iniciar_sesion extends javax.swing.JFrame {
         titulo_nip.setText("NIP");
 
         txtNip.setBackground(new java.awt.Color(51, 51, 51));
+        txtNip.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         txtNip.setForeground(new java.awt.Color(255, 255, 255));
         txtNip.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtNip.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
@@ -115,6 +118,7 @@ public class iniciar_sesion extends javax.swing.JFrame {
         titulo_contraseña.setText("CONTRASEÑA");
 
         txt_contraseña.setBackground(new java.awt.Color(51, 51, 51));
+        txt_contraseña.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         txt_contraseña.setForeground(new java.awt.Color(255, 255, 255));
         txt_contraseña.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txt_contraseña.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
@@ -213,8 +217,7 @@ public class iniciar_sesion extends javax.swing.JFrame {
 
     private void btn_registrar_empleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_registrar_empleadoActionPerformed
         pantalla_registro_empleado pantalla = new pantalla_registro_empleado(empleadoServicios, empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
-        pantalla.setVisible(true);
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
     }//GEN-LAST:event_btn_registrar_empleadoActionPerformed
 
     private void btn_iniciar_sesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_iniciar_sesionActionPerformed
@@ -240,19 +243,15 @@ public class iniciar_sesion extends javax.swing.JFrame {
 
             pantalla_principal pantalla = new pantalla_principal(empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
 
-            pantalla.setVisible(true);
-
-            this.dispose();
+            ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
 
         } catch (NegocioException e) {
             error_login pantalla = new error_login(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
-            pantalla.setVisible(true);
-            this.dispose();
+            ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
         }
     }//GEN-LAST:event_btn_iniciar_sesionActionPerformed
 
     private void txtNipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNipActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_txtNipActionPerformed
 
     

@@ -8,6 +8,7 @@ import gym.servicios.dto.BeneficioDTO;
 import gym.servicios.dto.MembresiaDTO;
 import gym.servicios.enums.EstadoMembresia;
 import gym.servicios.interfaces.IMembresiaServicios;
+import gym.navegacion.ControlNavegacion;
 import gym.servicios.servicios.MembresiaServicios;
 import java.awt.Color;
 import java.awt.BorderLayout;
@@ -33,6 +34,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.bson.types.ObjectId;
 
 /**
+ * Permite modificar los datos y beneficios de una membresía.
  *
  * @author drago
  */
@@ -63,8 +65,18 @@ public class EditarMembresia extends javax.swing.JFrame {
             configurarApariencia();
             cargarDatosMembresia();
 
-            btn_seleccionar_Imagen_membreciaN.addActionListener(e -> seleccionarImagen());
-            btn_aceptar_agregar_membresia.addActionListener(e -> actualizarMembresia());
+            btn_seleccionar_Imagen_membreciaN.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent evento) {
+                    seleccionarImagen();
+                }
+            });
+            btn_aceptar_agregar_membresia.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent evento) {
+                    actualizarMembresia();
+                }
+            });
         }
 
     private void cargarDatosMembresia() {
@@ -140,29 +152,14 @@ public class EditarMembresia extends javax.swing.JFrame {
         campo_texto_descuento_cursos.setEnabled(false);
         campo_texto_invitaciones_mensuales.setEnabled(false);
 
-        checkB_descuentos_productos.addItemListener(e ->
-                campo_txt_descuentos_productos.setEnabled(
-                        checkB_descuentos_productos.isSelected()
-                )
-        );
-
-        checkB_sesiones_gratis.addItemListener(e ->
-                campo_texto_sesiones_gratis.setEnabled(
-                        checkB_sesiones_gratis.isSelected()
-                )
-        );
-
-        checkB_descuento_cursos.addItemListener(e ->
-                campo_texto_descuento_cursos.setEnabled(
-                        checkB_descuento_cursos.isSelected()
-                )
-        );
-
-        checkB_invitaciones_mensuales.addItemListener(e ->
-                campo_texto_invitaciones_mensuales.setEnabled(
-                        checkB_invitaciones_mensuales.isSelected()
-                )
-        );
+        checkB_descuentos_productos.addItemListener(
+                new ControlCampoBeneficio(checkB_descuentos_productos, campo_txt_descuentos_productos));
+        checkB_sesiones_gratis.addItemListener(
+                new ControlCampoBeneficio(checkB_sesiones_gratis, campo_texto_sesiones_gratis));
+        checkB_descuento_cursos.addItemListener(
+                new ControlCampoBeneficio(checkB_descuento_cursos, campo_texto_descuento_cursos));
+        checkB_invitaciones_mensuales.addItemListener(
+                new ControlCampoBeneficio(checkB_invitaciones_mensuales, campo_texto_invitaciones_mensuales));
     }
 
     private void validarBeneficios() {
@@ -325,10 +322,8 @@ public class EditarMembresia extends javax.swing.JFrame {
 
             if (pantallaAnterior != null) {
                 pantallaAnterior.cargarMembresias();
-                pantallaAnterior.setVisible(true);
             }
-
-            dispose();
+            ControlNavegacion.obtenerInstancia().regresar(this, pantallaAnterior);
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Verifica que los valores numéricos sean correctos.");
@@ -702,15 +697,12 @@ public class EditarMembresia extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void campo_txt_nombre_membresiaNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campo_txt_nombre_membresiaNActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_campo_txt_nombre_membresiaNActionPerformed
 
     private void checkB_descuentos_productosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkB_descuentos_productosActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_checkB_descuentos_productosActionPerformed
 
     private void checkB_sesiones_gratisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkB_sesiones_gratisActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_checkB_sesiones_gratisActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
@@ -725,10 +717,8 @@ public class EditarMembresia extends javax.swing.JFrame {
 
                 if (pantallaAnterior != null) {
                     pantallaAnterior.cargarMembresias();
-                    pantallaAnterior.setVisible(true);
                 }
-
-                dispose();
+                ControlNavegacion.obtenerInstancia().regresar(this, pantallaAnterior);
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "No se pudo eliminar la membresía: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -737,11 +727,7 @@ public class EditarMembresia extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btn_volver_agregar_membresiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_agregar_membresiaActionPerformed
-        if (pantallaAnterior != null) {
-            pantallaAnterior.setVisible(true);
-        }
-
-        dispose();
+        ControlNavegacion.obtenerInstancia().regresar(this, pantallaAnterior);
     }//GEN-LAST:event_btn_volver_agregar_membresiaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

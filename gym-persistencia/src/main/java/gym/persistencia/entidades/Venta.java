@@ -12,6 +12,8 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que modela una venta realizada en el gimnasio.
+ *
+ * @author PC GAMER MASTER RACE
  */
 public class Venta {
     

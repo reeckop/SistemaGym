@@ -4,6 +4,8 @@
  */
 package gym.registro_cliente;
 
+
+import gym.navegacion.ControlNavegacion;
 import gym.login.pantalla_principal;
 import gym.servicios.dto.ClienteDTO;
 import gym.servicios.interfaces.IClienteServicios;
@@ -14,6 +16,7 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import org.bson.types.ObjectId;
 /**
+ * Captura los datos personales de un cliente.
  *
  * @author drago
  */
@@ -80,8 +83,7 @@ public class pantalla_registro_cliente extends javax.swing.JFrame {
             // Abrir pantalla de confirmación
             pantalla_registro_cliente2 pantalla = new pantalla_registro_cliente2(cliente, fechaHora, this, pantallaPrincipal);
 
-            pantalla.setVisible(true);
-            this.setVisible(false);
+            ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al registrar el cliente: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -89,11 +91,7 @@ public class pantalla_registro_cliente extends javax.swing.JFrame {
     }
     
     private void volver() {
-        if (pantallaPrincipal != null) {
-            pantallaPrincipal.setVisible(true);
-        }
-
-        this.dispose();
+        ControlNavegacion.obtenerInstancia().regresar(this, pantallaPrincipal);
     }
 
     /**

@@ -14,10 +14,12 @@ import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.servicios.enums.EstadoMembresia;
 import gym.servicios.mappers.Mappers;
 import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.catalogos.MembresiasPredeterminadas;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Gestiona las reglas de negocio de membresía.
  *
  * @author PC GAMER MASTER RACE
  */
@@ -99,15 +101,35 @@ public class MembresiaServicios implements IMembresiaServicios {
         IUnitOfWork unitOfWork = unidadDeTrabajoFactory.crear();
 
         try {
+            List<Membresia> membresias = unitOfWork.membresiaDAO().obtenerTodos();
+            if (membresias == null) membresias = new ArrayList<>();
+
+            for (MembresiaDTO predeterminada : MembresiasPredeterminadas.obtenerTodas()) {
+                Membresia existente = buscarPredeterminada(membresias, predeterminada);
+                if (existente == null) {
+                    Membresia entidad = Mappers.convertirAEntidad(predeterminada);
+                    unitOfWork.membresiaDAO().guardar(entidad);
+                    membresias.add(entidad);
+                } else if (existente.getEstado() != gym.persistencia.enums.EstadoMembresia.ACTIVA
+                        || !predeterminada.getNombre().equals(existente.getNombre())
+                        || !predeterminada.getImagen().equals(existente.getImagen())
+                        || existente.getBeneficios() == null
+                        || existente.getBeneficios().size() != predeterminada.getBeneficios().size()
+                        || Double.compare(existente.getPrecio(), predeterminada.getPrecio()) != 0) {
+                    existente.setNombre(predeterminada.getNombre());
+                    existente.setEstado(gym.persistencia.enums.EstadoMembresia.ACTIVA);
+                    existente.setPrecio(predeterminada.getPrecio());
+                    existente.setImagen(predeterminada.getImagen());
+                    existente.setBeneficios(Mappers.convertirAEntidad(predeterminada).getBeneficios());
+                    unitOfWork.membresiaDAO().actualizar(existente);
+                }
+            }
+
             List<MembresiaDTO> resultado = new ArrayList<>();
 
-            List<Membresia> membresias = unitOfWork.membresiaDAO().obtenerTodos();
-
-            if (membresias != null) {
-                for (Membresia membresia : membresias) {
-                    if (membresia != null) {
-                        resultado.add(Mappers.convertirADTO(membresia));
-                    }
+            for (Membresia membresia : membresias) {
+                if (membresia != null) {
+                    resultado.add(Mappers.convertirADTO(membresia));
                 }
             }
 
@@ -119,6 +141,17 @@ public class MembresiaServicios implements IMembresiaServicios {
             unitOfWork.rollback();
             throw new NegocioException("No fue posible consultar las membresias.", e);
         }
+    }
+
+    private Membresia buscarPredeterminada(List<Membresia> membresias, MembresiaDTO predeterminada) {
+        for (Membresia membresia : membresias) {
+            if (membresia == null) continue;
+            if (predeterminada.getIdMembresia().equals(membresia.getIdMembresia())
+                    || predeterminada.getNombre().equalsIgnoreCase(membresia.getNombre())) {
+                return membresia;
+            }
+        }
+        return null;
     }
 
     private void validarMembresia(MembresiaDTO membresia)throws NegocioException {

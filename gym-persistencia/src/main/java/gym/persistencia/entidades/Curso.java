@@ -9,6 +9,11 @@ import org.bson.BsonType;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
+/**
+ * Representa la entidad persistente de curso.
+ *
+ * @author PC GAMER MASTER RACE
+ */
 public class Curso {
     
     @BsonId

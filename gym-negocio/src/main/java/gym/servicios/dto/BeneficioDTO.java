@@ -5,6 +5,7 @@
 package gym.servicios.dto;
 
 /**
+ * Transporta los datos de beneficio entre las capas del sistema.
  *
  * @author PC GAMER MASTER RACE
  */

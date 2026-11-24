@@ -5,6 +5,7 @@
 package gym.excepciones;
 
 /**
+ * Representa un error ocurrido durante una operación del sistema.
  *
  * @author PC GAMER MASTER RACE
  */

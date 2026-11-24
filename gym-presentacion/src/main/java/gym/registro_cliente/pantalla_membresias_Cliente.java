@@ -4,6 +4,9 @@
  */
 package gym.registro_cliente;
 
+
+import gym.navegacion.ControlNavegacion;
+import gym.membresias.ImagenMembresia;
 import gym.login.pantalla_principal;
 import gym.servicios.dto.ClienteDTO;
 import gym.servicios.dto.MembresiaDTO;
@@ -13,8 +16,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
-import java.io.File;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -23,10 +24,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 /**
+ * Permite elegir una membresía durante el registro del cliente.
  *
  * @author drago
  */
@@ -48,7 +49,10 @@ public class pantalla_membresias_Cliente extends javax.swing.JFrame {
         this.cliente = cliente;
         this.pantallaAnterior = pantallaAnterior;
         this.pantallaPrincipal = pantallaPrincipal;
+        configurarNavegacion();
 
+        setSize(850, 580);
+        setMinimumSize(new Dimension(760, 500));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -67,6 +71,25 @@ public class pantalla_membresias_Cliente extends javax.swing.JFrame {
         cargarMembresias();
     }
 
+    private void configurarNavegacion() {
+        getContentPane().removeAll();
+        getContentPane().setLayout(new java.awt.BorderLayout());
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        JPanel pie = new JPanel();
+        pie.setBackground(new Color(17, 17, 17));
+        JButton volver = new JButton("Volver");
+        volver.setBackground(new Color(255, 0, 51));
+        volver.setForeground(Color.WHITE);
+        volver.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evento) {
+                ControlNavegacion.obtenerInstancia().regresar(pantalla_membresias_Cliente.this, pantallaAnterior);
+            }
+        });
+        pie.add(volver);
+        getContentPane().add(pie, java.awt.BorderLayout.SOUTH);
+    }
+
     public void cargarMembresias() {
         panel_membresias.removeAll();
 
@@ -75,7 +98,7 @@ public class pantalla_membresias_Cliente extends javax.swing.JFrame {
             List<MembresiaDTO> membresias = membresiaServicios.consultarTodasLasMembresias();
             boolean hayMembresias = false;
 
-            if (membresias != null) {
+        if (membresias != null) {
                 for (MembresiaDTO membresia : membresias) {
                     // Mostrar únicamente membresías activas
                     if (membresia.getEstado() == EstadoMembresia.ACTIVA) {
@@ -88,14 +111,16 @@ public class pantalla_membresias_Cliente extends javax.swing.JFrame {
             }
 
             if (!hayMembresias) {
-                JLabel mensaje = new JLabel("No hay membresías disponibles");
+                JLabel mensaje = new JLabel("No hay membresías activas disponibles. Puedes volver a la pantalla anterior.");
                 mensaje.setForeground(Color.WHITE);
 
                 panel_membresias.add(mensaje);
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar las membresías: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JLabel mensaje = new JLabel("No se pudieron cargar las membresías. Usa Volver para salir de esta pantalla.");
+            mensaje.setForeground(Color.WHITE);
+            panel_membresias.add(mensaje);
         }
 
         panel_membresias.revalidate();
@@ -105,59 +130,34 @@ public class pantalla_membresias_Cliente extends javax.swing.JFrame {
     private JPanel crearTarjeta(MembresiaDTO membresia) {
         JPanel tarjeta = new JPanel();
 
-        tarjeta.setPreferredSize(new Dimension(110, 150));
+        tarjeta.setPreferredSize(new Dimension(190, 255));
         tarjeta.setBackground(new Color(45, 45, 45));
         tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
 
         // Imagen
         JLabel imagen = new JLabel();
 
-        imagen.setPreferredSize(new Dimension(85, 65));
-        imagen.setMaximumSize(new Dimension(85, 65));
+        imagen.setPreferredSize(new Dimension(150, 145));
+        imagen.setMaximumSize(new Dimension(150, 145));
         imagen.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         imagen.setHorizontalAlignment(JLabel.CENTER);
 
-        if (membresia.getImagen() != null && !membresia.getImagen().isEmpty()) {
-            File archivo = new File(membresia.getImagen());
-            if (archivo.exists()) {
-                ImageIcon icono = new ImageIcon(archivo.getAbsolutePath());
-
-                Image imagenOriginal = icono.getImage();
-
-                int anchoOriginal = icono.getIconWidth();
-                int altoOriginal = icono.getIconHeight();
-
-                if (anchoOriginal > 0 && altoOriginal > 0) {
-                    double escala = Math.min(65.0 / anchoOriginal, 60.0 / altoOriginal);
-
-                    int nuevoAncho = (int) (anchoOriginal * escala);
-                    int nuevoAlto = (int) (altoOriginal * escala);
-
-                    Image imagenEscalada = imagenOriginal.getScaledInstance(nuevoAncho, nuevoAlto, Image.SCALE_SMOOTH);
-
-                    imagen.setIcon(new ImageIcon(imagenEscalada));
-                }
-
-            } else {
-                imagen.setText("Sin imagen");
-            }
-
-        } else {
-            imagen.setText("Sin imagen");
-        }
+        ImageIcon icono = ImagenMembresia.cargar(membresia.getImagen(), 140, 140);
+        if (icono != null) imagen.setIcon(icono);
+        else imagen.setText("Sin imagen");
 
         // Nombre
         JLabel nombre = new JLabel(membresia.getNombre());
 
         nombre.setForeground(Color.WHITE);
-        nombre.setFont(new Font("Arial", Font.BOLD, 12));
+        nombre.setFont(new Font("Arial", Font.BOLD, 16));
         nombre.setAlignmentX(JPanel.CENTER_ALIGNMENT);
 
         // Precio
         JLabel precio = new JLabel("$" + membresia.getPrecio());
 
         precio.setForeground(Color.WHITE);
-        precio.setFont(new Font("Arial", Font.BOLD, 13));
+        precio.setFont(new Font("Arial", Font.BOLD, 17));
         precio.setAlignmentX(JPanel.CENTER_ALIGNMENT);
 
         // Botón seleccionar
@@ -174,12 +174,13 @@ public class pantalla_membresias_Cliente extends javax.swing.JFrame {
         seleccionar.setMaximumSize(new Dimension(90, 20));
 
         // Evento seleccionar
-        seleccionar.addActionListener(e -> {
-
-            pantalla_registro_cliene3 pantalla = new pantalla_registro_cliene3(cliente, membresia, this, pantallaPrincipal);
-
-            pantalla.setVisible(true);
-            this.setVisible(false);
+        seleccionar.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evento) {
+                pantalla_registro_cliene3 pantalla = new pantalla_registro_cliene3(
+                        cliente, membresia, pantalla_membresias_Cliente.this, pantallaPrincipal);
+                ControlNavegacion.obtenerInstancia().abrir(pantalla_membresias_Cliente.this, pantalla);
+            }
         });
 
         // Agregar componentes

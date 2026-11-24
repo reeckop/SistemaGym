@@ -6,6 +6,8 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad que representa la forma de pago utilizada (Efectivo, Tarjeta, Transferencia, etc.).
+ *
+ * @author PC GAMER MASTER RACE
  */
 public class MetodoPago {
 

@@ -20,6 +20,8 @@ import gym.servicios.servicios.VentaServicios;
 import gym.persistencia.unitofwork.UnitOfWorkFactory;
 import gym.ventas.pantalla_ventas_principal;
 import gym.cursos.pantalla_cursos_principal;
+import gym.servicios.interfaces.ICursoServicios;
+import gym.servicios.interfaces.IInscripcionServicios;
 import gym.servicios.servicios.CursoServicios;
 import gym.servicios.servicios.InscripcionServicios;
 
@@ -37,19 +39,22 @@ public class pantalla_principal extends javax.swing.JFrame {
     private final IRegistroIngresoServicios registroIngresoServicios;
     private final IProductoServicios productoServicios;
     private final IVentaServicios ventaServicios;
+    private final ICursoServicios cursoServicios;
+    private final IInscripcionServicios inscripcionServicios;
 
     /**
      * Creates new form pantalla_principal
      */
-    public pantalla_principal(EmpleadoDTO empleado, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios) {
+    public pantalla_principal(EmpleadoDTO empleado, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios, IProductoServicios productoServicios, IVentaServicios ventaServicios, ICursoServicios cursoServicios, IInscripcionServicios inscripcionServicios) {
         initComponents();
 
         this.membresiaServicios = membresiaServicios;
         this.clienteServicios = clienteServicios;
         this.registroIngresoServicios = registroIngresoServicios;
-        UnitOfWorkFactory unidadDeTrabajoFactory = UnitOfWorkFactory.obtenerInstancia();
-        this.productoServicios = new ProductoServicios(unidadDeTrabajoFactory);
-        this.ventaServicios = new VentaServicios(unidadDeTrabajoFactory);
+        this.productoServicios = productoServicios;
+        this.ventaServicios = ventaServicios;
+        this.cursoServicios = cursoServicios;
+        this.inscripcionServicios = inscripcionServicios;
 
         setLocationRelativeTo(null);
 
@@ -258,17 +263,12 @@ public class pantalla_principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_membresiasActionPerformed
 
     private void btn_cursosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cursosActionPerformed
-        pantalla_cursos_principal pantalla = new pantalla_cursos_principal(
-                this,
-                new CursoServicios(UnitOfWorkFactory.obtenerInstancia()),
-                new InscripcionServicios(UnitOfWorkFactory.obtenerInstancia()),
-                clienteServicios);
+        pantalla_cursos_principal pantalla = new pantalla_cursos_principal(this, cursoServicios, inscripcionServicios, clienteServicios);
         ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_cursosActionPerformed
 
     private void btn_ventasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ventasActionPerformed
-        pantalla_ventas_principal pantalla = new pantalla_ventas_principal(
-                this, productoServicios, ventaServicios, clienteServicios);
+        pantalla_ventas_principal pantalla = new pantalla_ventas_principal(this, productoServicios, ventaServicios, clienteServicios);
         ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_ventasActionPerformed
 
@@ -277,7 +277,6 @@ public class pantalla_principal extends javax.swing.JFrame {
 
     private void btn_control_accesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_control_accesoActionPerformed
         pantalla_control_acceso pantalla = new pantalla_control_acceso(this, clienteServicios, membresiaServicios, registroIngresoServicios);
-
         ControlNavegacion.obtenerInstancia().abrir(this, pantalla);
     }//GEN-LAST:event_btn_control_accesoActionPerformed
 

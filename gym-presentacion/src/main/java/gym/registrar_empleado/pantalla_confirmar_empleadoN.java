@@ -9,9 +9,13 @@ import gym.login.iniciar_sesion;
 import gym.navegacion.ControlNavegacion;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IClienteServicios;
+import gym.servicios.interfaces.ICursoServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
+import gym.servicios.interfaces.IInscripcionServicios;
 import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.interfaces.IProductoServicios;
 import gym.servicios.interfaces.IRegistroIngresoServicios;
+import gym.servicios.interfaces.IVentaServicios;
 import javax.swing.JOptionPane;
 
 /**
@@ -28,13 +32,21 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
     private final IMembresiaServicios membresiaServicios;
     private final IClienteServicios clienteServicios;
     private final IRegistroIngresoServicios registroIngresoServicios;
+    private final IProductoServicios productoServicios;
+    private final IVentaServicios ventaServicios;
+    private final ICursoServicios cursoServicios;
+    private final IInscripcionServicios inscripcionServicios;
 
-    public pantalla_confirmar_empleadoN(IEmpleadoServicios empleadoServicios, EmpleadoDTO empleado, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios) {
+    public pantalla_confirmar_empleadoN(IEmpleadoServicios empleadoServicios, EmpleadoDTO empleado, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios, IProductoServicios productoServicios, IVentaServicios ventaServicios, ICursoServicios cursoServicios, IInscripcionServicios inscripcionServicios) {
         this.empleadoServicios = empleadoServicios;
         this.empleado = empleado;
         this.membresiaServicios = membresiaServicios;
         this.clienteServicios = clienteServicios;
         this.registroIngresoServicios = registroIngresoServicios;
+        this.productoServicios = productoServicios;
+        this.ventaServicios = ventaServicios;
+        this.cursoServicios = cursoServicios;
+        this.inscripcionServicios = inscripcionServicios;
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -59,17 +71,18 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Confirmacion");
 
         jSeparator1.setForeground(new java.awt.Color(255, 0, 51));
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("¿Estas Seguro Que Quiere Agregar a un Nuevo Trabajador?");
 
         btn_aceptar_empleadoN2.setBackground(new java.awt.Color(255, 0, 51));
+        btn_aceptar_empleadoN2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_aceptar_empleadoN2.setForeground(new java.awt.Color(255, 255, 255));
         btn_aceptar_empleadoN2.setText("Aceptar");
         btn_aceptar_empleadoN2.addActionListener(new java.awt.event.ActionListener() {
@@ -79,6 +92,7 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
         });
 
         btn_volver_empleadoN2.setBackground(new java.awt.Color(255, 0, 51));
+        btn_volver_empleadoN2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btn_volver_empleadoN2.setForeground(new java.awt.Color(255, 255, 255));
         btn_volver_empleadoN2.setText("Volver");
         btn_volver_empleadoN2.addActionListener(new java.awt.event.ActionListener() {
@@ -93,7 +107,7 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(67, Short.MAX_VALUE)
+                .addContainerGap(33, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addGap(56, 56, 56))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -143,7 +157,7 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, "Empleado registrado correctamente.");
 
-            iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
+            iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, productoServicios, ventaServicios, cursoServicios, inscripcionServicios, empleado);
             ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
 
         } catch (NegocioException e) {
@@ -152,7 +166,7 @@ public class pantalla_confirmar_empleadoN extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_aceptar_empleadoN2ActionPerformed
 
     private void btn_volver_empleadoN2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volver_empleadoN2ActionPerformed
-        pantalla_registro_empleado pantalla = new pantalla_registro_empleado(empleadoServicios, empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
+        pantalla_registro_empleado pantalla = new pantalla_registro_empleado(empleadoServicios, empleado, membresiaServicios, clienteServicios, registroIngresoServicios, productoServicios, ventaServicios, cursoServicios, inscripcionServicios);
         ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
     }//GEN-LAST:event_btn_volver_empleadoN2ActionPerformed
 

@@ -7,9 +7,13 @@ package gym.login;
 import gym.navegacion.ControlNavegacion;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IClienteServicios;
+import gym.servicios.interfaces.ICursoServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
+import gym.servicios.interfaces.IInscripcionServicios;
 import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.interfaces.IProductoServicios;
 import gym.servicios.interfaces.IRegistroIngresoServicios;
+import gym.servicios.interfaces.IVentaServicios;
 
 /**
  * Muestra un aviso cuando falla el inicio de sesión.
@@ -24,16 +28,24 @@ public class error_login extends javax.swing.JFrame {
     private final IMembresiaServicios membresiaServicios;
     private final IClienteServicios clienteServicios;
     private final IRegistroIngresoServicios registroIngresoServicios;
+    private final IProductoServicios productoServicios;
+    private final IVentaServicios ventaServicios;
+    private final ICursoServicios cursoServicios;
+    private final IInscripcionServicios inscripcionServicios;
     private final EmpleadoDTO empleado;
 
     /**
      * Creates new form error_login
      */
-    public error_login(IEmpleadoServicios empleadoServicios, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios, EmpleadoDTO empleado) {
+    public error_login(IEmpleadoServicios empleadoServicios, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios, IProductoServicios productoServicios, IVentaServicios ventaServicios, ICursoServicios cursoServicios, IInscripcionServicios inscripcionServicios, EmpleadoDTO empleado) {
         this.empleadoServicios = empleadoServicios;
         this.membresiaServicios = membresiaServicios;
         this.clienteServicios = clienteServicios;
         this.registroIngresoServicios = registroIngresoServicios;
+        this.productoServicios = productoServicios;
+        this.ventaServicios = ventaServicios;
+        this.cursoServicios = cursoServicios;
+        this.inscripcionServicios = inscripcionServicios;
         this.empleado = empleado;
         initComponents();
         setLocationRelativeTo(null);
@@ -131,7 +143,7 @@ public class error_login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_volverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volverActionPerformed
-        iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
+        iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, productoServicios, ventaServicios, cursoServicios, inscripcionServicios, empleado);
         ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
     }//GEN-LAST:event_btn_volverActionPerformed
 

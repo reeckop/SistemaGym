@@ -32,8 +32,7 @@ public class pantalla_control_acceso extends javax.swing.JFrame {
     /**
      * Creates new form pantalla_control_acceso
      */
-    public pantalla_control_acceso(pantalla_principal pantallaPrincipal, IClienteServicios clienteServicios,
-            IMembresiaServicios membresiaServicios, IRegistroIngresoServicios registroIngresoServicios) {
+    public pantalla_control_acceso(pantalla_principal pantallaPrincipal, IClienteServicios clienteServicios, IMembresiaServicios membresiaServicios, IRegistroIngresoServicios registroIngresoServicios) {
         initComponents();
 
         this.pantallaPrincipal = pantallaPrincipal;

@@ -15,6 +15,14 @@ import gym.servicios.servicios.EmpleadoServicios;
 import gym.servicios.servicios.MembresiaServicios;
 import gym.servicios.servicios.RegistroIngresoServicios;
 import gym.persistencia.unitofwork.UnitOfWorkFactory;
+import gym.servicios.interfaces.ICursoServicios;
+import gym.servicios.interfaces.IInscripcionServicios;
+import gym.servicios.interfaces.IProductoServicios;
+import gym.servicios.interfaces.IVentaServicios;
+import gym.servicios.servicios.CursoServicios;
+import gym.servicios.servicios.InscripcionServicios;
+import gym.servicios.servicios.ProductoServicios;
+import gym.servicios.servicios.VentaServicios;
 
 /**
  * Inicia el sistema de gestión del gimnasio.
@@ -35,14 +43,14 @@ public class Main {
                 IClienteServicios clienteServicios = new ClienteServicios(unidadDeTrabajoFactory);
                 IMembresiaServicios membresiaServicios = new MembresiaServicios(unidadDeTrabajoFactory);
                 IRegistroIngresoServicios registroIngresoServicios = new RegistroIngresoServicios(unidadDeTrabajoFactory);
+                IProductoServicios productoServicios = new ProductoServicios(unidadDeTrabajoFactory);
+                ICursoServicios cursoServicios = new CursoServicios(unidadDeTrabajoFactory);
+                IVentaServicios ventaServicios = new VentaServicios(unidadDeTrabajoFactory);
+                ICursoServicios curosServicios = new CursoServicios(unidadDeTrabajoFactory);
+                IInscripcionServicios inscripcionServicios = new InscripcionServicios(unidadDeTrabajoFactory);
                 EmpleadoDTO empleado = new EmpleadoDTO();
 
-                iniciar_sesion pantalla = new iniciar_sesion(
-                        empleadoServicios,
-                        membresiaServicios,
-                        clienteServicios,
-                        registroIngresoServicios,
-                        empleado);
+                iniciar_sesion pantalla = new iniciar_sesion(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, productoServicios, ventaServicios, cursoServicios, inscripcionServicios, empleado);
                 pantalla.setVisible(true);
             }
         });

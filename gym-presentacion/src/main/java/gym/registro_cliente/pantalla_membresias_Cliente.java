@@ -177,8 +177,7 @@ public class pantalla_membresias_Cliente extends javax.swing.JFrame {
         seleccionar.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evento) {
-                pantalla_registro_cliene3 pantalla = new pantalla_registro_cliene3(
-                        cliente, membresia, pantalla_membresias_Cliente.this, pantallaPrincipal);
+                pantalla_registro_cliene3 pantalla = new pantalla_registro_cliene3(cliente, membresia, pantalla_membresias_Cliente.this, pantallaPrincipal);
                 ControlNavegacion.obtenerInstancia().abrir(pantalla_membresias_Cliente.this, pantalla);
             }
         });

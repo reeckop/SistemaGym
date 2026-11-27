@@ -9,9 +9,13 @@ import gym.navegacion.ControlNavegacion;
 import gym.registrar_empleado.pantalla_registro_empleado;
 import gym.servicios.dto.EmpleadoDTO;
 import gym.servicios.interfaces.IClienteServicios;
+import gym.servicios.interfaces.ICursoServicios;
 import gym.servicios.interfaces.IEmpleadoServicios;
+import gym.servicios.interfaces.IInscripcionServicios;
 import gym.servicios.interfaces.IMembresiaServicios;
+import gym.servicios.interfaces.IProductoServicios;
 import gym.servicios.interfaces.IRegistroIngresoServicios;
+import gym.servicios.interfaces.IVentaServicios;
 import gym.servicios.servicios.MembresiaServicios;
 import javax.swing.JOptionPane;
 
@@ -28,16 +32,24 @@ public class iniciar_sesion extends javax.swing.JFrame {
     private final IMembresiaServicios membresiaServicios;
     private final IClienteServicios clienteServicios;
     private final IRegistroIngresoServicios registroIngresoServicios;
+    private final IProductoServicios productoServicios;
+    private final IVentaServicios ventaServicios;
+    private final ICursoServicios cursoServicios;
+    private final IInscripcionServicios inscripcionServicios;
     private final EmpleadoDTO empleado;
 
     /**
      * Creates new form iniciar_sesion
      */
-    public iniciar_sesion(IEmpleadoServicios empleadoServicios, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios, EmpleadoDTO empleado) {
+    public iniciar_sesion(IEmpleadoServicios empleadoServicios, IMembresiaServicios membresiaServicios, IClienteServicios clienteServicios, IRegistroIngresoServicios registroIngresoServicios, IProductoServicios productoServicios, IVentaServicios ventaServicios, ICursoServicios cursoServicios, IInscripcionServicios inscripcionServicios, EmpleadoDTO empleado) {
         this.empleadoServicios = empleadoServicios;
         this.membresiaServicios = membresiaServicios;
         this.clienteServicios = clienteServicios;
         this.registroIngresoServicios = registroIngresoServicios;
+        this.productoServicios = productoServicios;
+        this.ventaServicios = ventaServicios;
+        this.cursoServicios = cursoServicios;
+        this.inscripcionServicios = inscripcionServicios;
         this.empleado = empleado;
         initComponents();
         setLocationRelativeTo(null);
@@ -216,7 +228,7 @@ public class iniciar_sesion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_registrar_empleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_registrar_empleadoActionPerformed
-        pantalla_registro_empleado pantalla = new pantalla_registro_empleado(empleadoServicios, empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
+        pantalla_registro_empleado pantalla = new pantalla_registro_empleado(empleadoServicios, empleado, membresiaServicios, clienteServicios, registroIngresoServicios, productoServicios, ventaServicios, cursoServicios, inscripcionServicios);
         ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
     }//GEN-LAST:event_btn_registrar_empleadoActionPerformed
 
@@ -241,12 +253,12 @@ public class iniciar_sesion extends javax.swing.JFrame {
 
              
 
-            pantalla_principal pantalla = new pantalla_principal(empleado, membresiaServicios, clienteServicios, registroIngresoServicios);
+            pantalla_principal pantalla = new pantalla_principal(empleado, membresiaServicios, clienteServicios, registroIngresoServicios, productoServicios, ventaServicios, cursoServicios, inscripcionServicios);
 
             ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
 
         } catch (NegocioException e) {
-            error_login pantalla = new error_login(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, empleado);
+            error_login pantalla = new error_login(empleadoServicios, membresiaServicios, clienteServicios, registroIngresoServicios, productoServicios, ventaServicios, cursoServicios, inscripcionServicios, empleado);
             ControlNavegacion.obtenerInstancia().reemplazar(this, pantalla);
         }
     }//GEN-LAST:event_btn_iniciar_sesionActionPerformed

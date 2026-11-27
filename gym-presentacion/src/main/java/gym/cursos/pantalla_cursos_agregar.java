@@ -48,8 +48,7 @@ public class pantalla_cursos_agregar extends JFrame {
     private final JTextField campoHoraInicio = new JTextField("08:00");
     private final JTextField campoHoraFin = new JTextField("10:00");
 
-    private final JComboBox<String> comboDisciplina = new JComboBox<>(
-            new String[]{"Box", "Spinning", "Yoga", "Zumba"});
+    private final JComboBox<String> comboDisciplina = new JComboBox<>(new String[]{"Box", "Spinning", "Yoga", "Zumba"});
     private final JComboBox<String> comboDias = new JComboBox<>(new String[]{
         "Lunes a Viernes",
         "Lunes, Miércoles y Viernes",
@@ -60,9 +59,7 @@ public class pantalla_cursos_agregar extends JFrame {
     private String rutaImagen = "/gym/ventas/productos/accesorios.jpg";
     private JLabel etiquetaImagen;
 
-    public pantalla_cursos_agregar(
-            pantalla_cursos_principal pantallaAnterior,
-            ICursoServicios cursoServicios) {
+    public pantalla_cursos_agregar(pantalla_cursos_principal pantallaAnterior, ICursoServicios cursoServicios) {
         this.pantallaAnterior = pantallaAnterior;
         this.cursoServicios = cursoServicios;
         construirPantalla();
@@ -149,8 +146,7 @@ public class pantalla_cursos_agregar extends JFrame {
 
     private void seleccionarImagen() {
         JFileChooser selector = new JFileChooser();
-        selector.setFileFilter(new FileNameExtensionFilter(
-                "Imágenes (PNG, JPG, GIF)", "png", "jpg", "jpeg", "gif"));
+        selector.setFileFilter(new FileNameExtensionFilter("Imágenes (PNG, JPG, GIF)", "png", "jpg", "jpeg", "gif"));
         int resultado = selector.showOpenDialog(this);
         if (resultado == JFileChooser.APPROVE_OPTION) {
             rutaImagen = selector.getSelectedFile().getAbsolutePath();
@@ -202,8 +198,7 @@ public class pantalla_cursos_agregar extends JFrame {
         }
     }
 
-    private void validarDatos(double precio, int cupo, LocalDate fecha,
-            LocalTime horaInicio, LocalTime horaFin) {
+    private void validarDatos(double precio, int cupo, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
         if (precio <= 0 || cupo <= 0) {
             throw new IllegalArgumentException("Precio y cupo deben ser mayores que cero.");
         }
@@ -218,8 +213,7 @@ public class pantalla_cursos_agregar extends JFrame {
         }
     }
 
-    private List<HorarioDTO> crearHorarios(
-            LocalDate fechaInicial, LocalTime horaInicio, LocalTime horaFin) {
+    private List<HorarioDTO> crearHorarios(LocalDate fechaInicial, LocalTime horaInicio, LocalTime horaFin) {
         List<HorarioDTO> horarios = new ArrayList<>();
         String diasSeleccionados = (String) comboDias.getSelectedItem();
 
@@ -257,12 +251,9 @@ public class pantalla_cursos_agregar extends JFrame {
             Path origen = Path.of(rutaImagen);
             String nombreArchivo = origen.getFileName().toString();
             int puntoExtension = nombreArchivo.lastIndexOf('.');
-            String extension = puntoExtension >= 0
-                    ? nombreArchivo.substring(puntoExtension).toLowerCase(Locale.ROOT)
-                    : ".png";
+            String extension = puntoExtension >= 0 ? nombreArchivo.substring(puntoExtension).toLowerCase(Locale.ROOT) : ".png";
             String nuevoNombre = "curso-" + new ObjectId().toHexString() + extension;
-            Path destino = Path.of("gym-presentacion", "src", "main", "resources",
-                    "gym", "cursos", nuevoNombre);
+            Path destino = Path.of("gym-presentacion", "src", "main", "resources", "gym", "cursos", nuevoNombre);
 
             Files.createDirectories(destino.getParent());
             Files.copy(origen, destino, StandardCopyOption.REPLACE_EXISTING);
@@ -273,7 +264,6 @@ public class pantalla_cursos_agregar extends JFrame {
     }
 
     private void mostrarError(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje,
-                "No se guardó el curso", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(this, mensaje, "No se guardó el curso", JOptionPane.WARNING_MESSAGE);
     }
 }
